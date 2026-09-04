@@ -1,0 +1,282 @@
+// Egypt Journeys — database schema
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CUSTOMER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum BookingType {
+  TOUR
+  HOTEL
+  CAR
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String?
+  email         String?    @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          Role       @default(CUSTOMER)
+  phone         String?
+  nationality   String?
+  passportNo    String?
+  accounts      Account[]
+  sessions      Session[]
+  bookings      Booking[]
+  reviews       Review[]
+  wishlists     Wishlist[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Region {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  tagline   String   @default("")
+  summary   String   @db.Text
+  cities    String[]
+  imageUrl  String
+  lat       Float?
+  lng       Float?
+  zoom      Int      @default(7)
+  sortOrder Int      @default(0)
+  published Boolean  @default(true)
+  tours     Tour[]
+  hotels    Hotel[]
+  cars      Car[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tour {
+  id           String     @id @default(cuid())
+  slug         String     @unique
+  title        String
+  summary      String     @db.Text
+  description  String     @db.Text
+  durationDays Int        @default(1)
+  priceFrom    Decimal    @db.Decimal(10, 2)
+  currency     String     @default("USD")
+  maxGroupSize Int        @default(20)
+  highlights   String[]
+  itinerary    Json
+  includes     String[]
+  excludes     String[]
+  imageUrl     String
+  galleryUrls  String[]
+  lat          Float?
+  lng          Float?
+  featured     Boolean    @default(false)
+  published    Boolean    @default(true)
+  sortOrder    Int        @default(0)
+  regionId     String
+  region       Region     @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  bookings     Booking[]
+  reviews      Review[]
+  wishlists    Wishlist[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([regionId])
+}
+
+model Hotel {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  name          String
+  description   String    @db.Text
+  starRating    Int       @default(4)
+  imageUrl      String
+  galleryUrls   String[]
+  amenities     String[]
+  pricePerNight Decimal   @db.Decimal(10, 2)
+  currency      String    @default("USD")
+  maxGuests     Int       @default(2)
+  roomTypes     Json?
+  address       String?
+  lat           Float?
+  lng           Float?
+  published     Boolean   @default(true)
+  regionId      String
+  region        Region    @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  bookings      Booking[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([regionId])
+}
+
+model Car {
+  id           String    @id @default(cuid())
+  slug         String    @unique
+  name         String
+  description  String    @db.Text
+  brand        String
+  model        String
+  year         Int
+  type         String
+  seats        Int       @default(4)
+  transmission String    @default("Automatic")
+  fuelType     String    @default("Petrol")
+  imageUrl     String
+  galleryUrls  String[]
+  pricePerDay  Decimal   @db.Decimal(10, 2)
+  currency     String    @default("USD")
+  features     String[]
+  available    Boolean   @default(true)
+  published    Boolean   @default(true)
+  regionId     String
+  region       Region    @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  bookings     Booking[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([regionId])
+}
+
+model Booking {
+  id              String        @id @default(cuid())
+  reference       String        @unique
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookingType     BookingType
+  tourId          String?
+  tour            Tour?         @relation(fields: [tourId], references: [id])
+  hotelId         String?
+  hotel           Hotel?        @relation(fields: [hotelId], references: [id])
+  carId           String?
+  car             Car?          @relation(fields: [carId], references: [id])
+  checkIn         DateTime
+  checkOut        DateTime
+  guests          Int           @default(1)
+  totalPrice      Decimal       @db.Decimal(10, 2)
+  currency        String        @default("USD")
+  status          BookingStatus @default(PENDING)
+  paymentId       String?
+  paymentStatus   PaymentStatus @default(PENDING)
+  contactName     String?
+  contactEmail    String?
+  contactPhone    String?
+  nationality     String?
+  passportNo      String?
+  specialRequests String?       @db.Text
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+model Inquiry {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  destination String?
+  partySize   String?
+  travelDates String?
+  message     String   @db.Text
+  planTitle   String?
+  handled     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tourId    String
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String   @db.Text
+  approved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([tourId])
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tourId    String
+  tour      Tour     @relation(fields: [tourId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, tourId])
+}
+
+/// Singleton row (id = "site") holding admin-editable site settings.
+model SiteSetting {
+  id             String   @id @default("site")
+  siteName       String   @default("Egypt Journeys")
+  tagline        String   @default("Egypt, Planned Around You")
+  contactEmail   String   @default("hello@egyptjourneys.com")
+  contactPhone   String   @default("+20 100 123 4567")
+  whatsappNumber String   @default("201001234567")
+  address        String   @default("Zamalek, Cairo, Egypt")
+  facebookUrl    String   @default("")
+  instagramUrl   String   @default("")
+  paypalMode     String   @default("sandbox")
+  updatedAt      DateTime @updatedAt @default(now())
+}

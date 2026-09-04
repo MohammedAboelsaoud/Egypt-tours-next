@@ -1,36 +1,211 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Egypt Journeys
 
-## Getting Started
+A full-stack tourism platform for discovering and booking tours, hotels and car
+rentals across Egypt — with PayPal checkout and a complete admin dashboard.
 
-First, run the development server:
+**Tagline:** Egypt, Planned Around You
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+Next.js 16 (App Router) · TypeScript · Bun · PostgreSQL + Prisma
+NextAuth v5 · Tailwind v4 + shadcn/ui · PayPal · Resend · Cloudinary
+Vitest + Playwright
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Quick start
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+bun install
+cp .env.example .env          # then fill in DATABASE_URL and AUTH_SECRET
+bun run db:push               # create the schema
+bun run db:seed               # 4 regions, 8 tours, 8 hotels, 6 cars, admin user
+bun run dev                   # http://localhost:3000
+```
 
-## Learn More
+Sign in at `/admin/login` with the seeded credentials:
 
-To learn more about Next.js, take a look at the following resources:
+| Role     | Email                       | Password        |
+| -------- | --------------------------- | --------------- |
+| Admin    | `admin@egyptjourneys.com`   | `Admin123!`     |
+| Customer | `traveller@example.com`     | `Traveller123!` |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Change these before going anywhere near production — they are set by
+`SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Generating `AUTH_SECRET`
 
-## Deploy on Vercel
+```bash
+openssl rand -base64 32
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Everything runs without third-party keys
+
+The app boots and the whole booking flow works with nothing but a database.
+Each integration degrades to a safe local fallback until you add its keys:
+
+| Integration      | Without keys                                                        |
+| ---------------- | ------------------------------------------------------------------- |
+| **PayPal**       | Booking flow offers a "simulate payment" button (dev only)           |
+| **Resend**       | Emails are logged to the server console instead of sent              |
+| **Cloudinary**   | Admin uploads are written to `public/uploads/`                       |
+| **Google Maps**  | Maps render a styled panel with coordinates and a Google Maps link   |
+| **Google OAuth** | The Google button is hidden; email + password still works            |
+| **Facebook**     | The Facebook button is hidden                                        |
+
+The admin **Settings** page shows which integrations are connected.
+
+---
+
+## Scripts
+
+| Command             | What it does                                  |
+| ------------------- | --------------------------------------------- |
+| `bun run dev`       | Dev server (Turbopack)                        |
+| `bun run build`     | `prisma generate` + production build          |
+| `bun run start`     | Serve the production build                    |
+| `bun run lint`      | `tsc --noEmit` type check                     |
+| `bun run test`      | Vitest unit + integration tests               |
+| `bun run test:e2e`  | Playwright end-to-end tests                   |
+| `bun run db:push`   | Push the Prisma schema to the database        |
+| `bun run db:seed`   | Seed content (safe to re-run — upserts)       |
+| `bun run db:studio` | Prisma Studio                                 |
+
+---
+
+## Project structure
+
+```
+src/
+├── app/
+│   ├── (site)/          public site — home, destinations, tours, hotels,
+│   │                    car rentals, booking flow, account, about, faq
+│   ├── (auth)/          sign in / register
+│   ├── admin/           login + (dashboard) with CRUD for everything
+│   └── api/             auth, bookings, payments, uploads, public JSON API
+├── actions/             server actions (admin CRUD, wishlist, reviews, profile)
+├── components/          ui/ (shadcn) + layout, home, tours, hotels, cars,
+│                        booking, maps, admin, filters
+├── lib/                 prisma, auth, paypal, resend, cloudinary, pricing,
+│                        queries, settings, validations, utils, constants
+├── types/               shared types + NextAuth module augmentation
+└── proxy.ts             route protection (Next 16 renamed middleware → proxy)
+prisma/                  schema.prisma + seed.ts
+tests/                   unit/ · integration/ · e2e/
+```
+
+---
+
+## How the booking flow works
+
+1. **Dates & guests** — price recalculates live via `lib/pricing.ts`
+2. **Your details** — pre-filled from the traveller's profile
+3. **Review** — full summary behind a terms checkbox
+4. **Payment** — `POST /api/bookings` creates a `PENDING` booking, then PayPal
+   create → approve → capture
+5. **Confirmation** — booking becomes `CONFIRMED` / `PAID`, reference shown,
+   confirmation email sent to the traveller and an alert to the admin
+
+Prices are **always recalculated server-side** in `/api/bookings` before a
+PayPal order is created — the client's number is never trusted. Capacity limits
+(tour group size, hotel guests, car seats) are enforced there too.
+
+Pricing rules:
+
+| Type  | Charged            |
+| ----- | ------------------ |
+| Tour  | per person         |
+| Hotel | per night          |
+| Car   | per day, w/ driver |
+
+---
+
+## Admin dashboard (`/admin`)
+
+Restricted to `ADMIN` users; enforced in `proxy.ts` and again in the layout.
+
+- **Overview** — bookings, revenue, open inquiries, pending reviews, recent activity
+- **Bookings** — searchable and filterable, with a detail page and status updates
+- **Tours / Hotels / Cars / Regions** — full CRUD, image upload, publish toggles,
+  an itinerary builder and a room-type builder
+- **Inquiries** — contact form submissions, mark handled, CSV export
+- **Reviews** — approve or reject; reviews stay hidden until approved
+- **Settings** — site name, contact details, WhatsApp, PayPal mode, and a
+  read-only view of which integrations are connected
+
+All site content is editable from here — no code changes needed.
+
+---
+
+## Testing
+
+```bash
+bun run test       # 39 unit + integration tests
+bun run test:e2e   # 40 end-to-end tests (desktop Chrome + Pixel 7)
+```
+
+The E2E suite covers the public site, the full booking flow through to a
+confirmed payment, wishlist, auth gates, and admin CRUD including creating,
+editing and deleting a tour.
+
+> **Note on Bun:** Playwright skips its own TypeScript loader when it detects
+> Bun (`if ("Bun" in globalThis) return` in its ESM loader), so the files in
+> `tests/e2e/` deliberately avoid TypeScript-only syntax and use JSDoc types
+> instead. They are excluded from `tsconfig.json` for the same reason. Under
+> Node.js this restriction does not apply.
+
+---
+
+## Deploying to Vercel
+
+1. Push the repository to GitHub and import it into Vercel.
+2. Provision PostgreSQL (Neon, Supabase or Vercel Postgres) and set
+   `DATABASE_URL`.
+3. Add every variable from `.env.example` to the Vercel project.
+   `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` must be your production URL.
+4. The build command is `bun run build` (it runs `prisma generate` first).
+5. After the first deploy, push the schema and seed:
+   ```bash
+   DATABASE_URL="<production url>" bunx prisma db push
+   DATABASE_URL="<production url>" bun run db:seed
+   ```
+6. Set the PayPal app to **live** mode and switch `PAYPAL_MODE=live` once you
+   have tested with sandbox credentials.
+
+Add the OAuth redirect URLs in each provider's console:
+`https://your-domain.com/api/auth/callback/google` (and `/facebook`).
+
+---
+
+## Performance & SEO
+
+- Server Components throughout; ISR (`revalidate = 3600`) on region, tour, hotel
+  and car pages — 72 pages are prerendered at build time
+- `next/image` with remote patterns for Cloudinary and Unsplash
+- `next/font` for Playfair Display and Inter (no layout shift)
+- Skeleton loading states, and dynamic imports for the map and PayPal widget
+- Per-page metadata and canonical URLs, Open Graph images
+- JSON-LD: `TravelAgency`, `TouristDestination`, `Product`, `Hotel`,
+  `FAQPage`, `BreadcrumbList`, `AggregateRating`
+- Generated `sitemap.xml` and `robots.txt`
+
+Per-viewer state (such as the wishlist button) is resolved on the client so it
+is never baked into a cached page.
+
+---
+
+## Brand
+
+| Token        | Hex       | Use                            |
+| ------------ | --------- | ------------------------------ |
+| `gold`       | `#B8860B` | Primary accent, CTAs, prices   |
+| `gold-light` | `#DAA520` | Hover states, gradients        |
+| `sand`       | `#FAF7F2` | Page background                |
+| `ink`        | `#1C1917` | Primary text, dark sections    |
+| `teal`       | `#0F766E` | Secondary accent, success      |
+| `ivory`      | `#FFFEF9` | Card backgrounds               |
+
+Headings use **Playfair Display**, body copy **Inter**, with small uppercase
+letter-spaced eyebrow labels above section headings.
