@@ -18,7 +18,8 @@ import { getSettings } from "@/lib/settings"
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: `${SITE.name} — ${SITE.tagline}`,
+  // absolute, or the root layout's template appends the site name twice.
+  title: { absolute: `${SITE.name} — ${SITE.tagline}` },
   description: SITE.description,
   alternates: { canonical: "/" },
 }
