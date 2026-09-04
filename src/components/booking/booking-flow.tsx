@@ -1,5 +1,6 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -17,7 +18,7 @@ import {
   User,
 } from "lucide-react"
 
-import { PayPalCheckout } from "@/components/booking/paypal-button"
+
 import { Button } from "@/components/ui/button"
 import { ButtonLink } from "@/components/ui/button-link"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -45,6 +46,20 @@ export type BookingItem = {
   fixedDays: number | null
   href: string
 }
+
+/** The PayPal SDK is only needed at step 4, so it loads on demand. */
+const PayPalCheckout = dynamic(
+  () =>
+    import("@/components/booking/paypal-button").then(
+      (mod) => mod.PayPalCheckout
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-32 animate-pulse rounded-xl bg-muted" />
+    ),
+  }
+)
 
 const STEPS = [
   { id: 1, label: "Dates & guests", icon: CalendarDays },
