@@ -210,7 +210,7 @@ export default async function AdminBookingDetailPage({
             <dl className="divide-y divide-border">
               <Row label="Amount" value={formatPrice(booking.totalPrice, booking.currency)} />
               <Row label="Currency" value={booking.currency} />
-              <Row label="PayPal order" value={booking.paymentId ?? "—"} />
+              <Row label="Stripe payment" value={booking.paymentId ?? "—"} />
               <Row label="Last updated" value={formatDateTime(booking.updatedAt)} />
             </dl>
           </AdminCard>

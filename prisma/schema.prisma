@@ -277,6 +277,5 @@ model SiteSetting {
   address        String   @default("Zamalek, Cairo, Egypt")
   facebookUrl    String   @default("")
   instagramUrl   String   @default("")
-  paypalMode     String   @default("sandbox")
   updatedAt      DateTime @updatedAt @default(now())
 }

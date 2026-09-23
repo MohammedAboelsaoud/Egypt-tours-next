@@ -178,7 +178,6 @@ export const settingsSchema = z.object({
   address: z.string().max(200),
   facebookUrl: z.string().max(200).optional().or(z.literal("")),
   instagramUrl: z.string().max(200).optional().or(z.literal("")),
-  paypalMode: z.enum(["sandbox", "live"]),
 })
 
 export const bookingStatusSchema = z.object({

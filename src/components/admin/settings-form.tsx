@@ -6,7 +6,6 @@ import { CheckCircle2 } from "lucide-react"
 import { saveSettings, type AdminState } from "@/actions/admin"
 import {
   FormSection,
-  SelectField,
   TextField,
   TextareaField,
 } from "@/components/admin/form-fields"
@@ -20,7 +19,8 @@ export function SettingsForm({
 }: {
   settings: SiteSettings
   integrations: {
-    paypal: boolean
+    stripe: boolean
+    stripeWebhook: boolean
     resend: boolean
     cloudinary: boolean
     maps: boolean
@@ -34,7 +34,12 @@ export function SettingsForm({
   )
 
   const rows = [
-    { label: "PayPal payments", ok: integrations.paypal, env: "PAYPAL_CLIENT_ID" },
+    { label: "Stripe payments", ok: integrations.stripe, env: "STRIPE_SECRET_KEY" },
+    {
+      label: "Stripe webhook",
+      ok: integrations.stripeWebhook,
+      env: "STRIPE_WEBHOOK_SECRET",
+    },
     { label: "Resend email", ok: integrations.resend, env: "RESEND_API_KEY" },
     {
       label: "Cloudinary uploads",
@@ -113,22 +118,6 @@ export function SettingsForm({
             placeholder="https://instagram.com/…"
           />
         </div>
-      </FormSection>
-
-      <FormSection
-        title="Payments"
-        description="Keys live in environment variables; this switch records which mode you intend to run."
-      >
-        <SelectField
-          name="paypalMode"
-          label="PayPal mode"
-          defaultValue={settings.paypalMode}
-          options={[
-            { value: "sandbox", label: "Sandbox (testing)" },
-            { value: "live", label: "Live (real payments)" },
-          ]}
-          hint="Also set PAYPAL_MODE in your environment to match."
-        />
       </FormSection>
 
       <FormSection

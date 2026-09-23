@@ -12,7 +12,6 @@ export type SiteSettings = {
   address: string
   facebookUrl: string
   instagramUrl: string
-  paypalMode: string
 }
 
 const FALLBACK: SiteSettings = {
@@ -24,7 +23,6 @@ const FALLBACK: SiteSettings = {
   address: SITE.address,
   facebookUrl: "",
   instagramUrl: "",
-  paypalMode: "sandbox",
 }
 
 /**
@@ -45,7 +43,6 @@ export const getSettings = unstable_cache(
         address: row.address,
         facebookUrl: row.facebookUrl,
         instagramUrl: row.instagramUrl,
-        paypalMode: row.paypalMode,
       }
     } catch {
       // Database not reachable yet (e.g. first boot before `prisma db push`).

@@ -19,6 +19,31 @@ async function signIn(page) {
   await page.waitForURL("**/account**")
 }
 
+/**
+ * Pays on step 4. With Stripe test keys the embedded checkout is filled with
+ * Stripe's test card; without keys the simulated payment button is used.
+ *
+ * @param {import("@playwright/test").Page} page
+ */
+async function pay(page) {
+  const simulate = page.getByRole("button", { name: /Simulate payment/ })
+  const stripeFrame = page.locator("iframe[name='embedded-checkout']")
+  await expect(simulate.or(stripeFrame)).toBeVisible({ timeout: 30_000 })
+
+  if (await simulate.isVisible()) {
+    await simulate.click()
+    return
+  }
+
+  const checkout = page.frameLocator("iframe[name='embedded-checkout']")
+  await checkout.locator("#cardNumber").fill("4242 4242 4242 4242")
+  await checkout.locator("#cardExpiry").fill("12 / 34")
+  await checkout.locator("#cardCvc").fill("123")
+  await checkout.locator("#billingName").fill("Test Traveller")
+  await checkout.locator("#billingCountry").selectOption("EG")
+  await checkout.getByTestId("hosted-payment-submit-button").click()
+}
+
 test.describe("booking flow", () => {
   test("requires sign-in before booking", async ({ page }) => {
     await page.goto("/tours/pyramids-and-old-cairo-3-days")
@@ -66,12 +91,12 @@ test.describe("booking flow", () => {
     })
     await expect(page.getByText(/EJ-[A-Z0-9]{6}/)).toBeVisible()
 
-    await page.getByRole("button", { name: /Simulate payment/ }).click()
+    await pay(page)
 
     // Step 5 — confirmation
     await expect(
       page.getByRole("heading", { name: /Your booking is confirmed/i })
-    ).toBeVisible({ timeout: 40_000 })
+    ).toBeVisible({ timeout: 60_000 })
     const reference = await page.getByText(/^EJ-[A-Z0-9]{6}$/).first().textContent()
     expect(reference).toMatch(/^EJ-[A-Z0-9]{6}$/)
 

@@ -134,7 +134,7 @@ export default async function ContactPage() {
                   "A specialist reads your notes and picks the right region and season.",
                   "You get a draft itinerary with day-by-day detail and a real price.",
                   "We revise it until it's right — usually two or three rounds.",
-                  "You book online with PayPal, and we take it from there.",
+                  "You book online by card through Stripe, and we take it from there.",
                 ].map((step, index) => (
                   <li key={step} className="flex gap-3">
                     <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gold text-xs font-semibold text-white">

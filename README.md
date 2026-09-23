@@ -1,13 +1,13 @@
 # Egypt Journeys
 
 A full-stack tourism platform for discovering and booking tours, hotels and car
-rentals across Egypt — with PayPal checkout and a complete admin dashboard.
+rentals across Egypt — with Stripe checkout and a complete admin dashboard.
 
 **Tagline:** Egypt, Planned Around You
 
 ```
 Next.js 16 (App Router) · TypeScript · Bun · PostgreSQL + Prisma
-NextAuth v5 · Tailwind v4 + shadcn/ui · PayPal · Resend · Cloudinary
+NextAuth v5 · Tailwind v4 + shadcn/ui · Stripe · Resend · Cloudinary
 Vitest + Playwright
 ```
 
@@ -48,7 +48,7 @@ Each integration degrades to a safe local fallback until you add its keys:
 
 | Integration      | Without keys                                                        |
 | ---------------- | ------------------------------------------------------------------- |
-| **PayPal**       | Booking flow offers a "simulate payment" button (dev only)           |
+| **Stripe**       | Booking flow offers a "simulate payment" button (dev only)           |
 | **Resend**       | Emails are logged to the server console instead of sent              |
 | **Cloudinary**   | Admin uploads are written to `public/uploads/`                       |
 | **Google Maps**  | Maps render a styled panel with coordinates and a Google Maps link   |
@@ -88,7 +88,7 @@ src/
 ├── actions/             server actions (admin CRUD, wishlist, reviews, profile)
 ├── components/          ui/ (shadcn) + layout, home, tours, hotels, cars,
 │                        booking, maps, admin, filters
-├── lib/                 prisma, auth, paypal, resend, cloudinary, pricing,
+├── lib/                 prisma, auth, stripe, payments, resend, cloudinary, pricing,
 │                        queries, settings, validations, utils, constants
 ├── types/               shared types + NextAuth module augmentation
 └── proxy.ts             route protection (Next 16 renamed middleware → proxy)
@@ -103,13 +103,16 @@ tests/                   unit/ · integration/ · e2e/
 1. **Dates & guests** — price recalculates live via `lib/pricing.ts`
 2. **Your details** — pre-filled from the traveller's profile
 3. **Review** — full summary behind a terms checkbox
-4. **Payment** — `POST /api/bookings` creates a `PENDING` booking, then PayPal
-   create → approve → capture
+4. **Payment** — `POST /api/bookings` creates a `PENDING` booking, then
+   `/api/payments/stripe/checkout` opens an embedded Stripe Checkout Session.
+   When the card is accepted, `/api/payments/stripe/confirm` re-reads the
+   session from Stripe before confirming. The `checkout.session.completed`
+   webhook confirms it as well, in case the traveller closes the tab first.
 5. **Confirmation** — booking becomes `CONFIRMED` / `PAID`, reference shown,
    confirmation email sent to the traveller and an alert to the admin
 
 Prices are **always recalculated server-side** in `/api/bookings` before a
-PayPal order is created — the client's number is never trusted. Capacity limits
+Stripe payment is created — the client's number is never trusted. Capacity limits
 (tour group size, hotel guests, car seats) are enforced there too.
 
 Pricing rules:
@@ -132,7 +135,7 @@ Restricted to `ADMIN` users; enforced in `proxy.ts` and again in the layout.
   an itinerary builder and a room-type builder
 - **Inquiries** — contact form submissions, mark handled, CSV export
 - **Reviews** — approve or reject; reviews stay hidden until approved
-- **Settings** — site name, contact details, WhatsApp, PayPal mode, and a
+- **Settings** — site name, contact details, WhatsApp, and a
   read-only view of which integrations are connected
 
 All site content is editable from here — no code changes needed.
@@ -171,8 +174,14 @@ editing and deleting a tour.
    DATABASE_URL="<production url>" bunx prisma db push
    DATABASE_URL="<production url>" bun run db:seed
    ```
-6. Set the PayPal app to **live** mode and switch `PAYPAL_MODE=live` once you
-   have tested with sandbox credentials.
+6. Test with Stripe **test** keys first (card `4242 4242 4242 4242`, any future
+   date and CVC), then swap in the live keys.
+7. In the Stripe dashboard, add a webhook endpoint for
+   `https://your-domain.com/api/payments/stripe/webhook` with the events
+   `checkout.session.completed` and `checkout.session.async_payment_succeeded`.
+   Put its signing secret in `STRIPE_WEBHOOK_SECRET`. Locally, run
+   `stripe listen --forward-to localhost:3000/api/payments/stripe/webhook`
+   to get a secret for development.
 
 Add the OAuth redirect URLs in each provider's console:
 `https://your-domain.com/api/auth/callback/google` (and `/facebook`).
@@ -185,7 +194,7 @@ Add the OAuth redirect URLs in each provider's console:
   and car pages — 72 pages are prerendered at build time
 - `next/image` with remote patterns for Cloudinary and Unsplash
 - `next/font` for Playfair Display and Inter (no layout shift)
-- Skeleton loading states, and dynamic imports for the map and PayPal widget
+- Skeleton loading states, and dynamic imports for the map and Stripe checkout
 - Per-page metadata and canonical URLs, Open Graph images
 - JSON-LD: `TravelAgency`, `TouristDestination`, `Product`, `Hotel`,
   `FAQPage`, `BreadcrumbList`, `AggregateRating`

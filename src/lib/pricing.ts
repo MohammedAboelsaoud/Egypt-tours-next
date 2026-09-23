@@ -14,7 +14,7 @@ export type PriceBreakdown = {
 
 /**
  * Single source of truth for booking prices — used by the booking UI and again
- * on the server before a PayPal order is created, so the client can never set
+ * on the server before a Stripe payment is created, so the client can never set
  * its own price.
  */
 export function calculatePrice({
@@ -69,4 +69,17 @@ export function calculatePrice({
     total: subtotal,
     currency,
   }
+}
+
+// Currencies Stripe charges in whole units rather than cents.
+const ZERO_DECIMAL_CURRENCIES = new Set([
+  "BIF", "CLP", "DJF", "GNF", "JPY", "KMF", "KRW", "MGA",
+  "PYG", "RWF", "UGX", "VND", "VUV", "XAF", "XOF", "XPF",
+])
+
+/** Converts a price to the smallest currency unit Stripe expects (cents for USD). */
+export function toMinorUnits(amount: number, currency: string) {
+  return ZERO_DECIMAL_CURRENCIES.has(currency.toUpperCase())
+    ? Math.round(amount)
+    : Math.round(amount * 100)
 }

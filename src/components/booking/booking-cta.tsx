@@ -83,7 +83,7 @@ export function BookingCta({
 
           <p className="flex items-start gap-2 pt-2 text-xs leading-relaxed text-muted-foreground">
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-teal" />
-            Secure PayPal checkout. Free cancellation up to 14 days before
+            Secure card checkout by Stripe. Free cancellation up to 14 days before
             departure.
           </p>
         </div>

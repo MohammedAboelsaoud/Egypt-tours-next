@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { calculatePrice } from "@/lib/pricing"
+import { calculatePrice, toMinorUnits } from "@/lib/pricing"
 
 describe("calculatePrice", () => {
   it("charges tours per person, regardless of the date span", () => {
@@ -110,5 +110,20 @@ describe("calculatePrice", () => {
 
     expect(price.units).toBe(3)
     expect(price.total).toBe(300)
+  })
+})
+
+describe("toMinorUnits", () => {
+  it("converts two-decimal currencies to cents", () => {
+    expect(toMinorUnits(520, "USD")).toBe(52000)
+    expect(toMinorUnits(19.99, "eur")).toBe(1999)
+  })
+
+  it("rounds away floating-point noise", () => {
+    expect(toMinorUnits(0.1 + 0.2, "USD")).toBe(30)
+  })
+
+  it("leaves zero-decimal currencies whole", () => {
+    expect(toMinorUnits(1500, "JPY")).toBe(1500)
   })
 })

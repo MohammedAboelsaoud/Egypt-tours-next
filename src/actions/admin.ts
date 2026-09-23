@@ -507,7 +507,6 @@ export async function saveSettings(
     address: str(formData, "address"),
     facebookUrl: str(formData, "facebookUrl"),
     instagramUrl: str(formData, "instagramUrl"),
-    paypalMode: str(formData, "paypalMode") || "sandbox",
   })
 
   if (!parsed.success) {

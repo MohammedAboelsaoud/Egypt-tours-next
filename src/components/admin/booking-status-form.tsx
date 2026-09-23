@@ -75,7 +75,7 @@ export function BookingStatusForm({
         </select>
         <p className="mt-1.5 text-xs text-muted-foreground">
           Marking a payment refunded here records it — process the refund in
-          PayPal separately.
+          the Stripe dashboard separately.
         </p>
       </div>
 

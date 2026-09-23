@@ -47,11 +47,11 @@ export type BookingItem = {
   href: string
 }
 
-/** The PayPal SDK is only needed at step 4, so it loads on demand. */
-const PayPalCheckout = dynamic(
+/** Stripe.js is only needed at step 4, so it loads on demand. */
+const StripeCheckout = dynamic(
   () =>
-    import("@/components/booking/paypal-button").then(
-      (mod) => mod.PayPalCheckout
+    import("@/components/booking/stripe-checkout").then(
+      (mod) => mod.StripeCheckout
     ),
   {
     ssr: false,
@@ -550,7 +550,7 @@ export function BookingFlow({
             </p>
 
             <div className="mt-8">
-              <PayPalCheckout
+              <StripeCheckout
                 bookingId={booking.id}
                 amount={price.total}
                 currency={price.currency}

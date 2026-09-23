@@ -22,7 +22,7 @@ const GROUPS = [
     items: [
       {
         q: "How does booking with you work?",
-        a: "Send us an enquiry with your dates and interests. A planner replies within one business day with a draft itinerary and a real price. We revise it until it's right — usually two or three rounds — then you book online and pay securely through PayPal. Nothing is charged until you're happy with the plan.",
+        a: "Send us an enquiry with your dates and interests. A planner replies within one business day with a draft itinerary and a real price. We revise it until it's right — usually two or three rounds — then you book online and pay securely by card through Stripe. Nothing is charged until you're happy with the plan.",
       },
       {
         q: "Do I need to pay in full to confirm?",
