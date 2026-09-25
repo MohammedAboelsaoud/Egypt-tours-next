@@ -1,22 +1,14 @@
 import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 
-import { Providers } from "@/components/providers"
-import { Toaster } from "@/components/ui/sonner"
-import { SITE } from "@/lib/constants"
+import { ChatWidget } from "@/components/chat-widget"
+import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
+import { SITE } from "@/data/site"
 import "./globals.css"
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-})
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  display: "swap",
-})
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"], display: "swap" })
+const playfair = Playfair_Display({ variable: "--font-playfair", subsets: ["latin"], display: "swap" })
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
@@ -25,51 +17,31 @@ export const metadata: Metadata = {
     template: `%s · ${SITE.name}`,
   },
   description: SITE.description,
-  keywords: [
-    "Egypt tours",
-    "Nile cruise",
-    "Cairo pyramids tour",
-    "Luxor and Aswan",
-    "Red Sea diving",
-    "Egypt travel agency",
-  ],
-  authors: [{ name: SITE.name }],
+  icons: { icon: "/favicon.svg" },
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: SITE.url,
     siteName: SITE.name,
-    title: `${SITE.name} — ${SITE.tagline}`,
-    description: SITE.description,
-    images: [{ url: "/img/hero.jpg", width: 1200, height: 630, alt: SITE.name }],
-  },
-  twitter: {
-    card: "summary_large_image",
     title: `${SITE.name} — ${SITE.tagline}`,
     description: SITE.description,
     images: ["/img/hero.jpg"],
   },
-  icons: { icon: "/favicon.svg" },
-  robots: { index: true, follow: true },
 }
 
 export const viewport: Viewport = {
   themeColor: "#b8860b",
-  width: "device-width",
-  initialScale: 1,
 }
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      // Opts out of smooth scrolling during route transitions only.
-      data-scroll-behavior="smooth"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
-    >
+    <html lang="en" data-scroll-behavior="smooth" className={`${inter.variable} ${playfair.variable} h-full`}>
       <body className="flex min-h-full flex-col">
-        <Providers>{children}</Providers>
-        <Toaster position="top-center" richColors />
+        <a href="#main" className="sr-only z-50 rounded-md bg-ink px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+          Skip to content
+        </a>
+        <Header />
+        <main id="main" className="flex-1">{children}</main>
+        <Footer />
+        <ChatWidget />
       </body>
     </html>
   )

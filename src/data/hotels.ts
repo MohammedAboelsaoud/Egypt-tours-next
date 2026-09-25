@@ -1,0 +1,196 @@
+import type { AreaSlug } from "./destinations"
+
+/**
+ * ─── HOTELS ───────────────────────────────────────────────────────────────
+ * Two picks per destination. To change a price, edit `pricePerNight` (USD).
+ *
+ * `image`   Put a photo in /public/img/hotels/ and write its path here,
+ *           e.g. "/img/hotels/mena-house.jpg". The current images are area
+ *           photos used as placeholders.
+ * `stars`   Official star category (1–5).
+ * `rating`  Guest review score out of 10. Check Google or Booking.com and
+ *           update from time to time.
+ */
+
+export type Hotel = {
+  id: string
+  name: string
+  area: AreaSlug
+  city: string
+  stars: number
+  rating: number
+  pricePerNight: number
+  image: string
+  description: string
+  features: string[]
+}
+
+export const HOTELS: Hotel[] = [
+  // ── Cairo & Giza ──
+  {
+    id: "marriott-mena-house",
+    name: "Marriott Mena House",
+    area: "cairo-giza",
+    city: "Giza",
+    stars: 5,
+    rating: 9.0,
+    pricePerNight: 150,
+    image: "/img/cairo-giza.jpg",
+    description:
+      "A historic palace hotel at the foot of the Great Pyramid — many rooms and the pool look straight onto it.",
+    features: ["Pyramid view", "Pool", "Historic building", "Gardens"],
+  },
+  {
+    id: "steigenberger-el-tahrir",
+    name: "Steigenberger El Tahrir",
+    area: "cairo-giza",
+    city: "Downtown Cairo",
+    stars: 4,
+    rating: 8.6,
+    pricePerNight: 70,
+    image: "/img/hero.jpg",
+    description:
+      "Modern, comfortable and great value, a short walk from the Egyptian Museum and the Nile.",
+    features: ["Best value", "Rooftop pool", "Walk to museum", "Central"],
+  },
+
+  // ── Luxor & Aswan ──
+  {
+    id: "sofitel-winter-palace",
+    name: "Sofitel Winter Palace",
+    area: "luxor-aswan",
+    city: "Luxor",
+    stars: 5,
+    rating: 9.1,
+    pricePerNight: 110,
+    image: "/img/luxor-aswan.jpg",
+    description:
+      "The Victorian grande dame of Luxor on the Corniche, steps from Luxor Temple, with vast tropical gardens.",
+    features: ["Nile view", "Historic building", "Gardens", "Pool"],
+  },
+  {
+    id: "sofitel-old-cataract",
+    name: "Sofitel Legend Old Cataract",
+    area: "luxor-aswan",
+    city: "Aswan",
+    stars: 5,
+    rating: 9.3,
+    pricePerNight: 150,
+    image: "/img/nile-felucca.jpg",
+    description:
+      "Where Agatha Christie wrote Death on the Nile — terraces over the granite islands and feluccas of Aswan.",
+    features: ["Nile view", "Historic building", "Spa", "Pool"],
+  },
+
+  // ── North Coast & El-Alamein ──
+  {
+    id: "rixos-alamein",
+    name: "Rixos Alamein",
+    area: "north-coast",
+    city: "El-Alamein",
+    stars: 5,
+    rating: 8.8,
+    pricePerNight: 100,
+    image: "/img/el-alamein.jpg",
+    description:
+      "An all-inclusive beach resort on the Mediterranean with pools, a kids' club and entertainment.",
+    features: ["All-inclusive", "Private beach", "Kids' club", "Pools"],
+  },
+  {
+    id: "address-marassi",
+    name: "The Address Beach Resort Marassi",
+    area: "north-coast",
+    city: "Marassi",
+    stars: 5,
+    rating: 9.0,
+    pricePerNight: 170,
+    image: "/img/north-coast.jpg",
+    description:
+      "Polished luxury on Marassi's white-sand bay, close to the marina's restaurants and cafés.",
+    features: ["Private beach", "Marina", "Spa", "Pools"],
+  },
+
+  // ── Sinai: Sharm El Sheikh ──
+  {
+    id: "rixos-sharm",
+    name: "Rixos Sharm El Sheikh",
+    area: "sinai",
+    city: "Sharm El Sheikh",
+    stars: 5,
+    rating: 9.2,
+    pricePerNight: 85,
+    image: "/img/sinai-red-sea.jpg",
+    description:
+      "A big all-inclusive resort with a house reef, many restaurants and plenty for families.",
+    features: ["All-inclusive", "House reef", "Kids' club", "Pools"],
+  },
+  {
+    id: "savoy-sharm",
+    name: "Savoy Sharm El Sheikh",
+    area: "sinai",
+    city: "Sharm El Sheikh",
+    stars: 5,
+    rating: 8.9,
+    pricePerNight: 75,
+    image: "/img/sinai-red-sea.jpg",
+    description:
+      "An elegant beach resort beside SOHO Square, with its own coral reef and a long sandy beach.",
+    features: ["Coral reef", "Private beach", "Spa", "Near SOHO Square"],
+  },
+
+  // ── Sinai: Dahab ──
+  {
+    id: "swiss-inn-dahab",
+    name: "Swiss Inn Resort Dahab",
+    area: "sinai",
+    city: "Dahab",
+    stars: 4,
+    rating: 8.5,
+    pricePerNight: 45,
+    image: "/img/sinai-red-sea.jpg",
+    description:
+      "A calm beach resort on Dahab's bay with a pool and dive centre, a few minutes from the town centre.",
+    features: ["Beachfront", "Dive centre", "Pool", "Quiet"],
+  },
+  {
+    id: "laguna-vista-dahab",
+    name: "Laguna Vista Dahab",
+    area: "sinai",
+    city: "Dahab",
+    stars: 4,
+    rating: 8.2,
+    pricePerNight: 30,
+    image: "/img/sinai-red-sea.jpg",
+    description:
+      "Budget-friendly beach hotel on the Lagoon — ideal for windsurfers, kitesurfers and divers.",
+    features: ["Budget pick", "On the Lagoon", "Beach", "Pool"],
+  },
+
+  // ── Sinai: St. Catherine ──
+  {
+    id: "morgenland-village",
+    name: "Morgenland Village",
+    area: "sinai",
+    city: "St. Catherine",
+    stars: 3,
+    rating: 8.4,
+    pricePerNight: 28,
+    image: "/img/saint-catherine.jpg",
+    description:
+      "Stone chalets in the mountains, a practical base for the night climb of Mount Sinai.",
+    features: ["Mountain view", "Near the trailhead", "Restaurant", "Budget pick"],
+  },
+  {
+    id: "daniela-village",
+    name: "Daniela Village",
+    area: "sinai",
+    city: "St. Catherine",
+    stars: 3,
+    rating: 8.0,
+    pricePerNight: 25,
+    image: "/img/saint-catherine.jpg",
+    description:
+      "Simple, friendly and good value, close to the monastery and the Mount Sinai trail.",
+    features: ["Best value", "Near the monastery", "Restaurant", "Quiet"],
+  },
+]

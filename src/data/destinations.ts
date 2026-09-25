@@ -1,0 +1,196 @@
+/**
+ * ─── DESTINATIONS ─────────────────────────────────────────────────────────
+ * The four areas you cover. Each one gets its own page at
+ * /destinations/<slug>/. Images live in /public/img/.
+ *
+ * To edit text: change the words between the quotes.
+ * Don't change a `slug` unless you also update hotels.ts and guides.ts,
+ * which refer to areas by slug.
+ */
+
+export type AreaSlug = "cairo-giza" | "luxor-aswan" | "north-coast" | "sinai"
+
+export type Highlight = { title: string; text: string }
+
+export type Spot = {
+  name: string
+  tagline: string
+  text: string
+  image: string
+  highlights: string[]
+}
+
+export type Destination = {
+  slug: AreaSlug
+  name: string
+  tagline: string
+  image: string
+  summary: string
+  bestTime: string
+  idealFor: string[]
+  highlights: Highlight[]
+  /** Optional sub-destinations (used for Sinai). */
+  spots?: Spot[]
+}
+
+export const DESTINATIONS: Destination[] = [
+  {
+    slug: "cairo-giza",
+    name: "Cairo & Giza",
+    tagline: "The pyramids, the treasures of the pharaohs and the Nile at night.",
+    image: "/img/cairo-giza.jpg",
+    summary:
+      "Egypt's capital is where most trips begin. The Giza plateau sits on the edge of the city, the great museums hold the finds from every period of ancient Egypt, and old Cairo's bazaars and mosques are a world of their own.",
+    bestTime: "October to April — warm days, cool evenings.",
+    idealFor: ["First-time visitors", "History lovers", "Families"],
+    highlights: [
+      {
+        title: "Pyramids of Giza & the Sphinx",
+        text: "The Great Pyramid of Khufu (about 2560 BC) is the last standing wonder of the ancient world. Go early to beat the heat and the crowds.",
+      },
+      {
+        title: "Egyptian Museum & Grand Egyptian Museum",
+        text: "The historic Tahrir museum is packed with statues and coffins; the Grand Egyptian Museum beside the pyramids displays Tutankhamun's treasures together.",
+      },
+      {
+        title: "Saqqara & Memphis",
+        text: "Djoser's Step Pyramid — the oldest of Egypt's pyramids — and the ruins of the first capital, an easy half-day from Giza.",
+      },
+      {
+        title: "Islamic Cairo & Khan el-Khalili",
+        text: "Medieval mosques, the Citadel of Saladin and a bazaar that has traded since the 14th century.",
+      },
+      {
+        title: "The Nile by night",
+        text: "A felucca sail at sunset or a dinner cruise along the lit-up riverbanks.",
+      },
+    ],
+  },
+  {
+    slug: "luxor-aswan",
+    name: "Luxor & Aswan",
+    tagline: "Temples, royal tombs and the slow, beautiful Nile.",
+    image: "/img/luxor-aswan.jpg",
+    summary:
+      "Ancient Thebes was the religious heart of the New Kingdom, and Luxor still holds more monuments than anywhere else in Egypt. Upriver, Aswan is calmer — granite islands, Nubian villages and the gateway to Abu Simbel. A Nile cruise links the two.",
+    bestTime: "October to April. Summer afternoons regularly pass 40 °C.",
+    idealFor: ["Ancient history", "Nile cruises", "Photographers"],
+    highlights: [
+      {
+        title: "Karnak & Luxor Temple",
+        text: "Karnak's hall of 134 giant columns, and Luxor Temple lit up after dark — joined by the restored Avenue of Sphinxes.",
+      },
+      {
+        title: "Valley of the Kings",
+        text: "Painted royal tombs cut into the West Bank hills, including Tutankhamun's.",
+      },
+      {
+        title: "Temple of Hatshepsut",
+        text: "The terraced temple of Egypt's most powerful female pharaoh, set against the cliffs of Deir el-Bahari.",
+      },
+      {
+        title: "Abu Simbel & Philae",
+        text: "Ramses II's colossal temples, moved block by block in the 1960s to escape Lake Nasser, and the island temple of Isis at Aswan.",
+      },
+      {
+        title: "Nile cruise",
+        text: "Three or four nights between Luxor and Aswan, stopping at the temples of Edfu and Kom Ombo.",
+      },
+    ],
+  },
+  {
+    slug: "north-coast",
+    name: "North Coast & El-Alamein",
+    tagline: "Turquoise Mediterranean beaches and a turning point of WWII.",
+    image: "/img/north-coast.jpg",
+    summary:
+      "Egypt's Mediterranean shore is where Egyptians go for summer: white sand, clear shallow water and new resort towns. El-Alamein, where the Allies stopped Rommel's advance in 1942, is part of the same coastline.",
+    bestTime: "June to September for the beach; spring for sightseeing.",
+    idealFor: ["Beach holidays", "Families", "WWII history"],
+    highlights: [
+      {
+        title: "Mediterranean beaches",
+        text: "Soft white sand and calm turquoise water at Marassi, Sidi Abdel Rahman and New Alamein.",
+      },
+      {
+        title: "El-Alamein war cemeteries",
+        text: "The Commonwealth, German and Italian memorials to the soldiers of the 1942 desert battles.",
+      },
+      {
+        title: "El-Alamein Military Museum",
+        text: "Maps, uniforms, tanks and the story of the Second Battle of El-Alamein (October–November 1942).",
+      },
+      {
+        title: "Day trip to Alexandria",
+        text: "The Bibliotheca Alexandrina, the Citadel of Qaitbay and fresh seafood on the Corniche — about two hours away.",
+      },
+    ],
+  },
+  {
+    slug: "sinai",
+    name: "Sinai",
+    tagline: "Red Sea reefs, desert mountains and Bedouin hospitality.",
+    image: "/img/sinai-red-sea.jpg",
+    summary:
+      "The Sinai peninsula mixes world-class diving with some of the most striking mountain scenery in the Middle East. Choose laid-back Dahab, the sacred peaks of St. Catherine or the resorts of Sharm El Sheikh — or combine all three.",
+    bestTime:
+      "March to May and September to November. Mountain nights are cold all winter.",
+    idealFor: ["Divers & snorkellers", "Hikers", "Resort holidays"],
+    highlights: [
+      {
+        title: "Coral reefs",
+        text: "Some of the richest reefs in the world begin a few metres from the shore.",
+      },
+      {
+        title: "Sunrise on Mount Sinai",
+        text: "An overnight climb with a Bedouin guide to watch the sun rise over the peaks.",
+      },
+      {
+        title: "Desert & Bedouin culture",
+        text: "Jeep and camel trips, canyons and tea around the fire in the desert.",
+      },
+    ],
+    spots: [
+      {
+        name: "Dahab",
+        tagline: "Diving, freediving and backpacker calm",
+        text: "A relaxed former Bedouin fishing village with a seafront promenade of cafés. Famous for its shore dives and a favourite of backpackers and long-stay travellers.",
+        image: "/img/sinai-red-sea.jpg",
+        highlights: [
+          "The Blue Hole and the Canyon dive sites",
+          "Snorkelling at the Lighthouse and Three Pools",
+          "Windsurfing and kitesurfing in the Lagoon",
+          "Day trips to the Coloured Canyon",
+        ],
+      },
+      {
+        name: "St. Catherine",
+        tagline: "Mount Moses and the desert mountains",
+        text: "A small town high in the mountains of South Sinai, home to one of the oldest working Christian monasteries in the world and the trail to the summit of Mount Sinai.",
+        image: "/img/saint-catherine.jpg",
+        highlights: [
+          "Night climb of Mount Sinai (Jebel Musa, 2,285 m) for sunrise",
+          "St. Catherine's Monastery, built in the 6th century",
+          "Mount Catherine — Egypt's highest peak (2,629 m)",
+          "Multi-day treks with Bedouin guides",
+        ],
+      },
+      {
+        name: "Sharm El Sheikh",
+        tagline: "Resorts and the Red Sea",
+        text: "Egypt's best-known Red Sea resort town, with large all-inclusive hotels, easy beach access and the protected reefs of Ras Mohammed on its doorstep.",
+        image: "/img/sinai-red-sea.jpg",
+        highlights: [
+          "Ras Mohammed National Park",
+          "Boat trips to the reefs of Tiran Island",
+          "Naama Bay's promenade, restaurants and nightlife",
+          "All-inclusive family resorts",
+        ],
+      },
+    ],
+  },
+]
+
+export function getDestination(slug: string): Destination | undefined {
+  return DESTINATIONS.find((d) => d.slug === slug)
+}

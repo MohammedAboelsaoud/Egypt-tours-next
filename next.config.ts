@@ -1,20 +1,13 @@
 import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "res.cloudinary.com" },
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-      { protocol: "https", hostname: "platform-lookaside.fbsbx.com" },
-    ],
-    qualities: [60, 75, 90],
-  },
-  experimental: {
-    // Prisma + bcrypt must stay on the Node runtime, never bundled for edge.
-    serverActions: { bodySizeLimit: "8mb" },
-  },
-  serverExternalPackages: ["cloudinary"],
+  // Build a plain static site into `out/` — no server needed, so the folder
+  // can be dragged straight into Netlify.
+  output: "export",
+  // `/hotels` is written as `hotels/index.html`, which every static host serves.
+  trailingSlash: true,
+  // Image optimisation needs a server; ship the images as they are.
+  images: { unoptimized: true },
 }
 
 export default nextConfig

@@ -1,0 +1,67 @@
+import type { AreaSlug } from "./destinations"
+
+/**
+ * ─── TOUR GUIDES ──────────────────────────────────────────────────────────
+ * One profile per type of guide. When you work with named guides you can
+ * add them here, with a photo in /public/img/guides/ as `image`.
+ */
+
+export type Guide = {
+  id: string
+  title: string
+  areas: AreaSlug[]
+  /** Where they guide, in plain words. */
+  coverage: string
+  description: string
+  specialties: string[]
+  languages: string[]
+  image?: string
+}
+
+export const GUIDES: Guide[] = [
+  {
+    id: "egyptologist",
+    title: "Egyptologist",
+    areas: ["cairo-giza", "luxor-aswan"],
+    coverage: "Cairo & Giza · Luxor",
+    description:
+      "Licensed guides with a university degree in Egyptology. They bring the pyramids, temples and tombs to life — who built them, how, and why.",
+    specialties: [
+      "Pyramids of Giza & Saqqara",
+      "Egyptian Museum & Grand Egyptian Museum",
+      "Karnak, Luxor Temple & the Valley of the Kings",
+      "Reading hieroglyphs on site",
+    ],
+    languages: ["English", "Arabic"],
+  },
+  {
+    id: "nubian",
+    title: "Nubian guide",
+    areas: ["luxor-aswan"],
+    coverage: "Aswan",
+    description:
+      "Born in the Nubian villages of Aswan. Expect felucca rides, a visit to a colourful Nubian home, local food and the story of the Nubian people.",
+    specialties: [
+      "Philae Temple & Abu Simbel",
+      "Nubian villages & culture",
+      "Felucca trips on the Nile",
+      "Aswan's islands & markets",
+    ],
+    languages: ["English", "Arabic", "Nubian"],
+  },
+  {
+    id: "bedouin",
+    title: "Bedouin guide",
+    areas: ["sinai"],
+    coverage: "St. Catherine · Dahab · Sharm El Sheikh",
+    description:
+      "Guides from the Bedouin tribes of South Sinai who know the mountains and desert better than anyone. Required for treks around St. Catherine.",
+    specialties: [
+      "Mount Sinai sunrise climb",
+      "Multi-day mountain treks",
+      "Jeep & camel desert trips",
+      "Bedouin dinner under the stars",
+    ],
+    languages: ["English", "Arabic"],
+  },
+]

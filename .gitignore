@@ -30,18 +30,8 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-!.env.example
 
-# playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
 
-# locally uploaded images (Cloudinary fallback)
-/public/uploads/
 
 # vercel
 .vercel
