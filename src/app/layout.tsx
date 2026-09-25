@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 import { Gloock, Hanken_Grotesk } from "next/font/google"
+import { Analytics } from "@vercel/analytics/next"
 
 import { Providers } from "@/components/providers"
 import { Toaster } from "@/components/ui/sonner"
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col">
         <Providers>{children}</Providers>
         <Toaster position="top-center" richColors />
+        <Analytics />
       </body>
     </html>
   )
