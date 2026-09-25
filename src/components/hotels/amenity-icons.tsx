@@ -37,9 +37,9 @@ export function AmenityGrid({ amenities }: { amenities: string[] }) {
         return (
           <li
             key={amenity}
-            className="flex items-center gap-3 rounded-xl border border-border bg-ivory px-4 py-3 text-sm"
+            className="flex items-center gap-3 rounded-xl border border-border bg-papyrus px-4 py-3 text-sm"
           >
-            <Icon className="size-4 shrink-0 text-gold" />
+            <Icon className="size-4 shrink-0 text-lapis" />
             {amenity}
           </li>
         )

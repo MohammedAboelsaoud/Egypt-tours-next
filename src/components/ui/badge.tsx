@@ -18,6 +18,9 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
+        // A royal-name cartouche: outlined pill with a closing bar at the end.
+        cartouche:
+          "border-lapis/35 bg-accent pr-3 text-lapis-deep after:absolute after:inset-y-1 after:right-1 after:w-px after:bg-lapis/40 relative",
       },
     },
     defaultVariants: {

@@ -140,7 +140,7 @@ export function SettingsForm({
                 className={cn(
                   "rounded-full px-2.5 py-1 text-xs font-medium",
                   row.ok
-                    ? "bg-teal/12 text-teal"
+                    ? "bg-faience/12 text-faience"
                     : "bg-amber-500/12 text-amber-700"
                 )}
               >
@@ -156,7 +156,7 @@ export function SettingsForm({
           <p
             className={cn(
               "flex items-center gap-2 text-sm",
-              state.ok ? "text-teal" : "text-destructive"
+              state.ok ? "text-faience" : "text-destructive"
             )}
           >
             {state.ok && <CheckCircle2 className="size-4" />}
@@ -166,7 +166,7 @@ export function SettingsForm({
         <Button
           type="submit"
           disabled={pending}
-          className="h-11 bg-gold px-7 text-white hover:bg-gold-light"
+          className="h-11 bg-lapis px-7 text-white hover:bg-lapis-deep"
         >
           {pending ? "Saving…" : "Save settings"}
         </Button>

@@ -12,7 +12,7 @@ export default async function AccountLayout({
   if (!session?.user) redirect("/login?callbackUrl=/account")
 
   return (
-    <div className="border-b border-border bg-sand">
+    <div className="border-b border-border bg-limestone">
       <div className="container-page pt-28 pb-20 sm:pt-32">
         <header className="mb-10">
           <p className="eyebrow">My account</p>

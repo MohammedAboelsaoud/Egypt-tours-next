@@ -31,7 +31,7 @@ export function TourCard({
   return (
     <article
       className={cn(
-        "group card-hover relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ivory",
+        "group card-hover relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-papyrus",
         className
       )}
     >
@@ -44,10 +44,10 @@ export function TourCard({
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-basalt/70 via-transparent to-transparent" />
 
         {tour.featured && (
-          <span className="absolute top-4 left-4 rounded-full bg-gold px-3 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-white uppercase">
+          <span className="absolute top-4 left-4 rounded-full bg-lapis px-3 py-1 text-[0.65rem] font-semibold tracking-[0.12em] text-white uppercase">
             Popular
           </span>
         )}
@@ -61,11 +61,11 @@ export function TourCard({
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <Clock className="size-3.5 text-gold" />
+            <Clock className="size-3.5 text-lapis" />
             {tour.durationDays} {tour.durationDays === 1 ? "day" : "days"}
           </span>
           <span className="flex items-center gap-1.5">
-            <Users className="size-3.5 text-gold" />
+            <Users className="size-3.5 text-lapis" />
             Max {tour.maxGroupSize}
           </span>
         </div>
@@ -73,7 +73,7 @@ export function TourCard({
         <h3 className="mt-3 font-heading text-xl leading-snug">
           <Link
             href={`/tours/${tour.slug}`}
-            className="transition-colors after:absolute after:inset-0 hover:text-gold"
+            className="transition-colors after:absolute after:inset-0 hover:text-lapis"
           >
             {tour.title}
           </Link>
@@ -96,12 +96,12 @@ export function TourCard({
             <p className="text-[0.65rem] tracking-[0.14em] text-muted-foreground uppercase">
               From
             </p>
-            <p className="font-heading text-2xl text-gold">
+            <p className="font-heading text-2xl text-lapis">
               {formatPrice(toNumber(tour.priceFrom), tour.currency, { compact: true })}
             </p>
             <p className="text-xs text-muted-foreground">per person</p>
           </div>
-          <span className="relative z-10 text-sm font-medium text-ink transition-colors group-hover:text-gold">
+          <span className="relative z-10 text-sm font-medium text-basalt transition-colors group-hover:text-lapis">
             View tour →
           </span>
         </div>

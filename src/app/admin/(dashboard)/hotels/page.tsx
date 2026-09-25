@@ -61,7 +61,7 @@ export default async function AdminHotelsPage() {
                         <div className="min-w-0">
                           <Link
                             href={`/admin/hotels/${hotel.id}/edit`}
-                            className="block max-w-[16rem] truncate font-medium hover:text-gold"
+                            className="block max-w-[16rem] truncate font-medium hover:text-lapis"
                           >
                             {hotel.name}
                           </Link>
@@ -77,7 +77,7 @@ export default async function AdminHotelsPage() {
                     <td className="px-4 py-3">
                       <span className="flex items-center gap-0.5">
                         {Array.from({ length: hotel.starRating }).map((_, i) => (
-                          <Star key={i} className="size-3 fill-gold text-gold" />
+                          <Star key={i} className="size-3 fill-sun text-ochre" />
                         ))}
                       </span>
                     </td>

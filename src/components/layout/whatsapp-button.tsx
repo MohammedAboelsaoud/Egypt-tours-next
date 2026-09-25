@@ -5,7 +5,8 @@ import { useEffect, useState } from "react"
 export function WhatsAppButton({ number }: { number: string }) {
   const [visible, setVisible] = useState(false)
 
-  // Appears after the first scroll so it never covers the hero CTAs.
+  // Appears after the first scroll so it never covers the hero CTAs. Sits
+  // above the chat launcher, which owns the bottom-right corner.
   useEffect(() => {
     const onScroll = () => setVisible(window.scrollY > 400)
     onScroll()
@@ -23,7 +24,7 @@ export function WhatsAppButton({ number }: { number: string }) {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with us on WhatsApp"
-      className={`fixed right-5 bottom-5 z-40 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/20 transition-all duration-300 hover:scale-105 hover:bg-[#20bd5a] ${
+      className={`fixed right-5 bottom-20 z-40 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-black/20 transition-all duration-300 hover:scale-105 hover:bg-[#20bd5a] ${
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-4 opacity-0"

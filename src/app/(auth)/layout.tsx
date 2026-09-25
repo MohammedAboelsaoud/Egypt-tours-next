@@ -12,7 +12,7 @@ export default function AuthLayout({
         <div className="mx-auto w-full max-w-md">
           <Link href="/" className="inline-flex flex-col leading-none">
             <span className="font-heading text-2xl">
-              Egypt <span className="text-gold">Journeys</span>
+              Egypt <span className="text-lapis">Journeys</span>
             </span>
             <span className="mt-1 text-[0.6rem] tracking-[0.22em] text-muted-foreground uppercase">
               Planned around you
@@ -32,7 +32,7 @@ export default function AuthLayout({
           sizes="50vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/35 to-ink/25" />
+        <div className="absolute inset-0 bg-gradient-to-t from-basalt/90 via-basalt/35 to-basalt/25" />
         <blockquote className="absolute inset-x-0 bottom-0 p-12 text-white">
           <p className="font-heading text-2xl leading-snug text-balance">
             “Four days of temples with the boat doing the travelling for you. Kom

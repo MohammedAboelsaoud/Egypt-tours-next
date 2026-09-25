@@ -28,7 +28,7 @@ export default async function AccountPage() {
   if (!user) redirect("/login")
 
   return (
-    <div className="rounded-2xl border border-border bg-ivory p-7 sm:p-9">
+    <div className="rounded-2xl border border-border bg-papyrus p-7 sm:p-9">
       <h2 className="font-heading text-2xl">Your details</h2>
       <p className="mt-2 text-sm text-muted-foreground">
         We pre-fill these on every booking form, so you only type them once.

@@ -51,17 +51,17 @@ async function send({ to, subject, html, replyTo }: SendArgs) {
 function shell(title: string, body: string) {
   return `<!doctype html>
 <html>
-  <body style="margin:0;background:#faf7f2;padding:32px 16px;font-family:Inter,Helvetica,Arial,sans-serif;color:#1c1917">
+  <body style="margin:0;background:#f4f3ef;padding:32px 16px;font-family:"Hanken Grotesk",Helvetica,Arial,sans-serif;color:#161a22">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr><td align="center">
-        <table role="presentation" width="100%" style="max-width:560px;background:#fffef9;border:1px solid #e7ded0;border-radius:14px;overflow:hidden">
-          <tr><td style="padding:24px 28px;border-bottom:1px solid #f0e8da">
-            <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#b8860b;font-weight:600">Egypt Journeys</div>
+        <table role="presentation" width="100%" style="max-width:560px;background:#fbfaf7;border:1px solid #dddbd3;border-radius:10px;overflow:hidden">
+          <tr><td style="padding:24px 28px;border-bottom:1px solid #e3e1da">
+            <div style="font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#8d5c0f;font-weight:600">Egypt Journeys</div>
             <div style="font-size:22px;margin-top:6px;font-family:Georgia,serif">${title}</div>
           </td></tr>
           <tr><td style="padding:24px 28px;font-size:14px;line-height:1.65">${body}</td></tr>
-          <tr><td style="padding:18px 28px;background:#faf7f2;font-size:12px;color:#78706a">
-            Egypt Journeys · Zamalek, Cairo · <a href="mailto:${ADMIN_EMAIL}" style="color:#b8860b">${ADMIN_EMAIL}</a>
+          <tr><td style="padding:18px 28px;background:#f4f3ef;font-size:12px;color:#5a6170">
+            Egypt Journeys · Zamalek, Cairo · <a href="mailto:${ADMIN_EMAIL}" style="color:#1d4e89">${ADMIN_EMAIL}</a>
           </td></tr>
         </table>
       </td></tr>
@@ -72,7 +72,7 @@ function shell(title: string, body: string) {
 
 function row(label: string, value: string) {
   return `<tr>
-    <td style="padding:6px 0;color:#78706a;width:45%">${label}</td>
+    <td style="padding:6px 0;color:#5a6170;width:45%">${label}</td>
     <td style="padding:6px 0;font-weight:600;text-align:right">${value}</td>
   </tr>`
 }
@@ -94,7 +94,7 @@ export type BookingEmailData = {
 export async function sendBookingConfirmation(booking: BookingEmailData) {
   const details = `
     <p>Hi ${booking.customerName}, your booking is confirmed and paid. We have you down for:</p>
-    <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #f0e8da;border-bottom:1px solid #f0e8da">
+    <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
       ${row("Booking reference", booking.reference)}
       ${row(booking.itemType, booking.itemName)}
       ${row("Start", formatDate(booking.checkIn, "long"))}
@@ -104,13 +104,13 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
     </table>
     ${
       booking.specialRequests
-        ? `<p style="color:#78706a"><strong>Your notes:</strong> ${booking.specialRequests}</p>`
+        ? `<p style="color:#5a6170"><strong>Your notes:</strong> ${booking.specialRequests}</p>`
         : ""
     }
     <p>A trip coordinator will be in touch within one business day to confirm timings and pickup details.</p>
     <p style="margin-top:24px">
       <a href="${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/account/bookings"
-         style="background:#b8860b;color:#fffef9;text-decoration:none;padding:11px 20px;border-radius:8px;display:inline-block;font-weight:600">
+         style="background:#1d4e89;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:6px;display:inline-block;font-weight:600">
         View my bookings
       </a>
     </p>`
@@ -125,7 +125,7 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
 export async function sendAdminBookingAlert(booking: BookingEmailData) {
   const details = `
     <p>A new booking has been paid.</p>
-    <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #f0e8da;border-bottom:1px solid #f0e8da">
+    <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
       ${row("Reference", booking.reference)}
       ${row("Customer", `${booking.customerName} (${booking.customerEmail})`)}
       ${row(booking.itemType, booking.itemName)}
@@ -153,7 +153,7 @@ export async function sendInquiryNotification(inquiry: {
   planTitle?: string | null
 }) {
   const details = `
-    <table role="presentation" width="100%" style="margin:0 0 18px;border-bottom:1px solid #f0e8da">
+    <table role="presentation" width="100%" style="margin:0 0 18px;border-bottom:1px solid #e3e1da">
       ${row("Name", inquiry.name)}
       ${row("Email", inquiry.email)}
       ${inquiry.phone ? row("Phone", inquiry.phone) : ""}
@@ -185,7 +185,7 @@ export async function sendInquiryAcknowledgement(inquiry: {
        <p>Thanks for telling us about your trip. One of our Egypt specialists will read your notes
        and reply within one business day with a first draft itinerary and pricing.</p>
        <p>If anything is urgent, reply to this email and it will reach the same person.</p>
-       <p style="margin-top:20px;color:#78706a">— The Egypt Journeys team</p>`
+       <p style="margin-top:20px;color:#5a6170">— The Egypt Journeys team</p>`
     ),
   })
 }

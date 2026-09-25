@@ -34,13 +34,13 @@ export function BookingCta({
 
   return (
     <aside className="lg:sticky lg:top-28">
-      <div className="overflow-hidden rounded-2xl border border-border bg-ivory shadow-sm">
-        <div className="border-b border-border bg-gradient-to-br from-gold/10 to-transparent p-6">
+      <div className="overflow-hidden rounded-2xl border border-border bg-papyrus shadow-sm">
+        <div className="border-b border-border bg-gradient-to-br from-lapis/10 to-transparent p-6">
           <p className="text-[0.65rem] tracking-[0.16em] text-muted-foreground uppercase">
             From
           </p>
           <p className="mt-1 flex items-baseline gap-2">
-            <span className="font-heading text-4xl text-gold">
+            <span className="font-heading text-4xl text-lapis">
               {formatPrice(price, currency, { compact: true })}
             </span>
             <span className="text-sm text-muted-foreground">{unit}</span>
@@ -67,7 +67,7 @@ export function BookingCta({
           ) : (
             <ButtonLink
               href={bookHref}
-              className="h-12 w-full bg-gold text-base text-white hover:bg-gold-light"
+              className="h-12 w-full bg-lapis text-base text-white hover:bg-lapis-deep"
             >
               Book now
             </ButtonLink>
@@ -82,7 +82,7 @@ export function BookingCta({
           </ButtonLink>
 
           <p className="flex items-start gap-2 pt-2 text-xs leading-relaxed text-muted-foreground">
-            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-teal" />
+            <ShieldCheck className="mt-0.5 size-4 shrink-0 text-faience" />
             Secure card checkout by Stripe. Free cancellation up to 14 days before
             departure.
           </p>

@@ -57,7 +57,7 @@ export default async function AdminReviewsPage({
             href={`/admin/reviews?filter=${tab.key}`}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               filter === tab.key
-                ? "bg-gold/12 text-gold"
+                ? "bg-lapis/12 text-lapis"
                 : "text-muted-foreground hover:bg-muted"
             }`}
           >
@@ -71,12 +71,12 @@ export default async function AdminReviewsPage({
           {reviews.map((review) => (
             <li
               key={review.id}
-              className="rounded-2xl border border-border bg-ivory p-6"
+              className="rounded-2xl border border-border bg-papyrus p-6"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <Avatar className="size-10">
-                    <AvatarFallback className="bg-gold/15 text-xs font-semibold text-gold">
+                    <AvatarFallback className="bg-lapis/15 text-xs font-semibold text-lapis">
                       {initials(review.user.name)}
                     </AvatarFallback>
                   </Avatar>
@@ -85,7 +85,7 @@ export default async function AdminReviewsPage({
                     <p className="text-sm font-medium">
                       {review.user.name ?? "Traveller"}
                       {review.approved && (
-                        <span className="ml-3 rounded-full bg-teal/12 px-2.5 py-1 text-xs font-medium text-teal">
+                        <span className="ml-3 rounded-full bg-faience/12 px-2.5 py-1 text-xs font-medium text-faience">
                           Published
                         </span>
                       )}
@@ -109,7 +109,7 @@ export default async function AdminReviewsPage({
                   <Link
                     href={`/tours/${review.tour.slug}`}
                     target="_blank"
-                    className="text-xs text-muted-foreground hover:text-gold"
+                    className="text-xs text-muted-foreground hover:text-lapis"
                   >
                     {review.tour.title} ↗
                   </Link>
@@ -123,7 +123,7 @@ export default async function AdminReviewsPage({
           ))}
         </ul>
       ) : (
-        <div className="rounded-2xl border border-border bg-ivory">
+        <div className="rounded-2xl border border-border bg-papyrus">
           <TableEmpty
             message={
               filter === "pending"

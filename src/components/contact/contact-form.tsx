@@ -60,8 +60,8 @@ export function ContactForm({
 
   if (sent) {
     return (
-      <div className="rounded-2xl border border-border bg-ivory p-10 text-center">
-        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-teal/10 text-teal">
+      <div className="rounded-2xl border border-border bg-papyrus p-10 text-center">
+        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-faience/10 text-faience">
           <PartyPopper className="size-6" />
         </div>
         <h2 className="mt-6 font-heading text-2xl">Thank you — it&apos;s sent</h2>
@@ -77,7 +77,7 @@ export function ContactForm({
   return (
     <form
       onSubmit={onSubmit}
-      className="rounded-2xl border border-border bg-ivory p-7 sm:p-9"
+      className="rounded-2xl border border-border bg-papyrus p-7 sm:p-9"
       noValidate
     >
       <h2 className="font-heading text-2xl">Tell us about your trip</h2>
@@ -124,7 +124,7 @@ export function ContactForm({
           <Label htmlFor="destination">Where do you want to go?</Label>
           <select
             id="destination"
-            className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+            className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
             {...register("destination")}
           >
             <option value="">Not sure yet</option>
@@ -175,7 +175,7 @@ export function ContactForm({
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="mt-8 h-12 w-full gap-2 bg-gold text-base text-white hover:bg-gold-light sm:w-auto sm:px-8"
+        className="mt-8 h-12 w-full gap-2 bg-lapis text-base text-white hover:bg-lapis-deep sm:w-auto sm:px-8"
       >
         <Send className="size-4" />
         {isSubmitting ? "Sending…" : "Send enquiry"}

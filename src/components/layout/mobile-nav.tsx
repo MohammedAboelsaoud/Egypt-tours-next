@@ -48,7 +48,7 @@ export function MobileNav({
             aria-label="Open menu"
             className={cn(
               "size-10 lg:hidden",
-              solid ? "text-ink" : "text-white hover:bg-white/10 hover:text-white"
+              solid ? "text-basalt" : "text-white hover:bg-white/10 hover:text-white"
             )}
           />
         }
@@ -56,10 +56,10 @@ export function MobileNav({
         <Menu className="size-5" />
       </SheetTrigger>
 
-      <SheetContent side="right" className="w-[85vw] max-w-sm bg-ivory p-0">
+      <SheetContent side="right" className="w-[85vw] max-w-sm bg-papyrus p-0">
         <SheetHeader className="border-b border-border px-6 py-5 text-left">
           <SheetTitle className="font-heading text-xl">
-            Egypt <span className="text-gold">Journeys</span>
+            Egypt <span className="text-lapis">Journeys</span>
           </SheetTitle>
           <SheetDescription className="text-xs tracking-[0.2em] uppercase">
             {SITE.tagline}
@@ -76,7 +76,7 @@ export function MobileNav({
                 href={link.href}
                 className={cn(
                   "rounded-lg px-3 py-3 font-heading text-lg transition-colors",
-                  active ? "bg-gold/10 text-gold" : "text-ink hover:bg-muted"
+                  active ? "bg-lapis/10 text-lapis" : "text-basalt hover:bg-muted"
                 )}
               >
                 {link.label}
@@ -92,7 +92,7 @@ export function MobileNav({
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="rounded-md px-2 py-2 text-sm text-ink/80 hover:bg-muted"
+                  className="rounded-md px-2 py-2 text-sm text-basalt/80 hover:bg-muted"
                 >
                   {link.label}
                 </Link>
@@ -107,7 +107,7 @@ export function MobileNav({
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <ButtonLink href="/contact" className="h-11 w-full bg-gold text-white hover:bg-gold-light">
+              <ButtonLink href="/contact" className="h-11 w-full bg-lapis text-white hover:bg-lapis-deep">
                 Start Planning
               </ButtonLink>
               <ButtonLink href="/login" variant="outline"

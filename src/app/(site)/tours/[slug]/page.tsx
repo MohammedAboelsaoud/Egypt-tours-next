@@ -143,15 +143,15 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
       >
         <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-white/85">
           <span className="flex items-center gap-2">
-            <Clock className="size-4 text-gold-light" />
+            <Clock className="size-4 text-sun" />
             {tour.durationDays} {tour.durationDays === 1 ? "day" : "days"}
           </span>
           <span className="flex items-center gap-2">
-            <Users className="size-4 text-gold-light" />
+            <Users className="size-4 text-sun" />
             Max {tour.maxGroupSize} travellers
           </span>
           <span className="flex items-center gap-2">
-            <MapPin className="size-4 text-gold-light" />
+            <MapPin className="size-4 text-sun" />
             {tour.region.cities.slice(0, 3).join(" · ")}
           </span>
           {tour.reviews.length > 0 && (
@@ -171,7 +171,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
             <section>
               <p className="eyebrow">The journey</p>
               <h2 className="mt-3 font-heading text-3xl">About this tour</h2>
-              <div className="mt-5 gold-rule" />
+              <div className="mt-5 horizon-rule" />
               <div className="mt-6 space-y-4 text-lg leading-relaxed text-muted-foreground">
                 {tour.description.split("\n\n").map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
@@ -186,9 +186,9 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
                   {tour.highlights.map((highlight) => (
                     <li
                       key={highlight}
-                      className="flex gap-3 rounded-xl border border-border bg-ivory p-4 text-sm leading-relaxed"
+                      className="flex gap-3 rounded-xl border border-border bg-papyrus p-4 text-sm leading-relaxed"
                     >
-                      <Sparkles className="mt-0.5 size-4 shrink-0 text-gold" />
+                      <Sparkles className="mt-0.5 size-4 shrink-0 text-lapis" />
                       {highlight}
                     </li>
                   ))}
@@ -200,7 +200,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
               <section>
                 <p className="eyebrow">Day by day</p>
                 <h2 className="mt-3 font-heading text-3xl">Your itinerary</h2>
-                <div className="mt-5 mb-10 gold-rule" />
+                <div className="mt-5 mb-10 horizon-rule" />
                 <ItineraryTimeline days={itinerary} />
               </section>
             )}
@@ -250,7 +250,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
         </div>
       </div>
 
-      <section className="bg-ivory">
+      <section className="bg-papyrus">
         <div className="container-page section-y">
           <SectionHeading
             eyebrow="Reviews"
@@ -279,7 +279,7 @@ export default async function TourPage({ params }: PageProps<"/tours/[slug]">) {
             action={
               <Link
                 href={`/destinations/${tour.region.slug}`}
-                className="hidden text-sm font-medium text-gold sm:block"
+                className="hidden text-sm font-medium text-lapis sm:block"
               >
                 See the region →
               </Link>

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 export default function SiteLoading() {
   return (
     <div>
-      <div className="border-b border-border bg-ivory">
+      <div className="border-b border-border bg-papyrus">
         <div className="container-page pt-28 pb-12 sm:pt-36 sm:pb-16">
           <Skeleton className="h-3 w-24" />
           <Skeleton className="mt-5 h-12 w-full max-w-2xl" />
@@ -17,7 +17,7 @@ export default function SiteLoading() {
           {Array.from({ length: 6 }).map((_, index) => (
             <div
               key={index}
-              className="overflow-hidden rounded-2xl border border-border bg-ivory"
+              className="overflow-hidden rounded-2xl border border-border bg-papyrus"
             >
               <Skeleton className="aspect-[4/3] w-full rounded-none" />
               <div className="space-y-3 p-6">

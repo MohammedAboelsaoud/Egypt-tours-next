@@ -65,7 +65,7 @@ export default async function AdminToursPage() {
                         <div className="min-w-0">
                           <Link
                             href={`/admin/tours/${tour.id}/edit`}
-                            className="block max-w-[18rem] truncate font-medium hover:text-gold"
+                            className="block max-w-[18rem] truncate font-medium hover:text-lapis"
                           >
                             {tour.title}
                           </Link>

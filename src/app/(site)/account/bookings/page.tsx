@@ -59,7 +59,7 @@ export default async function AccountBookingsPage() {
               action={
                 <Link
                   href="/tours"
-                  className="rounded-lg bg-gold px-6 py-3 text-sm font-medium text-white hover:bg-gold-light"
+                  className="rounded-lg bg-lapis px-6 py-3 text-sm font-medium text-white hover:bg-lapis-deep"
                 >
                   Browse tours
                 </Link>
@@ -121,7 +121,7 @@ function BookingRow({
 
   return (
     <li
-      className={`overflow-hidden rounded-2xl border border-border bg-ivory ${
+      className={`overflow-hidden rounded-2xl border border-border bg-papyrus ${
         muted ? "opacity-75" : ""
       }`}
     >
@@ -151,18 +151,18 @@ function BookingRow({
           </div>
 
           <h3 className="mt-2 font-heading text-lg leading-snug">
-            <Link href={href} className="hover:text-gold">
+            <Link href={href} className="hover:text-lapis">
               {name}
             </Link>
           </h3>
 
           <div className="mt-2.5 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <CalendarDays className="size-3.5 text-gold" />
+              <CalendarDays className="size-3.5 text-lapis" />
               {formatDate(booking.checkIn)} → {formatDate(booking.checkOut)}
             </span>
             <span className="flex items-center gap-1.5">
-              <Users className="size-3.5 text-gold" />
+              <Users className="size-3.5 text-lapis" />
               {booking.guests}
             </span>
           </div>
@@ -172,14 +172,14 @@ function BookingRow({
           <p className="text-xs tracking-[0.12em] text-muted-foreground uppercase">
             {booking.reference}
           </p>
-          <p className="mt-1 font-heading text-2xl text-gold">
+          <p className="mt-1 font-heading text-2xl text-lapis">
             {formatPrice(booking.totalPrice, booking.currency)}
           </p>
         </div>
       </div>
 
       {booking.specialRequests && (
-        <p className="border-t border-border bg-sand px-5 py-3 text-xs text-muted-foreground">
+        <p className="border-t border-border bg-limestone px-5 py-3 text-xs text-muted-foreground">
           <span className="font-medium">Your notes:</span>{" "}
           {booking.specialRequests}
         </p>

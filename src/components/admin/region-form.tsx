@@ -154,7 +154,7 @@ export function RegionForm({ region }: { region?: RegionFormValues }) {
         <Button
           type="submit"
           disabled={pending}
-          className="h-11 bg-gold px-7 text-white hover:bg-gold-light"
+          className="h-11 bg-lapis px-7 text-white hover:bg-lapis-deep"
         >
           {pending ? "Saving…" : region ? "Save changes" : "Create region"}
         </Button>

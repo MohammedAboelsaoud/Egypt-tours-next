@@ -30,7 +30,7 @@ export function SectionHeading({
           {title}
         </h2>
         <div
-          className={cn("mt-5 gold-rule", align === "center" && "mx-auto")}
+          className={cn("mt-5 horizon-rule", align === "center" && "mx-auto")}
           aria-hidden
         />
         {description && (

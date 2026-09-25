@@ -41,7 +41,7 @@ export default async function AdminInquiriesPage({
         action={
           <a
             href="/api/admin/inquiries/export"
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:border-gold hover:text-gold"
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:border-lapis hover:text-lapis"
           >
             <Download className="size-4" />
             Export CSV
@@ -56,7 +56,7 @@ export default async function AdminInquiriesPage({
             href={`/admin/inquiries?filter=${tab.key}`}
             className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               filter === tab.key
-                ? "bg-gold/12 text-gold"
+                ? "bg-lapis/12 text-lapis"
                 : "text-muted-foreground hover:bg-muted"
             }`}
           >
@@ -70,14 +70,14 @@ export default async function AdminInquiriesPage({
           {inquiries.map((inquiry) => (
             <li
               key={inquiry.id}
-              className="rounded-2xl border border-border bg-ivory p-6"
+              className="rounded-2xl border border-border bg-papyrus p-6"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0">
                   <h2 className="font-heading text-lg">
                     {inquiry.name}
                     {inquiry.handled && (
-                      <span className="ml-3 rounded-full bg-teal/12 px-2.5 py-1 align-middle text-xs font-medium text-teal">
+                      <span className="ml-3 rounded-full bg-faience/12 px-2.5 py-1 align-middle text-xs font-medium text-faience">
                         Handled
                       </span>
                     )}
@@ -86,7 +86,7 @@ export default async function AdminInquiriesPage({
                   <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-sm text-muted-foreground">
                     <a
                       href={`mailto:${inquiry.email}`}
-                      className="flex items-center gap-1.5 hover:text-gold"
+                      className="flex items-center gap-1.5 hover:text-lapis"
                     >
                       <Mail className="size-3.5" />
                       {inquiry.email}
@@ -94,7 +94,7 @@ export default async function AdminInquiriesPage({
                     {inquiry.phone && (
                       <a
                         href={`tel:${inquiry.phone.replace(/\s/g, "")}`}
-                        className="flex items-center gap-1.5 hover:text-gold"
+                        className="flex items-center gap-1.5 hover:text-lapis"
                       >
                         <Phone className="size-3.5" />
                         {inquiry.phone}
@@ -140,7 +140,7 @@ export default async function AdminInquiriesPage({
           ))}
         </ul>
       ) : (
-        <div className="rounded-2xl border border-border bg-ivory">
+        <div className="rounded-2xl border border-border bg-papyrus">
           <TableEmpty
             message={
               filter === "open"

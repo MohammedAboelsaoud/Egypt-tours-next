@@ -112,7 +112,7 @@ export function SelectField({
         id={name}
         name={name}
         defaultValue={defaultValue}
-        className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+        className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -229,7 +229,7 @@ export function ItineraryBuilder({
             className="rounded-xl border border-border bg-background p-4"
           >
             <div className="flex items-center gap-3">
-              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-gold text-xs font-semibold text-white">
+              <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-lapis text-xs font-semibold text-white">
                 {day.day}
               </span>
               <Input
@@ -399,7 +399,7 @@ export function FormSection({
   children: React.ReactNode
 }) {
   return (
-    <section className="rounded-2xl border border-border bg-ivory p-6 sm:p-7">
+    <section className="rounded-2xl border border-border bg-papyrus p-6 sm:p-7">
       <h2 className="font-heading text-xl">{title}</h2>
       {description && (
         <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>

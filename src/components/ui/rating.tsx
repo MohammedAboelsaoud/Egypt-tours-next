@@ -27,9 +27,9 @@ export function Rating({
             className={cn(
               starClass,
               star <= rounded
-                ? "fill-gold text-gold"
+                ? "fill-sun text-ochre"
                 : star - 0.5 === rounded
-                  ? "fill-gold/50 text-gold"
+                  ? "fill-sun/50 text-ochre"
                   : "fill-transparent text-muted-foreground/40"
             )}
           />

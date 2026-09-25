@@ -17,18 +17,18 @@ export type MapMarker = {
 }
 
 const MAP_STYLE: google.maps.MapTypeStyle[] = [
-  { elementType: "geometry", stylers: [{ color: "#f5efe4" }] },
-  { elementType: "labels.text.fill", stylers: [{ color: "#6b6259" }] },
-  { elementType: "labels.text.stroke", stylers: [{ color: "#fffef9" }] },
+  { elementType: "geometry", stylers: [{ color: "#efeee9" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#5a6170" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#fbfaf7" }] },
   {
     featureType: "water",
     elementType: "geometry",
-    stylers: [{ color: "#a9d3d4" }],
+    stylers: [{ color: "#9fc3e6" }],
   },
   {
     featureType: "poi.park",
     elementType: "geometry",
-    stylers: [{ color: "#d9e3c8" }],
+    stylers: [{ color: "#d5e4dc" }],
   },
   {
     featureType: "road",
@@ -38,7 +38,7 @@ const MAP_STYLE: google.maps.MapTypeStyle[] = [
   {
     featureType: "administrative",
     elementType: "geometry.stroke",
-    stylers: [{ color: "#d8c9a8" }],
+    stylers: [{ color: "#c9c5b8" }],
   },
 ]
 
@@ -148,7 +148,7 @@ function MapFallback({
   return (
     <div
       className={cn(
-        "relative flex h-full min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-border bg-[linear-gradient(135deg,#f5efe4_0%,#efe6d5_100%)] p-7",
+        "relative flex h-full min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-2xl border border-border bg-[linear-gradient(135deg,#f4f3ef_0%,#e4ebf4_100%)] p-7",
         className
       )}
     >
@@ -156,14 +156,14 @@ function MapFallback({
         className="pointer-events-none absolute inset-0 opacity-[0.14]"
         style={{
           backgroundImage:
-            "linear-gradient(#b8860b 1px, transparent 1px), linear-gradient(90deg, #b8860b 1px, transparent 1px)",
+            "linear-gradient(#1d4e89 1px, transparent 1px), linear-gradient(90deg, #1d4e89 1px, transparent 1px)",
           backgroundSize: "48px 48px",
         }}
         aria-hidden
       />
 
       <div className="relative">
-        <div className="flex size-11 items-center justify-center rounded-full bg-gold/15 text-gold">
+        <div className="flex size-11 items-center justify-center rounded-full bg-lapis/15 text-lapis">
           <MapPin className="size-5" />
         </div>
         <h3 className="mt-4 font-heading text-xl">{title}</h3>
@@ -185,7 +185,7 @@ function MapFallback({
               key={marker.id}
               className="flex items-center gap-2 text-sm text-muted-foreground"
             >
-              <span className="size-1.5 rounded-full bg-gold" />
+              <span className="size-1.5 rounded-full bg-lapis" />
               {marker.title}
             </li>
           ))}
@@ -196,7 +196,7 @@ function MapFallback({
         href={mapsUrl}
         target="_blank"
         rel="noreferrer"
-        className="relative mt-6 inline-flex w-fit items-center gap-2 rounded-lg border border-gold/40 bg-ivory px-4 py-2.5 text-sm font-medium text-gold transition-colors hover:bg-gold hover:text-white"
+        className="relative mt-6 inline-flex w-fit items-center gap-2 rounded-lg border border-lapis/40 bg-papyrus px-4 py-2.5 text-sm font-medium text-lapis transition-colors hover:bg-lapis hover:text-white"
       >
         Open in Google Maps
         <ExternalLink className="size-3.5" />

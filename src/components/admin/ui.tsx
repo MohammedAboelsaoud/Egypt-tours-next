@@ -25,7 +25,7 @@ export function AdminHeader({
         (typeof action === "object" && action !== null && "href" in action ? (
           <Link
             href={(action as { href: string }).href}
-            className="inline-flex items-center gap-2 rounded-lg bg-gold px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-gold-light"
+            className="inline-flex items-center gap-2 rounded-lg bg-lapis px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-lapis-deep"
           >
             <Plus className="size-4" />
             {(action as { label: string }).label}
@@ -52,13 +52,13 @@ export function StatsCard({
 }) {
   const tones = {
     default: "bg-muted text-muted-foreground",
-    gold: "bg-gold/12 text-gold",
-    teal: "bg-teal/12 text-teal",
+    gold: "bg-lapis/12 text-lapis",
+    teal: "bg-faience/12 text-faience",
     amber: "bg-amber-500/12 text-amber-700",
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-ivory p-6">
+    <div className="rounded-2xl border border-border bg-papyrus p-6">
       <div className="flex items-start justify-between gap-4">
         <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">
           {label}
@@ -94,7 +94,7 @@ export function AdminCard({
   return (
     <section
       className={cn(
-        "overflow-hidden rounded-2xl border border-border bg-ivory",
+        "overflow-hidden rounded-2xl border border-border bg-papyrus",
         className
       )}
     >

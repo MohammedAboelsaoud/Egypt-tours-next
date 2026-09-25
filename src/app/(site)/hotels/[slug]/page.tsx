@@ -115,16 +115,16 @@ export default async function HotelPage({ params }: PageProps<"/hotels/[slug]">)
         <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3 text-sm text-white/85">
           <span className="flex items-center gap-1">
             {Array.from({ length: hotel.starRating }).map((_, i) => (
-              <Star key={i} className="size-4 fill-gold-light text-gold-light" />
+              <Star key={i} className="size-4 fill-sun text-sun" />
             ))}
           </span>
           <span className="flex items-center gap-2">
-            <Users className="size-4 text-gold-light" />
+            <Users className="size-4 text-sun" />
             Sleeps up to {hotel.maxGuests}
           </span>
           {hotel.address && (
             <span className="flex items-center gap-2">
-              <MapPin className="size-4 text-gold-light" />
+              <MapPin className="size-4 text-sun" />
               {hotel.address}
             </span>
           )}
@@ -142,7 +142,7 @@ export default async function HotelPage({ params }: PageProps<"/hotels/[slug]">)
             <section>
               <p className="eyebrow">The property</p>
               <h2 className="mt-3 font-heading text-3xl">About this hotel</h2>
-              <div className="mt-5 gold-rule" />
+              <div className="mt-5 horizon-rule" />
               <div className="mt-6 space-y-4 text-lg leading-relaxed text-muted-foreground">
                 {hotel.description.split("\n\n").map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
@@ -162,7 +162,7 @@ export default async function HotelPage({ params }: PageProps<"/hotels/[slug]">)
             {rooms.length > 0 && (
               <section>
                 <h2 className="font-heading text-2xl">Room types</h2>
-                <ul className="mt-6 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-ivory">
+                <ul className="mt-6 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-papyrus">
                   {rooms.map((room) => (
                     <li
                       key={room.name}
@@ -176,7 +176,7 @@ export default async function HotelPage({ params }: PageProps<"/hotels/[slug]">)
                         </p>
                       </div>
                       <p className="text-right">
-                        <span className="font-heading text-xl text-gold">
+                        <span className="font-heading text-xl text-lapis">
                           {formatPrice(room.price, hotel.currency, { compact: true })}
                         </span>
                         <span className="block text-xs text-muted-foreground">
@@ -232,7 +232,7 @@ export default async function HotelPage({ params }: PageProps<"/hotels/[slug]">)
       </div>
 
       {nearby.length > 0 && (
-        <section className="bg-ivory">
+        <section className="bg-papyrus">
           <div className="container-page section-y">
             <SectionHeading
               eyebrow="Nearby"

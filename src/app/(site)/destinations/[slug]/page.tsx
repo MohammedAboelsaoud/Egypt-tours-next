@@ -156,7 +156,7 @@ export default async function RegionPage({
               key={city}
               className="flex items-center gap-1.5 rounded-full border border-white/25 bg-white/10 px-3.5 py-1.5 text-sm text-white backdrop-blur-sm"
             >
-              <MapPin className="size-3.5 text-gold-light" />
+              <MapPin className="size-3.5 text-sun" />
               {city}
             </li>
           ))}
@@ -171,7 +171,7 @@ export default async function RegionPage({
             <h2 className="mt-3 font-heading text-3xl leading-tight sm:text-4xl">
               What {region.name} is like
             </h2>
-            <div className="mt-5 gold-rule" />
+            <div className="mt-5 horizon-rule" />
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
               {region.summary}
             </p>
@@ -181,7 +181,7 @@ export default async function RegionPage({
                 <dt className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
                   Tours
                 </dt>
-                <dd className="mt-1.5 font-heading text-3xl text-gold">
+                <dd className="mt-1.5 font-heading text-3xl text-lapis">
                   {region.tours.length}
                 </dd>
               </div>
@@ -189,7 +189,7 @@ export default async function RegionPage({
                 <dt className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
                   Hotels
                 </dt>
-                <dd className="mt-1.5 font-heading text-3xl text-gold">
+                <dd className="mt-1.5 font-heading text-3xl text-lapis">
                   {region.hotels.length}
                 </dd>
               </div>
@@ -197,7 +197,7 @@ export default async function RegionPage({
                 <dt className="text-xs tracking-[0.14em] text-muted-foreground uppercase">
                   Vehicles
                 </dt>
-                <dd className="mt-1.5 font-heading text-3xl text-gold">
+                <dd className="mt-1.5 font-heading text-3xl text-lapis">
                   {region.cars.length}
                 </dd>
               </div>
@@ -218,7 +218,7 @@ export default async function RegionPage({
       </section>
 
       {/* Tours */}
-      <section className="bg-ivory">
+      <section className="bg-papyrus">
         <div className="container-page section-y">
           <SectionHeading
             eyebrow="Itineraries"
@@ -255,7 +255,7 @@ export default async function RegionPage({
               action={
                 <Link
                   href="/contact"
-                  className="rounded-lg bg-gold px-6 py-3 text-sm font-medium text-white hover:bg-gold-light"
+                  className="rounded-lg bg-lapis px-6 py-3 text-sm font-medium text-white hover:bg-lapis-deep"
                 >
                   Request an itinerary
                 </Link>
@@ -297,7 +297,7 @@ export default async function RegionPage({
 
       {/* Cars */}
       {region.cars.length > 0 && (
-        <section className="bg-ivory">
+        <section className="bg-papyrus">
           <div className="container-page section-y">
             <SectionHeading
               eyebrow="Getting around"

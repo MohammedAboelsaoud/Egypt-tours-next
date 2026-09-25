@@ -4,14 +4,14 @@ import { cn } from "@/lib/utils"
 
 const BOOKING_STYLES: Record<BookingStatus, string> = {
   PENDING: "bg-amber-500/12 text-amber-700",
-  CONFIRMED: "bg-teal/12 text-teal",
-  COMPLETED: "bg-gold/15 text-gold",
+  CONFIRMED: "bg-faience/12 text-faience",
+  COMPLETED: "bg-lapis/15 text-lapis",
   CANCELLED: "bg-destructive/10 text-destructive",
 }
 
 const PAYMENT_STYLES: Record<PaymentStatus, string> = {
   PENDING: "bg-amber-500/12 text-amber-700",
-  PAID: "bg-teal/12 text-teal",
+  PAID: "bg-faience/12 text-faience",
   REFUNDED: "bg-muted text-muted-foreground",
 }
 

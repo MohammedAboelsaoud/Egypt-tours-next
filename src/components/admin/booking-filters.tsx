@@ -37,7 +37,7 @@ export function BookingFilters() {
   return (
     <div
       className={cn(
-        "flex flex-wrap items-end gap-4 rounded-2xl border border-border bg-ivory p-5",
+        "flex flex-wrap items-end gap-4 rounded-2xl border border-border bg-papyrus p-5",
         pending && "opacity-60"
       )}
     >
@@ -63,7 +63,7 @@ export function BookingFilters() {
               ;(window as unknown as { __bookingTimer?: number }).__bookingTimer =
                 window.setTimeout(() => setParam("q", value), 350)
             }}
-            className="h-11 w-full rounded-lg border border-input bg-background pr-3 pl-10 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+            className="h-11 w-full rounded-lg border border-input bg-background pr-3 pl-10 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
           />
         </div>
       </div>
@@ -80,7 +80,7 @@ export function BookingFilters() {
             id={`booking-${field.name}`}
             value={searchParams.get(field.name) ?? ""}
             onChange={(event) => setParam(field.name, event.target.value)}
-            className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+            className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
           >
             <option value="">All</option>
             {field.options.map((option) => (
@@ -100,7 +100,7 @@ export function BookingFilters() {
               router.push("/admin/bookings", { scroll: false })
             )
           }
-          className="h-11 rounded-lg px-4 text-sm font-medium text-muted-foreground hover:text-gold"
+          className="h-11 rounded-lg px-4 text-sm font-medium text-muted-foreground hover:text-lapis"
         >
           Clear
         </button>

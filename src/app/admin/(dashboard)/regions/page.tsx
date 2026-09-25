@@ -28,7 +28,7 @@ export default async function AdminRegionsPage() {
           {regions.map((region) => (
             <article
               key={region.id}
-              className="overflow-hidden rounded-2xl border border-border bg-ivory"
+              className="overflow-hidden rounded-2xl border border-border bg-papyrus"
             >
               <div className="relative aspect-[16/7]">
                 <Image
@@ -38,7 +38,7 @@ export default async function AdminRegionsPage() {
                   sizes="(min-width: 640px) 50vw, 100vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/75 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-basalt/75 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-5">
                   <div>
                     <h2 className="font-heading text-xl text-white">
@@ -47,7 +47,7 @@ export default async function AdminRegionsPage() {
                     <p className="mt-0.5 text-xs text-white/70">/{region.slug}</p>
                   </div>
                   {!region.published && (
-                    <span className="rounded-full bg-ink/80 px-2.5 py-1 text-[0.65rem] font-medium text-white">
+                    <span className="rounded-full bg-basalt/80 px-2.5 py-1 text-[0.65rem] font-medium text-white">
                       Hidden
                     </span>
                   )}
@@ -63,19 +63,19 @@ export default async function AdminRegionsPage() {
                   <dl className="flex gap-5 text-xs text-muted-foreground">
                     <div>
                       <dt className="inline">Tours </dt>
-                      <dd className="inline font-medium text-ink">
+                      <dd className="inline font-medium text-basalt">
                         {region._count.tours}
                       </dd>
                     </div>
                     <div>
                       <dt className="inline">Hotels </dt>
-                      <dd className="inline font-medium text-ink">
+                      <dd className="inline font-medium text-basalt">
                         {region._count.hotels}
                       </dd>
                     </div>
                     <div>
                       <dt className="inline">Cars </dt>
-                      <dd className="inline font-medium text-ink">
+                      <dd className="inline font-medium text-basalt">
                         {region._count.cars}
                       </dd>
                     </div>
@@ -95,7 +95,7 @@ export default async function AdminRegionsPage() {
           ))}
         </div>
       ) : (
-        <div className="rounded-2xl border border-border bg-ivory">
+        <div className="rounded-2xl border border-border bg-papyrus">
           <TableEmpty message="No regions yet — add the first one to start building the catalogue." />
         </div>
       )}

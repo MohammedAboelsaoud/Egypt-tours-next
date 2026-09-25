@@ -16,14 +16,14 @@ export default async function AdminLoginPage() {
   if (session?.user?.role === "ADMIN") redirect("/admin")
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-ink px-5 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-basalt px-5 py-12">
       <div className="w-full max-w-md">
         <div className="text-center">
-          <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-gold/15 text-gold-light">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-lapis/15 text-sun">
             <ShieldCheck className="size-5" />
           </div>
           <h1 className="mt-6 font-heading text-3xl text-white">
-            Egypt <span className="text-gold-light">Journeys</span>
+            Egypt <span className="text-sun">Journeys</span>
           </h1>
           <p className="mt-2 text-xs tracking-[0.22em] text-white/50 uppercase">
             Admin dashboard
@@ -35,7 +35,7 @@ export default async function AdminLoginPage() {
         </div>
 
         <p className="mt-6 text-center text-sm text-white/50">
-          <Link href="/" className="hover:text-gold-light">
+          <Link href="/" className="hover:text-sun">
             ← Back to the website
           </Link>
         </p>

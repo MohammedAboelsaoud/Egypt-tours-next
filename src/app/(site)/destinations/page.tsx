@@ -36,7 +36,7 @@ export default async function DestinationsPage() {
         {regions.map((region, index) => (
           <article
             key={region.id}
-            className="group grid overflow-hidden rounded-3xl border border-border bg-ivory lg:grid-cols-2"
+            className="group grid overflow-hidden rounded-3xl border border-border bg-papyrus lg:grid-cols-2"
           >
             <div
               className={`relative aspect-[16/11] lg:aspect-auto lg:min-h-[420px] ${
@@ -58,7 +58,7 @@ export default async function DestinationsPage() {
               <h2 className="mt-4 font-heading text-3xl sm:text-4xl">
                 {region.name}
               </h2>
-              <p className="mt-2 text-gold">{region.tagline}</p>
+              <p className="mt-2 text-lapis">{region.tagline}</p>
 
               <p className="mt-5 leading-relaxed text-muted-foreground">
                 {region.summary}
@@ -70,7 +70,7 @@ export default async function DestinationsPage() {
                     key={city}
                     className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs text-muted-foreground"
                   >
-                    <MapPin className="size-3 text-gold" />
+                    <MapPin className="size-3 text-lapis" />
                     {city}
                   </li>
                 ))}
@@ -80,21 +80,21 @@ export default async function DestinationsPage() {
                 <div className="flex items-center gap-2">
                   <dt className="sr-only">Tours</dt>
                   <dd className="flex items-center gap-2 text-muted-foreground">
-                    <ArrowUpRight className="size-4 text-gold" />
+                    <ArrowUpRight className="size-4 text-lapis" />
                     {region._count.tours} tours
                   </dd>
                 </div>
                 <div className="flex items-center gap-2">
                   <dt className="sr-only">Hotels</dt>
                   <dd className="flex items-center gap-2 text-muted-foreground">
-                    <BedDouble className="size-4 text-gold" />
+                    <BedDouble className="size-4 text-lapis" />
                     {region._count.hotels} hotels
                   </dd>
                 </div>
                 <div className="flex items-center gap-2">
                   <dt className="sr-only">Vehicles</dt>
                   <dd className="flex items-center gap-2 text-muted-foreground">
-                    <Car className="size-4 text-gold" />
+                    <Car className="size-4 text-lapis" />
                     {region._count.cars} vehicles
                   </dd>
                 </div>
@@ -102,7 +102,7 @@ export default async function DestinationsPage() {
 
               <Link
                 href={`/destinations/${region.slug}`}
-                className="mt-8 inline-flex w-fit items-center gap-2 rounded-lg bg-gold px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
+                className="mt-8 inline-flex w-fit items-center gap-2 rounded-lg bg-lapis px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-lapis-deep"
               >
                 Explore {region.name}
                 <ArrowUpRight className="size-4" />
