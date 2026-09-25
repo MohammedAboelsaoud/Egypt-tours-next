@@ -1,3 +1,4 @@
+import { LANGUAGES } from "@/lib/constants"
 import type { FaqGroup } from "@/lib/faq"
 import { formatPrice } from "@/lib/utils"
 
@@ -7,7 +8,7 @@ import { formatPrice } from "@/lib/utils"
  * external service, so it costs nothing to run and answers instantly.
  */
 
-export type ListingKind = "tour" | "hotel" | "car"
+export type ListingKind = "tour" | "hotel" | "car" | "guide"
 
 export type ChatListing = {
   kind: ListingKind
@@ -29,6 +30,8 @@ export type ChatListing = {
   capacity: number
   starRating?: number
   carType?: string
+  /** Languages a guide works in. */
+  languages?: string[]
   featured?: boolean
   /** Lower-cased title + summary, searched for keyword matches. */
   searchText: string
@@ -60,6 +63,7 @@ export type ChatReply = {
 export const STARTER_SUGGESTIONS = [
   "Do I need a visa?",
   "Nile cruise options",
+  "Find a tour guide",
   "Hotels in Cairo",
   "Best time to visit?",
   "Plan a custom trip",
@@ -163,6 +167,7 @@ const IDENTITY = ["who are you", "are you a bot", "are you human", "are you real
 const KIND_WORDS: Record<ListingKind, readonly string[]> = {
   tour: ["tour", "tours", "trip", "trips", "excursion", "excursions", "package", "packages", "day trip", "cruise", "cruises", "activities", "things to do"],
   hotel: ["hotel", "hotels", "stay", "staying", "accommodation", "resort", "resorts", "lodge", "room", "rooms", "where to sleep", "place to stay"],
+  guide: ["guide", "guides", "tour guide", "tour guides", "egyptologist", "egyptologists", "nubian guide", "bedouin guide", "local guide", "private guide"],
   car: ["car", "cars", "rent", "rental", "rentals", "driver", "vehicle", "vehicles", "transfer", "transfers", "minibus", "van", "suv", "coach", "bus", "chauffeur", "airport pickup", "sedan"],
 }
 
@@ -219,6 +224,8 @@ export type SearchCriteria = {
   days?: number
   people?: number
   carType?: string
+  /** A language a guide should speak, e.g. "French". */
+  language?: string
   sort: "relevance" | "cheapest" | "premium"
   titleTokens: string[]
 }
@@ -290,6 +297,15 @@ export function parseCriteria(message: string, kb: ChatKnowledge): SearchCriteri
   // A car type is only a car search if nothing else was asked for.
   if (carType && kinds.length === 0) kinds.push("car")
 
+  // "Tour guide" names a guide, not a tour.
+  if (kinds.includes("guide")) {
+    const tourAt = kinds.indexOf("tour")
+    if (tourAt >= 0) kinds.splice(tourAt, 1)
+  }
+
+  // "French-speaking guide", "a guide who speaks German"
+  const language = LANGUAGES.find((l) => has(text, normalize(l)))
+
   return {
     kinds,
     regionSlugs,
@@ -297,6 +313,7 @@ export function parseCriteria(message: string, kb: ChatKnowledge): SearchCriteri
     days,
     people,
     carType,
+    language,
     sort,
     titleTokens: tokens(message),
   }
@@ -338,6 +355,7 @@ export function searchListings(
     if (!opts.ignoreBudget && criteria.maxPrice !== undefined && listing.price > criteria.maxPrice) continue
     if (criteria.people !== undefined && listing.capacity < criteria.people) continue
     if (criteria.carType && listing.kind === "car" && listing.carType !== criteria.carType) continue
+    if (criteria.language && listing.kind === "guide" && !listing.languages?.includes(criteria.language)) continue
     if (
       criteria.days !== undefined &&
       listing.kind === "tour" &&
@@ -362,13 +380,27 @@ export function searchListings(
     return b.score - a.score || a.listing.price - b.listing.price
   })
 
-  return ranked.slice(0, MAX_LISTINGS).map((r) => r.listing)
+  return uniqueListings(ranked.map((r) => r.listing))
+}
+
+/** Guides covering several regions appear once per region; keep the first of each. */
+function uniqueListings(listings: ChatListing[]): ChatListing[] {
+  const seen = new Set<string>()
+  return listings
+    .filter((listing) => {
+      const key = `${listing.kind}:${listing.slug}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    .slice(0, MAX_LISTINGS)
 }
 
 const KIND_NOUN: Record<ListingKind, [string, string]> = {
   tour: ["tour", "tours"],
   hotel: ["hotel", "hotels"],
   car: ["car", "cars"],
+  guide: ["guide", "guides"],
 }
 
 function describeSearch(c: SearchCriteria, kb: ChatKnowledge, count: number): string {
@@ -381,6 +413,7 @@ function describeSearch(c: SearchCriteria, kb: ChatKnowledge, count: number): st
         : "options"
   const parts = [noun]
   if (c.carType && kinds.includes("car")) parts.unshift(c.carType === "SUV" ? "SUV" : c.carType.toLowerCase())
+  if (c.language && kinds.includes("guide")) parts.unshift(`${c.language}-speaking`)
   const regionNames = c.regionSlugs
     .map((slug) => kb.regions.find((r) => r.slug === slug)?.name)
     .filter(Boolean)
@@ -432,6 +465,7 @@ function catalogueFollowUps(c: SearchCriteria, kb: ChatKnowledge): string[] {
   const kinds = c.kinds.length > 0 ? c.kinds : ["tour"]
   const out: string[] = []
   if (!kinds.includes("hotel")) out.push(`Hotels in ${place}`)
+  if (kinds.includes("tour")) out.push(`Guides in ${place}`)
   if (!kinds.includes("tour")) out.push(`Tours in ${place}`)
   if (!kinds.includes("car")) out.push("Car with a driver")
   out.push("Plan a custom trip")
@@ -544,7 +578,7 @@ export function respond(message: string, kb: ChatKnowledge): ChatReply {
   if (named.length > 0) {
     return {
       text: "Here's what I found:",
-      listings: named.slice(0, MAX_LISTINGS).map((r) => r.listing),
+      listings: uniqueListings(named.map((r) => r.listing)),
       suggestions: ["Plan a custom trip", "Talk to a person"],
     }
   }

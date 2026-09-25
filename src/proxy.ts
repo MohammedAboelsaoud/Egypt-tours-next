@@ -5,7 +5,7 @@ import { NextResponse, type NextRequest } from "next/server"
  * Roles are re-checked properly in the layouts and server actions — this only
  * saves a round trip, so a cookie check is enough here.
  */
-const PROTECTED = ["/account", "/book", "/admin"]
+const PROTECTED = ["/account", "/book", "/admin", "/guide"]
 
 const SESSION_COOKIES = [
   "authjs.session-token",
@@ -30,11 +30,17 @@ export function proxy(request: NextRequest) {
   )
   if (hasSession) return NextResponse.next()
 
+  // "/guide" is the guide dashboard; "/guides" (public) never reaches here.
+  const isGuideArea = pathname === "/guide" || pathname.startsWith("/guide/")
   const loginUrl = new URL(
-    pathname.startsWith("/admin") ? "/admin/login" : "/login",
+    pathname.startsWith("/admin")
+      ? "/admin/login"
+      : isGuideArea
+        ? "/guides/login"
+        : "/login",
     request.url
   )
-  if (!pathname.startsWith("/admin")) {
+  if (!pathname.startsWith("/admin") && !isGuideArea) {
     loginUrl.searchParams.set("callbackUrl", pathname)
   }
 
@@ -42,5 +48,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*", "/book/:path*", "/admin/:path*"],
+  matcher: ["/account/:path*", "/book/:path*", "/admin/:path*", "/guide", "/guide/:path*"],
 }

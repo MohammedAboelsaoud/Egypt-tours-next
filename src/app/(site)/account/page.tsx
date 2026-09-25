@@ -22,6 +22,7 @@ export default async function AccountPage() {
       phone: true,
       nationality: true,
       passportNo: true,
+      languages: true,
     },
   })
 
@@ -31,7 +32,7 @@ export default async function AccountPage() {
     <div className="rounded-2xl border border-border bg-papyrus p-7 sm:p-9">
       <h2 className="font-heading text-2xl">Your details</h2>
       <p className="mt-2 text-sm text-muted-foreground">
-        We pre-fill these on every booking form, so you only type them once.
+        We pre-fill these on every booking and guide request, so you only type them once.
       </p>
 
       <div className="mt-8">

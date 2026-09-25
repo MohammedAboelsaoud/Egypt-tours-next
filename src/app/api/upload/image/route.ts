@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server"
 
-import { isAdmin } from "@/lib/auth"
+import { currentUser } from "@/lib/auth"
 import { uploadImage } from "@/lib/cloudinary"
 
 export const runtime = "nodejs"
 
-/** POST /api/upload/image — admin image upload (Cloudinary, or local in dev). */
+/**
+ * POST /api/upload/image — image upload (Cloudinary, or local in dev) for
+ * admins, and for guides adding their profile photo.
+ */
 export async function POST(request: Request) {
-  if (!(await isAdmin())) {
+  const user = await currentUser()
+  if (user?.role !== "ADMIN" && user?.role !== "GUIDE") {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 

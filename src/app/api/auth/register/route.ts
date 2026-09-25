@@ -2,7 +2,17 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 
 import { prisma } from "@/lib/prisma"
-import { registerSchema } from "@/lib/validations"
+import { registerSchema, type RegisterInput } from "@/lib/validations"
+
+/** The travel profile collected once at sign-up and reused on every request. */
+function profileFields(data: RegisterInput) {
+  return {
+    phone: data.phone,
+    nationality: data.nationality,
+    languages: data.languages,
+    passportNo: data.passportNo || null,
+  }
+}
 
 export async function POST(request: Request) {
   let body: unknown
@@ -37,6 +47,7 @@ export async function POST(request: Request) {
       data: {
         passwordHash: await bcrypt.hash(parsed.data.password, 12),
         name: existing.name ?? parsed.data.name,
+        ...profileFields(parsed.data),
       },
     })
     return NextResponse.json({ ok: true, linked: true })
@@ -48,6 +59,7 @@ export async function POST(request: Request) {
       name: parsed.data.name,
       passwordHash: await bcrypt.hash(parsed.data.password, 12),
       role: "CUSTOMER",
+      ...profileFields(parsed.data),
     },
   })
 

@@ -4,6 +4,7 @@ import { useActionState } from "react"
 import { CheckCircle2 } from "lucide-react"
 
 import { updateProfile, type ProfileState } from "@/actions/account"
+import { LanguagePicker } from "@/components/forms/language-picker"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -19,6 +20,7 @@ export function ProfileForm({
     phone: string | null
     nationality: string | null
     passportNo: string | null
+    languages: string[]
   }
 }) {
   const [state, formAction, pending] = useActionState<ProfileState, FormData>(
@@ -54,7 +56,7 @@ export function ProfileForm({
         </div>
 
         <div>
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone">Phone / WhatsApp</Label>
           <Input
             id="phone"
             name="phone"
@@ -82,7 +84,23 @@ export function ProfileForm({
         </div>
 
         <div className="sm:col-span-2">
-          <Label htmlFor="passportNo">Passport number</Label>
+          <p id="languages-label" className="text-sm font-medium">
+            Languages you speak
+          </p>
+          <LanguagePicker
+            defaultValue={user.languages}
+            describedBy="languages-label"
+          />
+          <p className="mt-1.5 text-xs text-muted-foreground">
+            Guides see these, so you can pick one who speaks your language.
+          </p>
+        </div>
+
+        <div className="sm:col-span-2">
+          <Label htmlFor="passportNo">
+            Passport number{" "}
+            <span className="font-normal text-muted-foreground">(optional)</span>
+          </Label>
           <Input
             id="passportNo"
             name="passportNo"
@@ -90,8 +108,8 @@ export function ProfileForm({
             className="mt-2 h-11"
           />
           <p className="mt-1.5 text-xs text-muted-foreground">
-            Stored only for bookings that require it, such as Nile cruises and
-            domestic flights.
+            You don&apos;t have to add it. It only makes booking site tickets,
+            Nile cruises and domestic flights faster.
           </p>
         </div>
       </div>

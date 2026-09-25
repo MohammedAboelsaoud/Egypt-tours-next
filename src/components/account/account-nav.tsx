@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   User,
+  UsersRound,
 } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -16,6 +17,7 @@ import { cn } from "@/lib/utils"
 const LINKS = [
   { href: "/account", label: "Profile", icon: User },
   { href: "/account/bookings", label: "My bookings", icon: CalendarCheck },
+  { href: "/account/guides", label: "My guides", icon: UsersRound },
   { href: "/account/wishlist", label: "Wishlist", icon: Heart },
 ]
 

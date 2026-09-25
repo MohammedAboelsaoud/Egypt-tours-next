@@ -84,9 +84,13 @@ function ListingCard({ listing }: { listing: ChatListing }) {
           {listing.regionName} · {listing.detail}
         </span>
         <span className="mt-0.5 block text-xs tabular-nums">
-          <span className="font-semibold text-lapis">
-            {formatPrice(listing.price, listing.currency, { compact: true })}
-          </span>{" "}
+          {listing.price > 0 && (
+            <>
+              <span className="font-semibold text-lapis">
+                {formatPrice(listing.price, listing.currency, { compact: true })}
+              </span>{" "}
+            </>
+          )}
           <span className="text-muted-foreground">{listing.unit}</span>
         </span>
       </span>

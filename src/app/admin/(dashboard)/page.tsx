@@ -24,6 +24,8 @@ export default async function AdminOverviewPage() {
   const now = new Date()
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1)
 
+  const guideApplications = await prisma.guideProfile.count({ where: { status: "PENDING" } })
+
   const [
     totalBookings,
     paidAggregate,
@@ -77,6 +79,21 @@ export default async function AdminOverviewPage() {
         title="Overview"
         description={`${formatDate(now, "long")} — everything at a glance.`}
       />
+
+      {guideApplications > 0 && (
+        <Link
+          href="/admin/guides"
+          className="mb-5 flex items-center justify-between gap-4 rounded-2xl border border-lapis/25 bg-accent px-6 py-4 text-sm text-accent-foreground transition-colors hover:border-lapis"
+        >
+          <span>
+            <span className="font-semibold">
+              {guideApplications} guide {guideApplications === 1 ? "application" : "applications"}
+            </span>{" "}
+            waiting for review
+          </span>
+          <span className="font-medium">Review →</span>
+        </Link>
+      )}
 
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard
