@@ -236,7 +236,10 @@ requests → blocked days → review).
 3. Add every variable from `.env.example` to the Vercel project.
    `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` must be your production URL.
 4. The build command is `bun run build` (it runs `prisma generate` first).
-5. **The schema is applied automatically on production deploys.** The build
+5. **The guide and cash-payment tables and columns are added automatically**
+   when a server starts (`src/instrumentation.ts` → `src/lib/db/ensure-schema.ts`,
+   additive and safe to re-run). That works whatever Vercel's build settings are.
+   **Future schema changes are applied during production deploys.** The build
    runs `scripts/db-sync.mjs`, which does `prisma db push` against the
    Production `DATABASE_URL` when `VERCEL_ENV=production` (preview builds are
    skipped). Changes that could lose data are refused and fail the build, so
