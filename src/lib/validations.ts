@@ -228,6 +228,10 @@ export const settingsSchema = z.object({
   address: z.string().max(200),
   facebookUrl: z.string().max(200).optional().or(z.literal("")),
   instagramUrl: z.string().max(200).optional().or(z.literal("")),
+  hotelMarkupPercent: z.coerce
+    .number({ error: "Enter the hotel markup as a number" })
+    .min(0, "The hotel markup can't be negative")
+    .max(100, "The hotel markup can be at most 100%"),
 })
 
 export const bookingStatusSchema = z.object({

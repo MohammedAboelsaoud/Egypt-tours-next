@@ -2,12 +2,19 @@ import type { Metadata } from "next"
 
 import { SettingsForm } from "@/components/admin/settings-form"
 import { AdminHeader } from "@/components/admin/ui"
+import { DEFAULT_HOTEL_MARKUP_PERCENT } from "@/lib/markup"
+import { prisma } from "@/lib/prisma"
 import { getSettings } from "@/lib/settings"
+import { toNumber } from "@/lib/utils"
 
 export const metadata: Metadata = { title: "Settings" }
 
 export default async function AdminSettingsPage() {
-  const settings = await getSettings()
+  const [settings, pricing] = await Promise.all([
+    getSettings(),
+    prisma.pricingSetting.findUnique({ where: { id: "site" } }).catch(() => null),
+  ])
+  const hotelMarkupPercent = pricing ? toNumber(pricing.hotelMarkupPercent) : DEFAULT_HOTEL_MARKUP_PERCENT
 
   const integrations = {
     stripe: Boolean(
@@ -34,7 +41,7 @@ export default async function AdminSettingsPage() {
         title="Settings"
         description="Site-wide details used across the public website."
       />
-      <SettingsForm settings={settings} integrations={integrations} />
+      <SettingsForm settings={settings} hotelMarkupPercent={hotelMarkupPercent} integrations={integrations} />
     </>
   )
 }

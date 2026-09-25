@@ -3,6 +3,8 @@ import { notFound, redirect } from "next/navigation"
 import { BookingFlow, type BookingItem } from "@/components/booking/booking-flow"
 import { Breadcrumb } from "@/components/layout/breadcrumb"
 import { auth } from "@/lib/auth"
+import { applyMarkup } from "@/lib/markup"
+import { getHotelMarkupPercent } from "@/lib/pricing-settings"
 import { prisma } from "@/lib/prisma"
 import { getBookableItem, type BookableKind } from "@/lib/queries"
 import { toNumber } from "@/lib/utils"
@@ -62,7 +64,8 @@ export async function BookingPageShell({
       name: item.name,
       imageUrl: item.imageUrl,
       regionName: item.region.name,
-      unitPrice: toNumber(item.pricePerNight),
+      // The traveller's price: official rate plus markup, as /api/bookings charges it.
+      unitPrice: applyMarkup(toNumber(item.pricePerNight), await getHotelMarkupPercent()),
       currency: item.currency,
       maxGuests: item.maxGuests,
       fixedDays: null,

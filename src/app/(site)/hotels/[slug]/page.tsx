@@ -11,6 +11,8 @@ import { RegionMap } from "@/components/maps/region-map-lazy"
 import { Gallery } from "@/components/ui/gallery"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { SITE } from "@/lib/constants"
+import { applyMarkup } from "@/lib/markup"
+import { getHotelMarkupPercent } from "@/lib/pricing-settings"
 import { prisma } from "@/lib/prisma"
 import { getSettings } from "@/lib/settings"
 import { formatPrice, toNumber } from "@/lib/utils"
@@ -67,8 +69,13 @@ export default async function HotelPage({ params }: PageProps<"/hotels/[slug]">)
     take: 3,
   })
 
-  const rooms = (hotel.roomTypes as unknown as RoomType[] | null) ?? []
-  const price = toNumber(hotel.pricePerNight)
+  // Official rates plus the markup from Admin → Settings.
+  const markup = await getHotelMarkupPercent()
+  const rooms = ((hotel.roomTypes as unknown as RoomType[] | null) ?? []).map((room) => ({
+    ...room,
+    price: applyMarkup(toNumber(room.price), markup),
+  }))
+  const price = applyMarkup(toNumber(hotel.pricePerNight), markup)
 
   const crumbs = [{ label: "Hotels", href: "/hotels" }, { label: hotel.name }]
 
@@ -249,7 +256,7 @@ export default async function HotelPage({ params }: PageProps<"/hotels/[slug]">)
                     description: item.description,
                     imageUrl: item.imageUrl,
                     starRating: item.starRating,
-                    pricePerNight: item.pricePerNight.toString(),
+                    pricePerNight: applyMarkup(toNumber(item.pricePerNight), markup),
                     currency: item.currency,
                     maxGuests: item.maxGuests,
                     amenities: item.amenities,

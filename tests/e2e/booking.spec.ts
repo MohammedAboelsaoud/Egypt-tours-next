@@ -110,7 +110,7 @@ test.describe("booking flow", () => {
   test("books now and pays in cash on the day", async ({ page }) => {
     await signIn(page)
 
-    await page.goto("/car-rentals/vw-passat-sedan-cairo")
+    await page.goto("/car-rentals/hyundai-elantra-economy")
     await page.getByRole("link", { name: "Book now" }).click()
     await expect(page).toHaveURL(/\/book\/car\//)
 
@@ -136,16 +136,16 @@ test.describe("booking flow", () => {
     await expect(row.getByText("Cash on the day")).toBeVisible()
   })
 
-  test("prices a hotel stay per night", async ({ page }) => {
+  test("prices a hotel stay per night, with the markup", async ({ page }) => {
     await signIn(page)
 
-    await page.goto("/hotels/nile-view-boutique-cairo")
+    await page.goto("/hotels/steigenberger-el-tahrir-cairo")
     await page.getByRole("link", { name: "Book now" }).click()
     await expect(page).toHaveURL(/\/book\/hotel\//)
 
-    // Default span is three nights at $180.
-    await expect(page.getByText("$180 × 3 nights")).toBeVisible()
-    await expect(page.locator("aside").getByText("$540").last()).toBeVisible()
+    // Official rate $82 + the default 10% markup = $90; default span is three nights.
+    await expect(page.getByText("$90 × 3 nights")).toBeVisible()
+    await expect(page.locator("aside").getByText("$270").last()).toBeVisible()
   })
 
   test("saves a tour to the wishlist", async ({ page }) => {

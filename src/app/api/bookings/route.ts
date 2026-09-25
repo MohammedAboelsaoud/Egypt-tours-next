@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 
 import { auth } from "@/lib/auth"
+import { applyMarkup } from "@/lib/markup"
+import { getHotelMarkupPercent } from "@/lib/pricing-settings"
 import { calculatePrice } from "@/lib/pricing"
 import { prisma } from "@/lib/prisma"
 import { getBookableItem } from "@/lib/queries"
@@ -114,7 +116,7 @@ export async function POST(request: Request) {
     kind === "tour"
       ? toNumber((item as { priceFrom: unknown }).priceFrom)
       : kind === "hotel"
-        ? toNumber((item as { pricePerNight: unknown }).pricePerNight)
+        ? applyMarkup(toNumber((item as { pricePerNight: unknown }).pricePerNight), await getHotelMarkupPercent())
         : toNumber((item as { pricePerDay: unknown }).pricePerDay)
 
   // Price is recomputed server-side; the client's number is never trusted.

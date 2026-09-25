@@ -592,6 +592,7 @@ export async function saveSettings(
     address: str(formData, "address"),
     facebookUrl: str(formData, "facebookUrl"),
     instagramUrl: str(formData, "instagramUrl"),
+    hotelMarkupPercent: str(formData, "hotelMarkupPercent") || "10",
   })
 
   if (!parsed.success) {
@@ -601,14 +602,22 @@ export async function saveSettings(
     }
   }
 
+  const { hotelMarkupPercent, ...siteSettings } = parsed.data
   await prisma.siteSetting.upsert({
     where: { id: "site" },
-    update: parsed.data,
-    create: { id: "site", ...parsed.data },
+    update: siteSettings,
+    create: { id: "site", ...siteSettings },
+  })
+  await prisma.pricingSetting.upsert({
+    where: { id: "site" },
+    update: { hotelMarkupPercent },
+    create: { id: "site", hotelMarkupPercent },
   })
 
   // updateTag gives read-your-writes: the admin sees the new settings at once.
   updateTag("settings")
+  updateTag("pricing")
+  updateTag("chat-catalogue")
   revalidatePath("/", "layout")
   return { ok: true, message: "Settings saved." }
 }

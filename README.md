@@ -19,7 +19,7 @@ Vitest + Playwright
 bun install
 cp .env.example .env          # then fill in DATABASE_URL and AUTH_SECRET
 bun run db:push               # create the schema
-bun run db:seed               # 4 regions, 8 tours, 8 hotels, 6 cars, 20 historic sites, admin user
+bun run db:seed               # 4 regions, 8 tours, 12 hotels, 11 vehicles, 20 historic sites, admin user
 bun run dev                   # http://localhost:3000
 ```
 
@@ -127,11 +127,29 @@ Stripe payment is created — the client's number is never trusted. Capacity lim
 
 Pricing rules:
 
-| Type  | Charged            |
-| ----- | ------------------ |
-| Tour  | per person         |
-| Hotel | per night          |
-| Car   | per day, w/ driver |
+| Type  | Charged                           |
+| ----- | --------------------------------- |
+| Tour  | per person                        |
+| Hotel | per night, official rate + markup |
+| Car   | per day, w/ driver                |
+
+### Hotels and vehicles
+
+The catalog has three real hotels in each region (`src/lib/catalog/hotels.ts`)
+and the vehicles tourist transport companies in Egypt use, from an economy
+sedan to Superjet and Go Bus coaches (`src/lib/catalog/vehicles.ts`). Both are
+loaded by `bun run db:seed`, and into the live database once on the first
+server start after deploying (see below). After that, edit them in the admin.
+
+A hotel stores its **official rate** — the hotel's own price. Travellers see and
+pay that rate plus the **hotel markup** set in Admin → Settings (10% by
+default, so an official $200 is shown as $220). The markup is applied on the
+server (`src/lib/markup.ts`, `src/lib/pricing-settings.ts`) everywhere a hotel
+price appears: listings, hotel pages, the booking form, `/api/bookings`,
+`/api/hotels` and the chat.
+
+Coach charter prices are indicative; the final price is confirmed with the
+coach company before the traveller pays.
 
 ---
 
@@ -148,11 +166,13 @@ Edit everything in **Admin → Historic sites**. The history is one text box:
 start each chapter with a line beginning `## `, and leave an empty line between
 paragraphs. Key facts are `Label: value` lines.
 
-The starter catalog lives in `src/lib/sites/starter.ts`. It's loaded once: by
+The starter catalog lives in `src/lib/sites/starter.ts`, with extra chapters,
+facts and tips for each site in `src/lib/sites/details.ts`. It's loaded once: by
 `bun run db:seed` locally, or automatically on the first server start after
 deploying (`lib/db/ensure-schema.ts`, recorded as a row in the `DataLoad`
 table). After that the database is the source of truth, so sites you delete in
-the admin don't come back.
+the admin don't come back. The extra detail was added later by a second
+one-time load, which only touches sites whose history is still the starter text.
 
 Destination pages show a photo gallery made from the region's image and the
 photos of its historic sites.
@@ -228,7 +248,7 @@ Restricted to `ADMIN` users; enforced in `proxy.ts` and again in the layout.
   an itinerary builder and a room-type builder
 - **Inquiries** — contact form submissions, mark handled, CSV export
 - **Reviews** — approve or reject; reviews stay hidden until approved
-- **Settings** — site name, contact details, WhatsApp, and a
+- **Settings** — site name, contact details, WhatsApp, the hotel markup %, and a
   read-only view of which integrations are connected
 
 All site content is editable from here — no code changes needed.
