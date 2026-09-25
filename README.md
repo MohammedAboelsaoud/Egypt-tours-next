@@ -236,9 +236,12 @@ requests → blocked days → review).
 3. Add every variable from `.env.example` to the Vercel project.
    `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` must be your production URL.
 4. The build command is `bun run build` (it runs `prisma generate` first).
-5. After the first deploy, and **after any change to `prisma/schema.prisma`**,
-   push the schema (Vercel doesn't do this for you). The seed is optional on
-   an existing site: it only adds demo content and never overwrites yours.
+5. **The schema is applied automatically on production deploys.** The build
+   runs `scripts/db-sync.mjs`, which does `prisma db push` against the
+   Production `DATABASE_URL` when `VERCEL_ENV=production` (preview builds are
+   skipped). Changes that could lose data are refused and fail the build, so
+   the previous deployment keeps serving. To do it by hand instead, or to
+   seed demo content (optional; it never overwrites yours):
    ```bash
    DATABASE_URL="<production url>" bunx prisma db push
    DATABASE_URL="<production url>" bun run db:seed
