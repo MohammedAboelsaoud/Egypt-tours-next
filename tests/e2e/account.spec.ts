@@ -94,6 +94,44 @@ test.afterAll(async () => {
 test.describe.configure({ mode: "serial" })
 
 test.describe("traveller account", () => {
+  test("the account menu opens and goes to the profile", async ({ page, isMobile }) => {
+    test.skip(isMobile, "Phones use the mobile menu; the avatar menu is desktop-only.")
+    const errors = /** @type {string[]} */ ([])
+    page.on("pageerror", (error) => errors.push(error.message))
+    await signIn(page)
+    await page.goto("/")
+    await hydrated(page)
+
+    await page.getByRole("button", { name: "Account menu" }).click()
+    const menu = page.getByRole("menu")
+    await expect(menu.getByText("Account Tester")).toBeVisible()
+    await expect(menu.getByRole("menuitem", { name: "My bookings" })).toBeVisible()
+    await expect(menu.getByRole("menuitem", { name: "Sign out" })).toBeVisible()
+
+    await menu.getByRole("menuitem", { name: "My profile" }).click()
+    await page.waitForURL(/\/account$/)
+    await expect(page.getByRole("button", { name: /Save/ })).toBeVisible()
+    await expect(page.getByText("We hit a problem loading this page")).toHaveCount(0)
+    expect(errors).toEqual([])
+  })
+
+  test("the admin's account menu opens too", async ({ page, isMobile }) => {
+    test.skip(isMobile, "Phones use the mobile menu; the avatar menu is desktop-only.")
+    await page.goto("/login")
+    await hydrated(page)
+    await page.fill("#email", "admin@egyptjourneys.com")
+    await page.fill("#password", "Admin123!")
+    await page.getByRole("button", { name: "Sign in" }).click()
+    await page.waitForURL(/\/(account|admin)/)
+    await page.goto("/tours")
+    await hydrated(page)
+
+    await page.getByRole("button", { name: "Account menu" }).click()
+    await page.getByRole("menu").getByRole("menuitem", { name: "Admin dashboard" }).click()
+    await page.waitForURL(/\/admin/)
+    await expect(page.getByText("We hit a problem loading this page")).toHaveCount(0)
+  })
+
   test("profile loads for an account created before languages existed", async ({ page }) => {
     await prisma.$executeRaw`UPDATE "User" SET "languages" = NULL WHERE "id" = ${userId}`
     await signIn(page)
