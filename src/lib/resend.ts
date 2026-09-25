@@ -1,6 +1,7 @@
 import "server-only"
 import { Resend } from "resend"
 
+import { SITE } from "@/lib/constants"
 import { formatDay } from "@/lib/guides/availability"
 import { formatDate, formatPrice } from "@/lib/utils"
 
@@ -122,7 +123,7 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
     }
     <p>A trip coordinator will be in touch within one business day to confirm timings and pickup details.</p>
     <p style="margin-top:24px">
-      <a href="${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/account/bookings"
+      <a href="${SITE_URL}/account/bookings"
          style="background:#1d4e89;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:6px;display:inline-block;font-weight:600">
         View my bookings
       </a>
@@ -211,7 +212,7 @@ export async function sendInquiryAcknowledgement(inquiry: {
 // Tour guides
 // ---------------------------------------------------------------------------
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+const SITE_URL = SITE.url.replace(/\/$/, "")
 
 /** Text from travellers and guides goes into HTML email: never trust it raw. */
 function esc(text: string | number | null | undefined): string {

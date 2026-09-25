@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { signOut } from "next-auth/react"
 import {
   BedDouble,
   CalendarCheck,
@@ -20,6 +19,7 @@ import {
   X,
 } from "lucide-react"
 
+import { signOutTo } from "@/lib/sign-out"
 import { cn } from "@/lib/utils"
 
 const ITEMS = [
@@ -84,7 +84,7 @@ export function AdminSidebar({
 
       <button
         type="button"
-        onClick={() => signOut({ callbackUrl: "/" })}
+        onClick={() => signOutTo()}
         className="mt-4 flex items-center gap-3 rounded-lg border-t border-border px-3.5 pt-5 pb-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-destructive"
       >
         <LogOut className="size-4" />

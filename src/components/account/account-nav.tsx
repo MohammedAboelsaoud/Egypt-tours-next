@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { signOut } from "next-auth/react"
 import {
   CalendarCheck,
   Heart,
@@ -12,6 +11,7 @@ import {
   UsersRound,
 } from "lucide-react"
 
+import { signOutTo } from "@/lib/sign-out"
 import { cn } from "@/lib/utils"
 
 const LINKS = [
@@ -57,7 +57,7 @@ export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
 
       <button
         type="button"
-        onClick={() => signOut({ callbackUrl: "/" })}
+        onClick={() => signOutTo()}
         className="flex shrink-0 items-center gap-2.5 rounded-lg px-4 py-3 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive lg:mt-4 lg:border-t lg:border-border lg:pt-4"
       >
         <LogOut className="size-4" />

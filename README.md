@@ -233,8 +233,12 @@ requests → blocked days → review).
 1. Push the repository to GitHub and import it into Vercel.
 2. Provision PostgreSQL (Neon, Supabase or Vercel Postgres) and set
    `DATABASE_URL`.
-3. Add every variable from `.env.example` to the Vercel project.
-   `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` must be your production URL.
+3. Add every variable from `.env.example` to the Vercel project, except
+   `NEXTAUTH_URL`/`AUTH_URL`: leave those unset on Vercel (`trustHost` reads the
+   real address). A stale value there sends Google/Facebook sign-in to the wrong
+   site. Set `NEXT_PUBLIC_SITE_URL` to your live address (e.g.
+   `https://egypt-tours-next.vercel.app`); email links, the sitemap and metadata
+   use it, and it falls back to Vercel's production domain when unset.
 4. The build command is `bun run build` (it runs `prisma generate` first).
 5. **The guide and cash-payment tables and columns are added automatically**
    when a server starts (`src/instrumentation.ts` → `src/lib/db/ensure-schema.ts`,
