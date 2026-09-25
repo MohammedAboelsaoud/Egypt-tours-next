@@ -75,7 +75,7 @@ export default async function AdminBookingDetailPage({
         </div>
         <div className="flex items-center gap-2">
           <BookingStatusBadge status={booking.status} />
-          <PaymentStatusBadge status={booking.paymentStatus} />
+          <PaymentStatusBadge status={booking.paymentStatus} method={booking.paymentMethod} />
         </div>
       </header>
 

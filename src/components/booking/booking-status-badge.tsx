@@ -1,4 +1,4 @@
-import type { BookingStatus, PaymentStatus } from "@prisma/client"
+import type { BookingStatus, PaymentMethod, PaymentStatus } from "@prisma/client"
 
 import { cn } from "@/lib/utils"
 
@@ -41,11 +41,26 @@ export function BookingStatusBadge({
 
 export function PaymentStatusBadge({
   status,
+  method,
   className,
 }: {
   status: PaymentStatus
+  /** A CASH booking still to be paid reads "Cash on the day". */
+  method?: PaymentMethod
   className?: string
 }) {
+  if (method === "CASH" && status === "PENDING") {
+    return (
+      <span
+        className={cn(
+          "inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground",
+          className
+        )}
+      >
+        Cash on the day
+      </span>
+    )
+  }
   return (
     <span
       className={cn(

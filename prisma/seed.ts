@@ -9,6 +9,8 @@
 import { PrismaClient, type Prisma } from "@prisma/client"
 import bcrypt from "bcryptjs"
 
+import { addDays, fromISODate, todayInEgypt } from "../src/lib/guides/availability"
+
 const prisma = new PrismaClient()
 
 const IMG = {
@@ -1075,6 +1077,7 @@ async function main() {
       role: "CUSTOMER",
       phone: "+1 555 0100",
       nationality: "United States",
+      languages: ["English"],
       passwordHash: await bcrypt.hash("Traveller123!", 12),
     },
   })
@@ -1139,6 +1142,8 @@ async function main() {
     console.log("  ✓ demo booking EJ-DEMO01")
   }
 
+  await seedGuides(demo.id)
+
   // Site settings singleton
   await prisma.siteSetting.upsert({
     where: { id: "site" },
@@ -1159,3 +1164,201 @@ main()
   .finally(async () => {
     await prisma.$disconnect()
   })
+
+// ---------------------------------------------------------------------------
+// Tour guides — the three kinds of guide from the static site, as demo
+// profiles, plus one application waiting for approval.
+// ---------------------------------------------------------------------------
+
+const GUIDES = [
+  {
+    email: "guide.amira@example.com",
+    name: "Amira Hassan",
+    slug: "amira-hassan",
+    guideType: "Egyptologist",
+    regions: ["cairo-giza", "luxor-aswan"],
+    bio: "Licensed guide with a university degree in Egyptology. I bring the pyramids, temples and tombs to life: who built them, how, and why. I trained at Cairo University and have guided at Giza, Saqqara and Luxor for nine years.",
+    specialties: [
+      "Pyramids of Giza & Saqqara",
+      "Egyptian Museum & Grand Egyptian Museum",
+      "Karnak, Luxor Temple & the Valley of the Kings",
+      "Reading hieroglyphs on site",
+    ],
+    languages: ["English", "Arabic", "French"],
+    yearsExperience: 9,
+    dayRate: 75,
+    whatsapp: "+20 100 555 0101",
+    licenceNumber: "MOT-EG-20417",
+    status: "APPROVED" as const,
+  },
+  {
+    email: "guide.hamdy@example.com",
+    name: "Hamdy Nour",
+    slug: "hamdy-nour",
+    guideType: "Nubian guide",
+    regions: ["luxor-aswan"],
+    bio: "Born in the Nubian villages of Aswan. Expect felucca rides, a visit to a colourful Nubian home, local food and the story of the Nubian people, told by someone who grew up there.",
+    specialties: [
+      "Philae Temple & Abu Simbel",
+      "Nubian villages & culture",
+      "Felucca trips on the Nile",
+      "Aswan's islands & markets",
+    ],
+    languages: ["English", "Arabic", "Nubian"],
+    yearsExperience: 12,
+    dayRate: 55,
+    whatsapp: "+20 100 555 0102",
+    licenceNumber: "MOT-EG-18852",
+    status: "APPROVED" as const,
+  },
+  {
+    email: "guide.salem@example.com",
+    name: "Salem Abu Mousa",
+    slug: "salem-abu-mousa",
+    guideType: "Bedouin guide",
+    regions: ["sinai-red-sea"],
+    bio: "From the Jebeleya Bedouin of South Sinai. I know the mountains and desert around St. Catherine better than anyone, and a Bedouin guide is required for treks there. I cook a very good dinner under the stars.",
+    specialties: [
+      "Mount Sinai sunrise climb",
+      "Multi-day mountain treks",
+      "Jeep & camel desert trips",
+      "Bedouin dinner under the stars",
+    ],
+    languages: ["English", "Arabic"],
+    yearsExperience: 15,
+    dayRate: null,
+    whatsapp: "+20 100 555 0103",
+    licenceNumber: null,
+    status: "APPROVED" as const,
+  },
+  {
+    email: "guide.youssef@example.com",
+    name: "Youssef Adel",
+    slug: "youssef-adel",
+    guideType: "Local guide",
+    regions: ["north-coast"],
+    bio: "Alexandria-born guide for El Alamein and the North Coast: the war cemeteries and museum, Marsa Matrouh's bays and the best fish in Sidi Abdel Rahman.",
+    specialties: ["El Alamein battlefields & museum", "Marsa Matrouh beaches"],
+    languages: ["English", "Arabic", "German"],
+    yearsExperience: 4,
+    dayRate: 45,
+    whatsapp: "+20 100 555 0104",
+    licenceNumber: null,
+    status: "PENDING" as const,
+  },
+]
+
+async function seedGuides(demoTravellerId: string) {
+  const passwordHash = await bcrypt.hash("Guide123!", 12)
+  const regions = await prisma.region.findMany({ select: { id: true, slug: true } })
+  const regionId = new Map(regions.map((r) => [r.slug, r.id]))
+  const ids = new Map<string, string>()
+
+  for (const g of GUIDES) {
+    const user = await prisma.user.upsert({
+      where: { email: g.email },
+      update: {},
+      create: {
+        email: g.email,
+        name: g.name,
+        role: "GUIDE",
+        phone: g.whatsapp,
+        languages: g.languages,
+        passwordHash,
+      },
+    })
+    const connect = g.regions.map((slug) => ({ id: regionId.get(slug)! })).filter((r) => r.id)
+    const profile = await prisma.guideProfile.upsert({
+      where: { slug: g.slug },
+      update: {},
+      create: {
+        userId: user.id,
+        slug: g.slug,
+        displayName: g.name,
+        guideType: g.guideType,
+        bio: g.bio,
+        specialties: g.specialties,
+        languages: g.languages,
+        yearsExperience: g.yearsExperience,
+        dayRate: g.dayRate,
+        whatsapp: g.whatsapp,
+        licenceNumber: g.licenceNumber,
+        status: g.status,
+        regions: { connect },
+      },
+    })
+    ids.set(g.slug, profile.id)
+  }
+  console.log(`  ✓ ${GUIDES.length} guides (password Guide123!)`)
+
+  // Past trips, relative to today so the demo never goes stale.
+  const today = todayInEgypt()
+  const reviewer = await prisma.user.upsert({
+    where: { email: "claire.martin@example.com" },
+    update: {},
+    create: {
+      email: "claire.martin@example.com",
+      name: "Claire Martin",
+      role: "CUSTOMER",
+      phone: "+33 6 12 34 56 78",
+      nationality: "France",
+      languages: ["French", "English"],
+      passwordHash: await bcrypt.hash("Traveller123!", 12),
+    },
+  })
+
+  const trips = [
+    {
+      reference: "GR-DEMO01",
+      guide: "amira-hassan",
+      touristId: reviewer.id,
+      start: addDays(today, -60),
+      end: addDays(today, -58),
+      review: {
+        rating: 5,
+        comment: "Amira read the hieroglyphs at Saqqara as if they were a newspaper. Three days, and my teenagers asked questions the whole time.",
+      },
+    },
+    {
+      reference: "GR-DEMO02",
+      guide: "hamdy-nour",
+      touristId: reviewer.id,
+      start: addDays(today, -45),
+      end: addDays(today, -45),
+      review: {
+        rating: 5,
+        comment: "Lunch in his aunt's house on Elephantine Island was the best meal of our trip. Warm, funny and full of stories.",
+      },
+    },
+    // The demo traveller's finished trip, left unreviewed so the review form shows.
+    { reference: "GR-DEMO03", guide: "hamdy-nour", touristId: demoTravellerId, start: addDays(today, -20), end: addDays(today, -19), review: null },
+  ]
+
+  for (const t of trips) {
+    const guideId = ids.get(t.guide)
+    if (!guideId) continue
+    const request = await prisma.guideRequest.upsert({
+      where: { reference: t.reference },
+      update: {},
+      create: {
+        reference: t.reference,
+        guideId,
+        touristId: t.touristId,
+        startDate: fromISODate(t.start),
+        endDate: fromISODate(t.end),
+        groupSize: 2,
+        message: "Private day with plenty of time at each site, please.",
+        status: "ACCEPTED",
+        respondedAt: fromISODate(addDays(t.start, -10)),
+      },
+    })
+    if (t.review) {
+      await prisma.guideReview.upsert({
+        where: { requestId: request.id },
+        update: {},
+        create: { guideId, touristId: t.touristId, requestId: request.id, ...t.review },
+      })
+    }
+  }
+  console.log("  ✓ demo guide trips and reviews")
+}

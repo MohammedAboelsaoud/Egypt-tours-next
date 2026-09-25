@@ -10,6 +10,8 @@ export default async function AccountLayout({
 }) {
   const session = await auth()
   if (!session?.user) redirect("/login?callbackUrl=/account")
+  // Guides have their own dashboard; the traveller area isn't for them.
+  if (session.user.role === "GUIDE") redirect("/guide")
 
   return (
     <div className="border-b border-border bg-limestone">

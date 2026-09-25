@@ -27,11 +27,14 @@ export function ImageUpload({
   label,
   defaultValue = "",
   required = false,
+  allowUrl = true,
 }: {
   name: string
   label: string
   defaultValue?: string
   required?: boolean
+  /** Show the paste-a-URL field. Off for guides, who may only upload. */
+  allowUrl?: boolean
 }) {
   const [value, setValue] = useState(defaultValue)
   const [busy, setBusy] = useState(false)
@@ -102,18 +105,27 @@ export function ImageUpload({
         </div>
 
         <div className="flex-1">
-          <Input
-            id={`${name}-url`}
-            value={value}
-            onChange={(event) => setValue(event.target.value)}
-            placeholder="/img/example.jpg or https://…"
-            className="h-11"
-          />
-          <p className="mt-2 text-xs text-muted-foreground">
-            Upload a file, or paste a URL or a path from{" "}
-            <code className="rounded bg-muted px-1">/public</code>. JPEG, PNG,
-            WebP or AVIF, up to 8MB.
-          </p>
+          {allowUrl ? (
+            <>
+              <Input
+                id={`${name}-url`}
+                value={value}
+                onChange={(event) => setValue(event.target.value)}
+                placeholder="/img/example.jpg or https://…"
+                className="h-11"
+              />
+              <p className="mt-2 text-xs text-muted-foreground">
+                Upload a file, or paste a URL or a path from{" "}
+                <code className="rounded bg-muted px-1">/public</code>. JPEG,
+                PNG, WebP or AVIF, up to 8MB.
+              </p>
+            </>
+          ) : (
+            <p id={`${name}-url`} className="text-sm text-muted-foreground">
+              Click the box or drop a photo onto it. JPEG, PNG, WebP or AVIF, up
+              to 8MB. A clear, friendly face photo gets the most requests.
+            </p>
+          )}
 
           <input
             ref={inputRef}

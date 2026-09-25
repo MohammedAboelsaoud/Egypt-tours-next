@@ -14,10 +14,42 @@ import { toNumber } from "@/lib/utils"
 export async function markBookingPaid(bookingId: string, paymentId: string) {
   const { count } = await prisma.booking.updateMany({
     where: { id: bookingId, paymentStatus: "PENDING" },
-    data: { status: "CONFIRMED", paymentStatus: "PAID", paymentId },
+    data: { status: "CONFIRMED", paymentStatus: "PAID", paymentMethod: "CARD", paymentId },
   })
 
-  const booking = await prisma.booking.findUnique({
+  const booking = await loadBooking(bookingId)
+  if (!booking) return null
+
+  // Another caller already confirmed it.
+  if (count === 0) return booking.reference
+
+  await sendBookingEmails(booking)
+  return booking.reference
+}
+
+/**
+ * Confirms a booking the traveller will pay for in cash on the day. Payment
+ * stays PENDING until an admin marks it PAID. Only the owner's own unpaid,
+ * unconfirmed booking can be switched, and only once.
+ */
+export async function reserveBookingForCash(bookingId: string, userId: string) {
+  const { count } = await prisma.booking.updateMany({
+    where: { id: bookingId, userId, status: "PENDING", paymentStatus: "PENDING" },
+    data: { status: "CONFIRMED", paymentMethod: "CASH" },
+  })
+  if (count === 0) return null
+
+  const booking = await loadBooking(bookingId)
+  if (!booking) return null
+
+  await sendBookingEmails(booking)
+  return booking.reference
+}
+
+type BookingWithItem = NonNullable<Awaited<ReturnType<typeof loadBooking>>>
+
+function loadBooking(bookingId: string) {
+  return prisma.booking.findUnique({
     where: { id: bookingId },
     include: {
       user: { select: { name: true, email: true } },
@@ -26,11 +58,9 @@ export async function markBookingPaid(bookingId: string, paymentId: string) {
       car: { select: { name: true } },
     },
   })
-  if (!booking) return null
+}
 
-  // Another caller already confirmed it.
-  if (count === 0) return booking.reference
-
+async function sendBookingEmails(booking: BookingWithItem) {
   const emailData = {
     reference: booking.reference,
     itemName:
@@ -49,6 +79,7 @@ export async function markBookingPaid(bookingId: string, paymentId: string) {
     customerName: booking.contactName ?? booking.user.name ?? "Traveller",
     customerEmail: booking.contactEmail ?? booking.user.email ?? "",
     specialRequests: booking.specialRequests,
+    paymentMethod: booking.paymentMethod,
   }
 
   // Email failures must not undo a successful payment.
@@ -56,6 +87,4 @@ export async function markBookingPaid(bookingId: string, paymentId: string) {
     sendBookingConfirmation(emailData),
     sendAdminBookingAlert(emailData),
   ])
-
-  return booking.reference
 }

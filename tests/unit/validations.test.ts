@@ -14,10 +14,22 @@ describe("registerSchema", () => {
     email: "sarah@example.com",
     password: "supersecret",
     confirmPassword: "supersecret",
+    phone: "+44 7700 900123",
+    nationality: "United Kingdom",
+    languages: ["English"],
   }
 
   it("accepts a well-formed registration", () => {
     expect(registerSchema.safeParse(valid).success).toBe(true)
+  })
+
+  it("requires phone, nationality and at least one language, but not a passport", () => {
+    expect(registerSchema.safeParse({ ...valid, phone: "" }).success).toBe(false)
+    expect(registerSchema.safeParse({ ...valid, phone: "call me maybe" }).success).toBe(false)
+    expect(registerSchema.safeParse({ ...valid, nationality: "" }).success).toBe(false)
+    expect(registerSchema.safeParse({ ...valid, languages: [] }).success).toBe(false)
+    expect(registerSchema.safeParse({ ...valid, passportNo: "" }).success).toBe(true)
+    expect(registerSchema.safeParse({ ...valid, passportNo: "123456789" }).success).toBe(true)
   })
 
   it("rejects mismatched passwords", () => {

@@ -15,6 +15,7 @@ export const NAV_LINKS = [
   { href: "/tours", label: "Tours" },
   { href: "/hotels", label: "Hotels" },
   { href: "/car-rentals", label: "Car Rentals" },
+  { href: "/guides", label: "Guides" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const
@@ -26,6 +27,7 @@ export const ADMIN_NAV = [
   { href: "/admin/hotels", label: "Hotels", icon: "BedDouble" },
   { href: "/admin/cars", label: "Cars", icon: "Car" },
   { href: "/admin/regions", label: "Regions", icon: "Globe" },
+  { href: "/admin/guides", label: "Guides", icon: "UsersRound" },
   { href: "/admin/inquiries", label: "Inquiries", icon: "Inbox" },
   { href: "/admin/reviews", label: "Reviews", icon: "Star" },
   { href: "/admin/settings", label: "Settings", icon: "Settings" },
@@ -88,3 +90,27 @@ export const NATIONALITIES = [
 
 /** Fallback map centre — Egypt. */
 export const EGYPT_CENTER = { lat: 26.8206, lng: 30.8025 }
+
+export const GUIDE_TYPES = [
+  "Egyptologist",
+  "Nubian guide",
+  "Bedouin guide",
+  "Local guide",
+] as const
+
+/** Languages travellers and guides pick from. */
+export const LANGUAGES = [
+  "English",
+  "Arabic",
+  "French",
+  "German",
+  "Spanish",
+  "Italian",
+  "Russian",
+  "Portuguese",
+  "Dutch",
+  "Chinese",
+  "Japanese",
+  "Korean",
+  "Nubian",
+] as const

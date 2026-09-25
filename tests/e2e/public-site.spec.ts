@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test"
+import { PrismaClient } from "@prisma/client"
 
 test.describe("public site", () => {
   test("homepage shows the hero, destinations and featured tours", async ({
@@ -95,6 +96,31 @@ test.describe("public site", () => {
     await expect(page.getByText(/Thank you — it's sent/i)).toBeVisible({
       timeout: 30_000,
     })
+  })
+
+  test("contact form takes start and end dates from date pickers", async ({ page }) => {
+    const email = `dates-${Date.now()}@example.com`
+    await page.goto("/contact")
+    await page.fill("#name", "Date Picker")
+    await page.fill("#email", email)
+    await page.fill("#startDate", "2027-03-12")
+    await page.fill("#endDate", "2027-03-10")
+    await page.fill("#message", "Checking that the end date can't be before the start date.")
+    await page.getByRole("button", { name: /Send enquiry/ }).click()
+    await expect(page.getByText(/end date must be on or after/i)).toBeVisible()
+
+    await page.fill("#endDate", "2027-03-20")
+    await page.getByRole("button", { name: /Send enquiry/ }).click()
+    await expect(page.getByText(/Thank you — it's sent/i)).toBeVisible({ timeout: 30_000 })
+
+    const prisma = new PrismaClient()
+    try {
+      const inquiry = await prisma.inquiry.findFirst({ where: { email } })
+      expect(inquiry?.travelDates).toBe("12 Mar 2027 – 20 Mar 2027 (9 days)")
+      await prisma.inquiry.deleteMany({ where: { email } })
+    } finally {
+      await prisma.$disconnect()
+    }
   })
 
   test("serves a sitemap and robots.txt", async ({ request }) => {

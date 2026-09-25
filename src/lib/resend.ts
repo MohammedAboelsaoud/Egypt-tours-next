@@ -1,6 +1,7 @@
 import "server-only"
 import { Resend } from "resend"
 
+import { formatDay } from "@/lib/guides/availability"
 import { formatDate, formatPrice } from "@/lib/utils"
 
 const API_KEY = process.env.RESEND_API_KEY ?? ""
@@ -89,19 +90,31 @@ export type BookingEmailData = {
   customerName: string
   customerEmail: string
   specialRequests?: string | null
+  /** CASH bookings are confirmed now and paid on the day. */
+  paymentMethod?: "CARD" | "CASH"
 }
 
 export async function sendBookingConfirmation(booking: BookingEmailData) {
   const details = `
-    <p>Hi ${booking.customerName}, your booking is confirmed and paid. We have you down for:</p>
+    <p>Hi ${booking.customerName}, your booking is confirmed${
+      booking.paymentMethod === "CASH" ? "" : " and paid"
+    }. We have you down for:</p>
     <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
       ${row("Booking reference", booking.reference)}
       ${row(booking.itemType, booking.itemName)}
       ${row("Start", formatDate(booking.checkIn, "long"))}
       ${row("End", formatDate(booking.checkOut, "long"))}
       ${row("Guests", String(booking.guests))}
-      ${row("Total paid", formatPrice(booking.totalPrice, booking.currency))}
+      ${row(
+        booking.paymentMethod === "CASH" ? "To pay in cash on the day" : "Total paid",
+        formatPrice(booking.totalPrice, booking.currency)
+      )}
     </table>
+    ${
+      booking.paymentMethod === "CASH"
+        ? `<p>You chose to pay in cash. Please have the amount ready on the first day; your coordinator will confirm who to pay and when.</p>`
+        : ""
+    }
     ${
       booking.specialRequests
         ? `<p style="color:#5a6170"><strong>Your notes:</strong> ${booking.specialRequests}</p>`
@@ -124,7 +137,11 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
 
 export async function sendAdminBookingAlert(booking: BookingEmailData) {
   const details = `
-    <p>A new booking has been paid.</p>
+    <p>${
+      booking.paymentMethod === "CASH"
+        ? "A new booking has been reserved. <strong>Payment: cash on the day</strong> — mark it paid in the admin once collected."
+        : "A new booking has been paid."
+    }</p>
     <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
       ${row("Reference", booking.reference)}
       ${row("Customer", `${booking.customerName} (${booking.customerEmail})`)}
@@ -186,6 +203,155 @@ export async function sendInquiryAcknowledgement(inquiry: {
        and reply within one business day with a first draft itinerary and pricing.</p>
        <p>If anything is urgent, reply to this email and it will reach the same person.</p>
        <p style="margin-top:20px;color:#5a6170">— The Egypt Journeys team</p>`
+    ),
+  })
+}
+
+// ---------------------------------------------------------------------------
+// Tour guides
+// ---------------------------------------------------------------------------
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+
+/** Text from travellers and guides goes into HTML email: never trust it raw. */
+function esc(text: string | number | null | undefined): string {
+  return String(text ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+}
+
+function button(href: string, label: string) {
+  return `<p style="margin-top:24px">
+    <a href="${SITE_URL}${href}"
+       style="background:#1d4e89;color:#ffffff;text-decoration:none;padding:11px 20px;border-radius:6px;display:inline-block;font-weight:600">${esc(label)}</a>
+  </p>`
+}
+
+export type GuideRequestEmail = {
+  reference: string
+  guideName: string
+  guideEmail: string
+  touristName: string
+  touristEmail: string
+  startDate: Date | string
+  endDate: Date | string
+  groupSize: number
+  message?: string
+  reply?: string | null
+}
+
+function tripRows(r: GuideRequestEmail) {
+  return `<table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
+    ${row("Reference", esc(r.reference))}
+    ${row("Dates", `${esc(formatDay(r.startDate, "long"))} – ${esc(formatDay(r.endDate, "long"))}`)}
+    ${row("Travellers", esc(r.groupSize))}
+  </table>`
+}
+
+export async function sendGuideNewRequest(r: GuideRequestEmail) {
+  return send({
+    to: r.guideEmail,
+    subject: `New request from ${r.touristName} — ${r.reference}`,
+    html: shell(
+      "You have a new trip request",
+      `<p>Hi ${esc(r.guideName)}, ${esc(r.touristName)} would like you to guide them.</p>
+       ${tripRows(r)}
+       <p style="white-space:pre-wrap">${esc(r.message)}</p>
+       <p style="color:#5a6170">Please answer within 48 hours. After that the request lapses and the traveller is asked to choose another guide.</p>
+       ${button("/guide/requests", "Accept or decline")}`
+    ),
+  })
+}
+
+export async function sendGuideRequestAccepted(r: GuideRequestEmail) {
+  return send({
+    to: r.touristEmail,
+    subject: `${r.guideName} accepted your request — ${r.reference}`,
+    html: shell(
+      "Your guide is confirmed",
+      `<p>Hi ${esc(r.touristName)}, good news: ${esc(r.guideName)} will guide you.</p>
+       ${tripRows(r)}
+       ${r.reply ? `<p><strong>${esc(r.guideName)} says:</strong></p><p style="white-space:pre-wrap">${esc(r.reply)}</p>` : ""}
+       <p>Your guide's phone, WhatsApp and email are now in your account, so you can agree the programme and the fee directly.</p>
+       ${button("/account/guides", "See your guide's contact details")}`
+    ),
+  })
+}
+
+export async function sendGuideRequestDeclined(
+  r: GuideRequestEmail & { reason: "declined" | "booked" | "expired" }
+) {
+  const lead =
+    r.reason === "booked"
+      ? `${esc(r.guideName)} has been booked by another group on those dates.`
+      : r.reason === "expired"
+        ? `${esc(r.guideName)} didn't answer in time, so your request has lapsed.`
+        : `${esc(r.guideName)} can't take your trip this time.`
+  return send({
+    to: r.touristEmail,
+    subject: `Your guide request ${r.reference} — let's find you another guide`,
+    html: shell(
+      "Let's find you another guide",
+      `<p>Hi ${esc(r.touristName)}, ${lead}</p>
+       ${tripRows(r)}
+       ${r.reply ? `<p style="white-space:pre-wrap">${esc(r.reply)}</p>` : ""}
+       <p>Other guides may well be free on your dates.</p>
+       ${button(`/guides?from=${formatISO(r.startDate)}&to=${formatISO(r.endDate)}`, "See guides free on your dates")}`
+    ),
+  })
+}
+
+export async function sendGuideApplicationToAdmin(guide: { displayName: string; email: string; guideType: string }) {
+  return send({
+    to: ADMIN_EMAIL,
+    subject: `New guide application: ${guide.displayName}`,
+    html: shell(
+      "A guide wants to join",
+      `<p>${esc(guide.displayName)} (${esc(guide.guideType)}, ${esc(guide.email)}) has applied. Their profile stays hidden until you approve it.</p>
+       ${button("/admin/guides", "Review the application")}`
+    ),
+    replyTo: guide.email,
+  })
+}
+
+export async function sendGuideStatusChange(guide: {
+  displayName: string
+  email: string
+  status: "APPROVED" | "REJECTED" | "SUSPENDED"
+  note?: string | null
+}) {
+  const copy = {
+    APPROVED: ["You're live on Egypt Journeys", "Your profile is approved and travellers can now find and request you. Keep your calendar up to date so you only get requests you can take."],
+    REJECTED: ["About your guide application", "We couldn't approve your profile yet."],
+    SUSPENDED: ["Your guide profile is paused", "Your profile is hidden from travellers for now."],
+  }[guide.status]
+  return send({
+    to: guide.email,
+    subject: copy[0],
+    html: shell(
+      copy[0],
+      `<p>Hi ${esc(guide.displayName)}, ${copy[1]}</p>
+       ${guide.note ? `<p><strong>Note from our team:</strong> ${esc(guide.note)}</p>` : ""}
+       ${button("/guide", "Open your guide dashboard")}`
+    ),
+  })
+}
+
+function formatISO(date: Date | string) {
+  return (typeof date === "string" ? new Date(date) : date).toISOString().slice(0, 10)
+}
+
+export async function sendGuideTripCancelled(r: GuideRequestEmail) {
+  return send({
+    to: r.guideEmail,
+    subject: `Trip cancelled — ${r.reference}`,
+    html: shell(
+      "A traveller cancelled their trip",
+      `<p>Hi ${esc(r.guideName)}, ${esc(r.touristName)} has cancelled this trip. The days are free again on your calendar.</p>
+       ${tripRows(r)}
+       ${button("/guide/calendar", "Open your calendar")}`
     ),
   })
 }

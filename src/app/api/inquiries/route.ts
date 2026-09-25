@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { isAdmin } from "@/lib/auth"
+import { describeDateRange } from "@/lib/guides/availability"
 import { prisma } from "@/lib/prisma"
 import {
   sendInquiryAcknowledgement,
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
       email: data.email.toLowerCase(),
       phone: data.phone || null,
       destination: data.destination || null,
-      travelDates: data.travelDates || null,
+      travelDates: describeDateRange(data.startDate, data.endDate) || data.travelDates || null,
       partySize: data.partySize || null,
       message: data.message,
       planTitle: data.planTitle || null,

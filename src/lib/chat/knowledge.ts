@@ -12,7 +12,7 @@ async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listing
   const published = { published: true, region: { published: true } }
   const region = { select: { slug: true, name: true } }
 
-  const [regions, tours, hotels, cars] = await Promise.all([
+  const [regions, tours, hotels, cars, guides] = await Promise.all([
     prisma.region.findMany({
       where: { published: true },
       orderBy: { sortOrder: "asc" },
@@ -21,6 +21,10 @@ async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listing
     prisma.tour.findMany({ where: published, include: { region } }),
     prisma.hotel.findMany({ where: published, include: { region } }),
     prisma.car.findMany({ where: { ...published, available: true }, include: { region } }),
+    prisma.guideProfile.findMany({
+      where: { status: "APPROVED" },
+      include: { regions: { select: { slug: true, name: true, imageUrl: true } } },
+    }),
   ])
 
   const listings: ChatListing[] = [
@@ -73,6 +77,26 @@ async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listing
       carType: c.type,
       searchText: `${c.name} ${c.brand} ${c.model} ${c.type} ${c.features.join(" ")}`.toLowerCase(),
     })),
+    // A guide covering several regions is listed once per region, so a
+    // region search finds them; the widget shows each card once.
+    ...guides.flatMap((g) =>
+      g.regions.map((r) => ({
+        kind: "guide" as const,
+        slug: g.slug,
+        title: g.displayName,
+        href: `/guides/${g.slug}`,
+        imageUrl: g.photoUrl ?? r.imageUrl,
+        regionSlug: r.slug,
+        regionName: g.regions.map((x) => x.name).join(" · "),
+        price: g.dayRate === null ? 0 : toNumber(g.dayRate),
+        currency: g.currency,
+        unit: g.dayRate === null ? "fee agreed per trip" : "per day",
+        detail: `${g.guideType} · ${g.languages.join(", ")}`,
+        capacity: 60,
+        languages: g.languages,
+        searchText: `${g.displayName} ${g.guideType} ${g.specialties.join(" ")} ${g.languages.join(" ")}`.toLowerCase(),
+      }))
+    ),
   ]
 
   return { regions, listings }

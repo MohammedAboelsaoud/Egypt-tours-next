@@ -21,6 +21,7 @@ export async function updateProfile(
     name: formData.get("name"),
     phone: formData.get("phone"),
     nationality: formData.get("nationality"),
+    languages: formData.getAll("languages").map(String),
     passportNo: formData.get("passportNo"),
   })
 
@@ -37,6 +38,7 @@ export async function updateProfile(
       name: parsed.data.name,
       phone: parsed.data.phone || null,
       nationality: parsed.data.nationality || null,
+      languages: parsed.data.languages,
       passportNo: parsed.data.passportNo || null,
     },
   })

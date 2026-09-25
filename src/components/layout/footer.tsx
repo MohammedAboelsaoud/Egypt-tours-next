@@ -9,6 +9,7 @@ const EXPLORE = [
   { href: "/tours", label: "Tours" },
   { href: "/hotels", label: "Hotels" },
   { href: "/car-rentals", label: "Car Rentals" },
+  { href: "/guides", label: "Tour guides" },
 ]
 
 const COMPANY = [
@@ -16,6 +17,7 @@ const COMPANY = [
   { href: "/faq", label: "FAQ" },
   { href: "/contact", label: "Contact" },
   { href: "/account/bookings", label: "My bookings" },
+  { href: "/guides/join", label: "For guides" },
 ]
 
 const REGIONS = [

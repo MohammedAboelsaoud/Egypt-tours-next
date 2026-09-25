@@ -13,6 +13,22 @@ datasource db {
 enum Role {
   ADMIN
   CUSTOMER
+  GUIDE
+}
+
+enum GuideStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+enum GuideRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+  EXPIRED
 }
 
 enum BookingStatus {
@@ -20,6 +36,11 @@ enum BookingStatus {
   CONFIRMED
   CANCELLED
   COMPLETED
+}
+
+enum PaymentMethod {
+  CARD
+  CASH
 }
 
 enum PaymentStatus {
@@ -35,23 +56,28 @@ enum BookingType {
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String         @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?        @unique
   emailVerified DateTime?
   image         String?
   passwordHash  String?
-  role          Role       @default(CUSTOMER)
+  role          Role           @default(CUSTOMER)
   phone         String?
   nationality   String?
   passportNo    String?
+  /// Languages the traveller speaks, used to match them with a guide.
+  languages     String[]
   accounts      Account[]
   sessions      Session[]
   bookings      Booking[]
   reviews       Review[]
   wishlists     Wishlist[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  guideProfile  GuideProfile?
+  guideRequests GuideRequest[]
+  guideReviews  GuideReview[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 }
 
 model Account {
@@ -89,23 +115,24 @@ model VerificationToken {
 }
 
 model Region {
-  id        String   @id @default(cuid())
-  slug      String   @unique
+  id        String         @id @default(cuid())
+  slug      String         @unique
   name      String
-  tagline   String   @default("")
-  summary   String   @db.Text
+  tagline   String         @default("")
+  summary   String         @db.Text
   cities    String[]
   imageUrl  String
   lat       Float?
   lng       Float?
-  zoom      Int      @default(7)
-  sortOrder Int      @default(0)
-  published Boolean  @default(true)
+  zoom      Int            @default(7)
+  sortOrder Int            @default(0)
+  published Boolean        @default(true)
   tours     Tour[]
   hotels    Hotel[]
   cars      Car[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  guides    GuideProfile[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model Tour {
@@ -214,6 +241,8 @@ model Booking {
   status          BookingStatus @default(PENDING)
   paymentId       String?
   paymentStatus   PaymentStatus @default(PENDING)
+  /// CASH: reserved now, paid in cash on the day; an admin marks it PAID.
+  paymentMethod   PaymentMethod @default(CARD)
   contactName     String?
   contactEmail    String?
   contactPhone    String?
@@ -277,5 +306,86 @@ model SiteSetting {
   address        String   @default("Zamalek, Cairo, Egypt")
   facebookUrl    String   @default("")
   instagramUrl   String   @default("")
-  updatedAt      DateTime @updatedAt @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+}
+
+/// A tour guide's public profile. Visible to travellers once an admin approves it.
+model GuideProfile {
+  id              String            @id @default(cuid())
+  userId          String            @unique
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug            String            @unique
+  displayName     String
+  guideType       String
+  bio             String            @db.Text
+  photoUrl        String?
+  licenceNumber   String?
+  yearsExperience Int               @default(0)
+  languages       String[]
+  specialties     String[]
+  regions         Region[]
+  dayRate         Decimal?          @db.Decimal(10, 2)
+  currency        String            @default("USD")
+  whatsapp        String
+  status          GuideStatus       @default(PENDING)
+  adminNote       String?
+  blockedDays     GuideBlockedDay[]
+  requests        GuideRequest[]
+  reviews         GuideReview[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([status])
+}
+
+/// A day the guide has marked as unavailable (holiday, outside work).
+model GuideBlockedDay {
+  id      String       @id @default(cuid())
+  guideId String
+  guide   GuideProfile @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  date    DateTime     @db.Date
+
+  @@unique([guideId, date])
+}
+
+/// A traveller asking a guide for a run of whole days. Only ACCEPTED requests
+/// occupy the guide's calendar.
+model GuideRequest {
+  id          String             @id @default(cuid())
+  reference   String             @unique
+  guideId     String
+  guide       GuideProfile       @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  touristId   String
+  tourist     User               @relation(fields: [touristId], references: [id], onDelete: Cascade)
+  /// First and last day of the trip, both inclusive.
+  startDate   DateTime           @db.Date
+  endDate     DateTime           @db.Date
+  groupSize   Int
+  message     String             @db.Text
+  status      GuideRequestStatus @default(PENDING)
+  guideReply  String?            @db.Text
+  respondedAt DateTime?
+  review      GuideReview?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+
+  @@index([guideId, status, startDate])
+  @@index([touristId])
+}
+
+/// One review per completed trip, shown immediately; admins can hide abuse.
+model GuideReview {
+  id        String       @id @default(cuid())
+  guideId   String
+  guide     GuideProfile @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  touristId String
+  tourist   User         @relation(fields: [touristId], references: [id], onDelete: Cascade)
+  requestId String       @unique
+  request   GuideRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String       @db.Text
+  hidden    Boolean      @default(false)
+  createdAt DateTime     @default(now())
+
+  @@index([guideId])
 }

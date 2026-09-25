@@ -107,6 +107,35 @@ test.describe("booking flow", () => {
     await expect(page.getByText("Paid").first()).toBeVisible()
   })
 
+  test("books now and pays in cash on the day", async ({ page }) => {
+    await signIn(page)
+
+    await page.goto("/car-rentals/vw-passat-sedan-cairo")
+    await page.getByRole("link", { name: "Book now" }).click()
+    await expect(page).toHaveURL(/\/book\/car\//)
+
+    await page.getByRole("button", { name: "Continue" }).click()
+    await expect(page.getByText("Who is travelling?")).toBeVisible()
+    await page.fill("#contactPhone", "+1 555 0100")
+    await page.selectOption("#nationality", "United States")
+    await page.getByRole("button", { name: "Review booking" }).click()
+
+    await page.locator("label").filter({ hasText: "I accept the booking terms" }).click()
+    await page.getByRole("button", { name: /Continue to payment/ }).click()
+    await expect(page.getByRole("heading", { name: "Payment" })).toBeVisible({ timeout: 30_000 })
+
+    await page.getByText("Pay in cash on the day").click()
+    await page.getByRole("button", { name: "Confirm booking, pay in cash" }).click()
+
+    await expect(page.getByRole("heading", { name: /Your booking is confirmed/i })).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByText("To pay in cash on the day")).toBeVisible()
+    const reference = String(await page.getByText(/^EJ-[A-Z0-9]{6}$/).first().textContent()).trim()
+
+    await page.goto("/account/bookings")
+    const row = page.locator("article, li, tr").filter({ hasText: reference }).first()
+    await expect(row.getByText("Cash on the day")).toBeVisible()
+  })
+
   test("prices a hotel stay per night", async ({ page }) => {
     await signIn(page)
 

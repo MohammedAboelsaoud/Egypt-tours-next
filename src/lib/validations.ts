@@ -1,5 +1,18 @@
 import { z } from "zod"
 
+/** A phone or WhatsApp number: digits with optional +, spaces, dashes and brackets. */
+const phoneField = z
+  .string()
+  .trim()
+  .min(6, "Enter a phone or WhatsApp number")
+  .max(30)
+  .regex(/^\+?[\d\s()-]+$/, "Use digits, spaces and an optional + only")
+
+const languagesField = z
+  .array(z.string().min(2).max(40))
+  .min(1, "Choose at least one language")
+  .max(10)
+
 export const registerSchema = z
   .object({
     name: z.string().min(2, "Please enter your full name").max(80),
@@ -9,6 +22,10 @@ export const registerSchema = z
       .min(8, "Password must be at least 8 characters")
       .max(72, "Password is too long"),
     confirmPassword: z.string(),
+    phone: phoneField,
+    nationality: z.string().min(2, "Select your nationality").max(60),
+    languages: languagesField,
+    passportNo: z.string().max(40).optional().or(z.literal("")),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -22,21 +39,36 @@ export const loginSchema = z.object({
 
 export const profileSchema = z.object({
   name: z.string().min(2, "Please enter your full name").max(80),
-  phone: z.string().max(30).optional().or(z.literal("")),
+  phone: phoneField.optional().or(z.literal("")),
   nationality: z.string().max(60).optional().or(z.literal("")),
+  languages: z.array(z.string().min(2).max(40)).max(10).default([]),
   passportNo: z.string().max(40).optional().or(z.literal("")),
 })
 
-export const inquirySchema = z.object({
-  name: z.string().min(2, "Please enter your name").max(80),
-  email: z.email("Enter a valid email address"),
-  phone: z.string().max(30).optional().or(z.literal("")),
-  destination: z.string().max(80).optional().or(z.literal("")),
-  travelDates: z.string().max(80).optional().or(z.literal("")),
-  partySize: z.string().max(30).optional().or(z.literal("")),
-  message: z.string().min(10, "Tell us a little more (10+ characters)").max(2000),
-  planTitle: z.string().max(160).optional().or(z.literal("")),
-})
+const optionalDay = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a date")
+  .optional()
+  .or(z.literal(""))
+
+export const inquirySchema = z
+  .object({
+    name: z.string().min(2, "Please enter your name").max(80),
+    email: z.email("Enter a valid email address"),
+    phone: z.string().max(30).optional().or(z.literal("")),
+    destination: z.string().max(80).optional().or(z.literal("")),
+    /** Free text, for older clients. New forms send startDate / endDate. */
+    travelDates: z.string().max(80).optional().or(z.literal("")),
+    startDate: optionalDay,
+    endDate: optionalDay,
+    partySize: z.string().max(30).optional().or(z.literal("")),
+    message: z.string().min(10, "Tell us a little more (10+ characters)").max(2000),
+    planTitle: z.string().max(160).optional().or(z.literal("")),
+  })
+  .refine((d) => !d.startDate || !d.endDate || d.endDate >= d.startDate, {
+    message: "The end date must be on or after the start date",
+    path: ["endDate"],
+  })
 
 export const bookingDatesSchema = z
   .object({
@@ -205,3 +237,93 @@ export const chatRequestSchema = z.object({
     .min(1, "Type a question first")
     .max(500, "Keep questions under 500 characters"),
 })
+
+// ---------------------------------------------------------------------------
+// Tour guides
+// ---------------------------------------------------------------------------
+
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a date")
+
+export const guideProfileSchema = z.object({
+  displayName: z.string().trim().min(2, "Enter the name travellers will see").max(80),
+  guideType: z.string().min(2, "Choose the kind of guide you are").max(40),
+  bio: z
+    .string()
+    .trim()
+    .min(60, "Tell travellers a little more about you (60+ characters)")
+    .max(2000),
+  // Only uploaded photos: next/image cannot render arbitrary hosts.
+  photoUrl: z
+    .string()
+    .max(500)
+    .refine(
+      (url) =>
+        url === "" ||
+        url.startsWith("/uploads/") ||
+        url.startsWith("/img/") ||
+        url.startsWith("https://res.cloudinary.com/"),
+      "Upload your photo using the box"
+    )
+    .optional()
+    .or(z.literal("")),
+  licenceNumber: z.string().trim().max(60).optional().or(z.literal("")),
+  yearsExperience: z.coerce.number().int().min(0).max(60),
+  languages: languagesField,
+  specialties: z
+    .array(z.string().trim().min(2).max(80))
+    .min(1, "Add at least one specialty")
+    .max(12),
+  regionIds: z.array(z.string().min(1)).min(1, "Choose where you guide").max(10),
+  dayRate: z.coerce.number().min(0).max(5000).optional().nullable(),
+  whatsapp: phoneField,
+})
+
+export const guideSignupSchema = z
+  .object({
+    name: z.string().min(2, "Please enter your full name").max(80),
+    email: z.email("Enter a valid email address"),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .max(72, "Password is too long"),
+    confirmPassword: z.string(),
+    profile: guideProfileSchema,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  })
+
+export const guideRequestSchema = z.object({
+  guideId: z.string().min(1),
+  startDate: isoDate,
+  endDate: isoDate,
+  groupSize: z.coerce.number().int().min(1, "At least one traveller").max(60),
+  message: z
+    .string()
+    .trim()
+    .min(10, "Tell the guide what you'd like to see (10+ characters)")
+    .max(1500),
+})
+
+export const guideReplySchema = z.object({
+  requestId: z.string().min(1),
+  decision: z.enum(["ACCEPT", "DECLINE"]),
+  reply: z.string().trim().max(1000).optional().or(z.literal("")),
+})
+
+export const guideReviewSchema = z.object({
+  requestId: z.string().min(1),
+  rating: z.coerce.number().int().min(1, "Choose a rating").max(5),
+  comment: z.string().trim().min(10, "Please write at least 10 characters").max(1500),
+})
+
+export const blockDaysSchema = z.object({
+  dates: z.array(isoDate).min(1).max(62),
+  blocked: z.boolean(),
+})
+
+export type GuideProfileInput = z.infer<typeof guideProfileSchema>
+export type GuideSignupInput = z.infer<typeof guideSignupSchema>
+export type GuideRequestInput = z.infer<typeof guideRequestSchema>
+export type GuideReviewInput = z.infer<typeof guideReviewSchema>

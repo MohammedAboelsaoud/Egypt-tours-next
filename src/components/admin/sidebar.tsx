@@ -16,6 +16,7 @@ import {
   Menu,
   Settings,
   Star,
+  UsersRound,
   X,
 } from "lucide-react"
 
@@ -28,6 +29,7 @@ const ITEMS = [
   { href: "/admin/hotels", label: "Hotels", icon: BedDouble },
   { href: "/admin/cars", label: "Cars", icon: Car },
   { href: "/admin/regions", label: "Regions", icon: Globe },
+  { href: "/admin/guides", label: "Guides", icon: UsersRound },
   { href: "/admin/inquiries", label: "Inquiries", icon: Inbox },
   { href: "/admin/reviews", label: "Reviews", icon: Star },
   { href: "/admin/settings", label: "Settings", icon: Settings },

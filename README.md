@@ -29,6 +29,11 @@ Sign in at `/admin/login` with the seeded credentials:
 | -------- | --------------------------- | --------------- |
 | Admin    | `admin@egyptjourneys.com`   | `Admin123!`     |
 | Customer | `traveller@example.com`     | `Traveller123!` |
+| Guide    | `guide.amira@example.com`   | `Guide123!`     |
+
+Guides sign in at `/guides/login`. The seed also creates `guide.hamdy@…` and
+`guide.salem@…` (live) and `guide.youssef@…` (an application waiting for
+approval), all with `Guide123!`.
 
 Change these before going anywhere near production — they are set by
 `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD`.
@@ -108,8 +113,13 @@ tests/                   unit/ · integration/ · e2e/
    When the card is accepted, `/api/payments/stripe/confirm` re-reads the
    session from Stripe before confirming. The `checkout.session.completed`
    webhook confirms it as well, in case the traveller closes the tab first.
-5. **Confirmation** — booking becomes `CONFIRMED` / `PAID`, reference shown,
-   confirmation email sent to the traveller and an alert to the admin
+   **Or pay in cash:** on the same step the traveller can choose "Pay in cash
+   on the day". `/api/bookings/[id]/pay-later` confirms the booking with
+   `paymentMethod: CASH` while payment stays `PENDING`. It shows as "Cash on
+   the day" in the account and admin; an admin marks it **Paid** once the cash
+   is collected (Admin → Bookings → the booking).
+5. **Confirmation** — booking becomes `CONFIRMED` (`PAID` for card), reference
+   shown, confirmation email sent to the traveller and an alert to the admin
 
 Prices are **always recalculated server-side** in `/api/bookings` before a
 Stripe payment is created — the client's number is never trusted. Capacity limits
@@ -122,6 +132,36 @@ Pricing rules:
 | Tour  | per person         |
 | Hotel | per night          |
 | Car   | per day, w/ driver |
+
+---
+
+## Tour guides
+
+Guides have their own accounts; travellers choose one and request their dates.
+
+- **Guides apply** at `/guides/register` (one form: account + public profile)
+  and sign in at `/guides/login`. Profiles stay hidden until an admin approves
+  them in **Admin → Guides** (approve, send back with a note, or suspend).
+- **Travellers** fill in their profile once at sign-up (phone/WhatsApp,
+  nationality, languages; passport optional). Then they browse `/guides`
+  (filter by region, language, kind of guide and "free on my dates") and send
+  a request from a guide's profile.
+- **Availability is in whole days, one group per guide per day.** Days
+  covered by an accepted trip, or blocked by the guide, can't be requested
+  (checked again on the server). Pending requests don't block anyone.
+  - When a guide accepts, other pending requests for those days are declined
+    automatically and those travellers are emailed a link to guides free on
+    their dates.
+  - Unanswered requests lapse after 48 hours, or when the first day arrives.
+- **Contact details are shared only after acceptance.** Both sides then see
+  each other's phone, WhatsApp and email under **My guides** and in the
+  guide dashboard (`/guide`: requests, calendar, profile, reviews).
+- **Reviews** can only be written for an accepted trip, from its last day,
+  once per trip. They go live immediately, and admins can hide them in
+  **Admin → Guides → Guide reviews**.
+
+The availability rules live in `src/lib/guides/availability.ts` (pure and unit
+tested); the server actions are in `src/actions/guides.ts`.
 
 ---
 
@@ -170,13 +210,15 @@ All site content is editable from here — no code changes needed.
 ## Testing
 
 ```bash
-bun run test       # 57 unit + integration tests
-bun run test:e2e   # 48 end-to-end tests (desktop Chrome + Pixel 7)
+bun run test       # 79 unit + integration tests
+bun run test:e2e   # 60 end-to-end tests (desktop Chrome + Pixel 7)
 ```
 
 The E2E suite covers the public site, the full booking flow through to a
 confirmed payment, wishlist, auth gates, admin CRUD including creating,
-editing and deleting a tour, and the chat assistant.
+editing and deleting a tour, the chat assistant, and the guide marketplace
+(apply → approve → request → accept with automatic decline of overlapping
+requests → blocked days → review).
 
 > **Note on Bun:** Playwright skips its own TypeScript loader when it detects
 > Bun (`if ("Bun" in globalThis) return` in its ESM loader), so the files in
@@ -194,7 +236,9 @@ editing and deleting a tour, and the chat assistant.
 3. Add every variable from `.env.example` to the Vercel project.
    `NEXTAUTH_URL` and `NEXT_PUBLIC_SITE_URL` must be your production URL.
 4. The build command is `bun run build` (it runs `prisma generate` first).
-5. After the first deploy, push the schema and seed:
+5. After the first deploy, and **after any change to `prisma/schema.prisma`**,
+   push the schema (Vercel doesn't do this for you). The seed is optional on
+   an existing site: it only adds demo content and never overwrites yours.
    ```bash
    DATABASE_URL="<production url>" bunx prisma db push
    DATABASE_URL="<production url>" bun run db:seed

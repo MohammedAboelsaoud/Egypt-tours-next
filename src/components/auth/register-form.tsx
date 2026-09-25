@@ -9,9 +9,11 @@ import { signIn } from "next-auth/react"
 import { AlertCircle } from "lucide-react"
 
 import { OAuthButtons } from "@/components/auth/oauth-buttons"
+import { LanguagePicker } from "@/components/forms/language-picker"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { NATIONALITIES } from "@/lib/constants"
 import { registerSchema, type RegisterInput } from "@/lib/validations"
 
 export function RegisterForm({
@@ -30,7 +32,16 @@ export function RegisterForm({
     formState: { errors, isSubmitting },
   } = useForm<RegisterInput>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      phone: "",
+      nationality: "",
+      languages: [],
+      passportNo: "",
+    },
   })
 
   const onSubmit = handleSubmit(async (values) => {
@@ -69,7 +80,8 @@ export function RegisterForm({
     <div>
       <h1 className="font-heading text-3xl">Create your account</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        You&apos;ll need an account to confirm a booking — it takes a minute.
+        Fill this in once. We use it for every booking and guide request, so
+        you never type it again.
       </p>
 
       <div className="mt-8">
@@ -150,6 +162,82 @@ export function RegisterForm({
                 </p>
               )}
             </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="phone">Phone / WhatsApp</Label>
+              <Input
+                id="phone"
+                type="tel"
+                autoComplete="tel"
+                placeholder="+44 7700 900123"
+                className="mt-2 h-11"
+                aria-invalid={Boolean(errors.phone)}
+                {...register("phone")}
+              />
+              {errors.phone && (
+                <p className="mt-1.5 text-xs text-destructive">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="nationality">Nationality</Label>
+              <select
+                id="nationality"
+                aria-invalid={Boolean(errors.nationality)}
+                className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
+                {...register("nationality")}
+              >
+                <option value="">Select…</option>
+                {NATIONALITIES.map((nationality) => (
+                  <option key={nationality} value={nationality}>
+                    {nationality}
+                  </option>
+                ))}
+              </select>
+              {errors.nationality && (
+                <p className="mt-1.5 text-xs text-destructive">
+                  {errors.nationality.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <p id="languages-label" className="text-sm font-medium">
+              Languages you speak
+            </p>
+            <LanguagePicker
+              registration={register("languages")}
+              invalid={Boolean(errors.languages)}
+              describedBy="languages-label"
+            />
+            {errors.languages && (
+              <p className="mt-1.5 text-xs text-destructive">
+                {errors.languages.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Label htmlFor="passportNo">
+              Passport number{" "}
+              <span className="font-normal text-muted-foreground">(optional)</span>
+            </Label>
+            <Input
+              id="passportNo"
+              autoComplete="off"
+              className="mt-2 h-11"
+              aria-describedby="passport-help"
+              {...register("passportNo")}
+            />
+            <p id="passport-help" className="mt-1.5 text-xs text-muted-foreground">
+              You don&apos;t have to add it. It only makes booking site tickets,
+              Nile cruises and domestic flights faster.
+            </p>
           </div>
 
           <Button

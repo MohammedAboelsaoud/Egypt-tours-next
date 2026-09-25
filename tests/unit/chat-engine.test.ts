@@ -136,3 +136,32 @@ describe("chatRequestSchema", () => {
     expect(chatRequestSchema.parse({ message: "  visa?  " }).message).toBe("visa?")
   })
 })
+
+describe("respond — guides", () => {
+  const withGuides: ChatKnowledge = {
+    ...KB,
+    listings: [
+      ...KB.listings,
+      // A guide covering two regions is listed once per region.
+      listing({ kind: "guide", slug: "amira", title: "Amira Hassan", regionSlug: "cairo-giza", price: 75, languages: ["English", "French"], unit: "per day" }),
+      listing({ kind: "guide", slug: "amira", title: "Amira Hassan", regionSlug: "luxor-aswan", price: 75, languages: ["English", "French"], unit: "per day" }),
+      listing({ kind: "guide", slug: "hamdy", title: "Hamdy Nour", regionSlug: "luxor-aswan", price: 55, languages: ["English", "Arabic", "Nubian"], unit: "per day" }),
+    ],
+  }
+
+  it("treats 'tour guide' as a guide search, not tours", () => {
+    const reply = respond("I need a tour guide in Luxor", withGuides)
+    expect(reply.listings?.every((l) => l.kind === "guide")).toBe(true)
+    expect(reply.listings?.map((l) => l.slug).sort()).toEqual(["amira", "hamdy"])
+  })
+
+  it("filters guides by language and lists each guide once", () => {
+    const reply = respond("French-speaking guide", withGuides)
+    expect(reply.listings?.map((l) => l.slug)).toEqual(["amira"])
+    expect(reply.text).toMatch(/French-speaking guide/)
+  })
+
+  it("suggests guides after a tour search", () => {
+    expect(respond("tours in Luxor", withGuides).suggestions).toContain("Guides in Luxor & Aswan")
+  })
+})
