@@ -3,7 +3,13 @@ export const SITE = {
   tagline: "Egypt, Planned Around You",
   description:
     "Tailor-made tours, hand-picked hotels and private car rentals across Egypt — planned around you by local Egyptologists.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  // Vercel sets NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL (host only) for Next.js
+  // projects, so links stay right even if NEXT_PUBLIC_SITE_URL isn't set.
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
+      : "http://localhost:3000"),
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201001234567",
   email: "hello@egyptjourneys.com",
   phone: "+20 100 123 4567",

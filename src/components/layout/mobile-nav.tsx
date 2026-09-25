@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
-import { signOut } from "next-auth/react"
 import { LogOut, Menu } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -17,6 +16,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { NAV_LINKS, SITE } from "@/lib/constants"
+import { signOutTo } from "@/lib/sign-out"
 import { cn } from "@/lib/utils"
 
 const ACCOUNT_LINKS = [
@@ -99,7 +99,7 @@ export function MobileNav({
               ))}
               <button
                 type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => signOutTo()}
                 className="mt-1 flex items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-destructive hover:bg-destructive/10"
               >
                 <LogOut className="size-4" /> Sign out

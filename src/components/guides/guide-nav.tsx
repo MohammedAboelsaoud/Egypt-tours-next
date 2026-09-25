@@ -2,9 +2,9 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { signOut } from "next-auth/react"
 import { CalendarDays, Inbox, LayoutDashboard, LogOut, Star, UserRound } from "lucide-react"
 
+import { signOutTo } from "@/lib/sign-out"
 import { cn } from "@/lib/utils"
 
 const LINKS = [
@@ -44,7 +44,7 @@ export function GuideNav({ pendingCount }: { pendingCount: number }) {
       })}
       <button
         type="button"
-        onClick={() => signOut({ callbackUrl: "/guides/login" })}
+        onClick={() => signOutTo("/guides/login")}
         className="flex shrink-0 items-center gap-2.5 rounded-lg px-4 py-3 text-left text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-basalt"
       >
         <LogOut className="size-4" />

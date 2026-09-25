@@ -132,6 +132,22 @@ test.describe("traveller account", () => {
     await expect(page.getByText("We hit a problem loading this page")).toHaveCount(0)
   })
 
+  test("signing out stays on this site", async ({ page, isMobile }) => {
+    test.skip(isMobile, "Phones use the mobile menu; the avatar menu is desktop-only.")
+    await signIn(page)
+    await page.goto("/")
+    await hydrated(page)
+    const origin = new URL(page.url()).origin
+
+    await page.getByRole("button", { name: "Account menu" }).click()
+    await page.getByRole("menu").getByRole("menuitem", { name: "Sign out" }).click()
+    await expect(page.getByRole("link", { name: "Sign in" }).first()).toBeVisible()
+    expect(page.url()).toBe(`${origin}/`)
+
+    await page.goto("/account")
+    await page.waitForURL(/\/login/)
+  })
+
   test("profile loads for an account created before languages existed", async ({ page }) => {
     await prisma.$executeRaw`UPDATE "User" SET "languages" = NULL WHERE "id" = ${userId}`
     await signIn(page)

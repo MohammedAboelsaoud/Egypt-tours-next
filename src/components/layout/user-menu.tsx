@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { signOut, useSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import {
   CalendarCheck,
   Heart,
@@ -22,6 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { signOutTo } from "@/lib/sign-out"
 import { cn, initials } from "@/lib/utils"
 
 export function UserMenu({ solid = true }: { solid?: boolean }) {
@@ -106,7 +107,7 @@ export function UserMenu({ solid = true }: { solid?: boolean }) {
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() => signOutTo()}
         >
           <LogOut className="size-4" />
           Sign out
