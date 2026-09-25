@@ -4,11 +4,12 @@ import { formatPrice } from "@/lib/utils"
 
 /**
  * The chat assistant's brain. Pure and synchronous: it reads a snapshot of the
- * site's own content (FAQ, regions, tours, hotels, cars) and never calls an
+ * site's own content (FAQ, regions, tours, hotels, cars, historic sites) and never calls an
  * external service, so it costs nothing to run and answers instantly.
  */
 
-export type ListingKind = "tour" | "hotel" | "car" | "guide"
+/** "site" is a historic-sites catalog page; it is never a search result, only linked when named. */
+export type ListingKind = "tour" | "hotel" | "car" | "guide" | "site"
 
 export type ChatListing = {
   kind: ListingKind
@@ -33,6 +34,9 @@ export type ChatListing = {
   /** Languages a guide works in. */
   languages?: string[]
   featured?: boolean
+  /** Historic sites: the short summary, and the words that point to the page. */
+  summary?: string
+  keywords?: string[]
   /** Lower-cased title + summary, searched for keyword matches. */
   searchText: string
 }
@@ -48,6 +52,8 @@ export type ChatKnowledge = {
   faq: FaqGroup[]
   regions: ChatRegion[]
   listings: ChatListing[]
+  /** Historic-sites catalog pages (kind "site"). */
+  sites?: ChatListing[]
   contact: { phone: string; email: string; whatsapp: string }
 }
 
@@ -169,6 +175,8 @@ const KIND_WORDS: Record<ListingKind, readonly string[]> = {
   hotel: ["hotel", "hotels", "stay", "staying", "accommodation", "resort", "resorts", "lodge", "room", "rooms", "where to sleep", "place to stay"],
   guide: ["guide", "guides", "tour guide", "tour guides", "egyptologist", "egyptologists", "nubian guide", "bedouin guide", "local guide", "private guide"],
   car: ["car", "cars", "rent", "rental", "rentals", "driver", "vehicle", "vehicles", "transfer", "transfers", "minibus", "van", "suv", "coach", "bus", "chauffeur", "airport pickup", "sedan"],
+  // Never searched for by kind: sites are matched by name and keywords instead.
+  site: [],
 }
 
 /** Places travellers name that the region records don't list as cities. */
@@ -401,6 +409,7 @@ const KIND_NOUN: Record<ListingKind, [string, string]> = {
   hotel: ["hotel", "hotels"],
   car: ["car", "cars"],
   guide: ["guide", "guides"],
+  site: ["historic site", "historic sites"],
 }
 
 function describeSearch(c: SearchCriteria, kb: ChatKnowledge, count: number): string {
@@ -532,6 +541,36 @@ function regionOverview(kb: ChatKnowledge): ChatReply {
 // Entry point
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Historic sites
+// ---------------------------------------------------------------------------
+
+/** The catalog page a message names, by the site's name or its keywords. */
+export function matchSite(message: string, kb: ChatKnowledge): ChatListing | undefined {
+  const text = normalize(message)
+  let best: ChatListing | undefined
+  let bestScore = 0
+  for (const site of kb.sites ?? []) {
+    const score =
+      (has(text, normalize(site.title)) ? 3 : 0) +
+      (site.keywords ?? []).filter((k) => normalize(k) && has(text, normalize(k))).length
+    if (score > bestScore) {
+      best = site
+      bestScore = score
+    }
+  }
+  return best
+}
+
+function siteReply(site: ChatListing, criteria: SearchCriteria, kb: ChatKnowledge): ChatReply {
+  const tours = searchListings({ ...criteria, regionSlugs: [site.regionSlug] }, kb).slice(0, 2)
+  return {
+    text: `${site.title}${site.detail ? ` (${site.detail})` : ""}: ${site.summary ?? ""}\n\nRead its full history below${tours.length ? ", or see it on one of these tours" : ""}.`,
+    listings: [site, ...tours],
+    suggestions: ["Find a tour guide", `Hotels in ${site.regionName}`, "Talk to a person"],
+  }
+}
+
 export function respond(message: string, kb: ChatKnowledge): ChatReply {
   const text = normalize(message)
 
@@ -558,8 +597,19 @@ export function respond(message: string, kb: ChatKnowledge): ChatReply {
     }
   }
 
+  // "Tell me about Karnak": the site's story first, then tours that visit it.
+  const site = matchSite(message, kb)
+  const onlyAPlace =
+    criteria.kinds.length === 0 &&
+    criteria.maxPrice === undefined &&
+    criteria.days === undefined &&
+    criteria.carType === undefined
+  if (site && onlyAPlace) return siteReply(site, criteria, kb)
+
   if (hasCatalogueSignal(criteria) || has(text, "show all tours")) {
-    return catalogueReply(criteria, kb)
+    const reply = catalogueReply(criteria, kb)
+    // "Tours to Abu Simbel": the tours, plus the site's history page.
+    return site ? { ...reply, listings: [...(reply.listings ?? []), site] } : reply
   }
 
   if (hasAny(text, ["where should i go", "which region", "destinations", "destination", "where to go", "regions"])) {

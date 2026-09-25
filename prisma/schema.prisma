@@ -67,7 +67,7 @@ model User {
   nationality   String?
   passportNo    String?
   /// Languages the traveller speaks, used to match them with a guide.
-  languages     String[]   @default([])
+  languages     String[]       @default([])
   accounts      Account[]
   sessions      Session[]
   bookings      Booking[]
@@ -131,6 +131,7 @@ model Region {
   hotels    Hotel[]
   cars      Car[]
   guides    GuideProfile[]
+  sites     HistoricSite[]
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 }
@@ -304,9 +305,9 @@ model SiteSetting {
   id             String   @id @default("site")
   siteName       String   @default("Egypt Journeys")
   tagline        String   @default("Egypt, Planned Around You")
-  contactEmail   String   @default("hello@egyptjourneys.com")
-  contactPhone   String   @default("+20 100 123 4567")
-  whatsappNumber String   @default("201001234567")
+  contactEmail   String   @default("muhammedaboelsaoud@gmail.com")
+  contactPhone   String   @default("+20 102 935 0015")
+  whatsappNumber String   @default("201029350015")
   address        String   @default("Zamalek, Cairo, Egypt")
   facebookUrl    String   @default("")
   instagramUrl   String   @default("")
@@ -315,6 +316,46 @@ model SiteSetting {
   /// schema pushes drop that data (and so refuse to run).
   paypalMode     String   @default("sandbox")
   updatedAt      DateTime @default(now()) @updatedAt
+}
+
+/// One-time data loads that have already run (e.g. the starter historic-sites
+/// catalog), so they never run twice — see lib/db/ensure-schema.ts. A table of
+/// its own because preview builds read existing tables before any schema sync.
+model DataLoad {
+  id       String   @id
+  loadedAt DateTime @default(now())
+}
+
+/// A page in the historic sites catalog (/sites): the history of a monument,
+/// with key facts, visiting tips and photos.
+model HistoricSite {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  /// e.g. "Giza plateau, western edge of Cairo"
+  location    String   @default("")
+  /// e.g. "c. 2600–2500 BC (4th Dynasty)"
+  period      String   @default("")
+  summary     String   @db.Text
+  /// The history. "## Heading" lines start chapters; blank lines split paragraphs.
+  history     String   @db.Text
+  /// "Label: value" lines, shown as the key-facts panel.
+  facts       String[] @default([])
+  tips        String[] @default([])
+  imageUrl    String
+  /// Photographer and licence, when the photo isn't the owner's.
+  imageCredit String   @default("")
+  galleryUrls String[] @default([])
+  /// Words that make the chat assistant link to this page.
+  keywords    String[] @default([])
+  sortOrder   Int      @default(0)
+  published   Boolean  @default(true)
+  regionId    String
+  region      Region   @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([regionId])
 }
 
 /// A tour guide's public profile. Visible to travellers once an admin approves it.

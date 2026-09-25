@@ -98,7 +98,7 @@ export function SettingsForm({
             name="whatsappNumber"
             label="WhatsApp number"
             defaultValue={settings.whatsappNumber}
-            hint="Digits only, including country code — e.g. 201001234567"
+            hint="Digits only, including country code — e.g. 201029350015"
           />
           <TextField
             name="address"

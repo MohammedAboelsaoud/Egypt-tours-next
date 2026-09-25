@@ -1,10 +1,14 @@
 import "server-only"
 
 import { prisma } from "@/lib/prisma"
+import { SITE } from "@/lib/constants"
+import { STARTER_SITES } from "@/lib/sites/starter"
 
 /**
- * Adds the database objects introduced with tour guides and cash payments, if
- * they are missing. Runs once per server start (see src/instrumentation.ts), so
+ * Adds the database objects introduced with tour guides, cash payments and the
+ * historic sites catalog, if they are missing. New features get new tables
+ * rather than new columns on existing ones where they can: preview builds
+ * prerender pages against the shared database before anything here runs. Runs once per server start (see src/instrumentation.ts), so
  * a deploy works even when `prisma db push` never ran against the database.
  *
  * The statements are Prisma's own migration SQL (`prisma migrate diff` from the
@@ -83,6 +87,32 @@ const TABLES = [
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "GuideReview_pkey" PRIMARY KEY ("id")
   )`,
+  `CREATE TABLE IF NOT EXISTS "DataLoad" (
+    "id" TEXT NOT NULL,
+    "loadedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "DataLoad_pkey" PRIMARY KEY ("id")
+  )`,
+  `CREATE TABLE IF NOT EXISTS "HistoricSite" (
+    "id" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "location" TEXT NOT NULL DEFAULT '',
+    "period" TEXT NOT NULL DEFAULT '',
+    "summary" TEXT NOT NULL,
+    "history" TEXT NOT NULL,
+    "facts" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "tips" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "imageUrl" TEXT NOT NULL,
+    "imageCredit" TEXT NOT NULL DEFAULT '',
+    "galleryUrls" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "keywords" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "sortOrder" INTEGER NOT NULL DEFAULT 0,
+    "published" BOOLEAN NOT NULL DEFAULT true,
+    "regionId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "HistoricSite_pkey" PRIMARY KEY ("id")
+  )`,
   `CREATE TABLE IF NOT EXISTS "_GuideProfileToRegion" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL,
@@ -101,6 +131,8 @@ const INDEXES = [
   `CREATE UNIQUE INDEX IF NOT EXISTS "GuideReview_requestId_key" ON "GuideReview"("requestId")`,
   `CREATE INDEX IF NOT EXISTS "GuideReview_guideId_idx" ON "GuideReview"("guideId")`,
   `CREATE INDEX IF NOT EXISTS "_GuideProfileToRegion_B_index" ON "_GuideProfileToRegion"("B")`,
+  `CREATE UNIQUE INDEX IF NOT EXISTS "HistoricSite_slug_key" ON "HistoricSite"("slug")`,
+  `CREATE INDEX IF NOT EXISTS "HistoricSite_regionId_idx" ON "HistoricSite"("regionId")`,
 ]
 
 const FOREIGN_KEYS: [table: string, name: string, column: string, target: string][] = [
@@ -113,6 +145,7 @@ const FOREIGN_KEYS: [table: string, name: string, column: string, target: string
   ["GuideReview", "GuideReview_requestId_fkey", "requestId", "GuideRequest"],
   ["_GuideProfileToRegion", "_GuideProfileToRegion_A_fkey", "A", "GuideProfile"],
   ["_GuideProfileToRegion", "_GuideProfileToRegion_B_fkey", "B", "Region"],
+  ["HistoricSite", "HistoricSite_regionId_fkey", "regionId", "Region"],
 ]
 
 function statements(): string[] {
@@ -156,6 +189,9 @@ async function upToDate(): Promise<boolean> {
       AND EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '_GuideProfileToRegion_B_fkey')
       AND EXISTS (SELECT 1 FROM pg_enum e JOIN pg_type t ON t.oid = e.enumtypid
               WHERE t.typname = 'Role' AND e.enumlabel = 'GUIDE')
+      AND EXISTS (SELECT 1 FROM information_schema.tables
+              WHERE table_schema = current_schema() AND table_name = 'DataLoad')
+      AND EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'HistoricSite_regionId_fkey')
       AS ok`
   return Boolean(rows[0]?.ok)
 }
@@ -171,5 +207,50 @@ export async function ensureSchema(): Promise<"up-to-date" | "updated"> {
   }
   // Accounts created before languages existed hold NULL; the app expects a list.
   await prisma.$executeRawUnsafe(`UPDATE "User" SET "languages" = ARRAY[]::TEXT[] WHERE "languages" IS NULL`)
+  await replacePlaceholderContacts()
+  await loadStarterCatalog()
   return result
+}
+
+/**
+ * Earlier seeds stored placeholder contact details. Swap them for the owner's
+ * (lib/constants.ts), but only where the placeholder is still there, so
+ * anything saved in Admin → Settings is left alone.
+ */
+async function replacePlaceholderContacts() {
+  await prisma.$executeRaw`UPDATE "SiteSetting" SET "whatsappNumber" = ${SITE.whatsapp}
+    WHERE "id" = 'site' AND "whatsappNumber" = '201001234567'`
+  await prisma.$executeRaw`UPDATE "SiteSetting" SET "contactEmail" = ${SITE.email}
+    WHERE "id" = 'site' AND "contactEmail" = 'hello@egyptjourneys.com'`
+  await prisma.$executeRaw`UPDATE "SiteSetting" SET "contactPhone" = ${SITE.phone}
+    WHERE "id" = 'site' AND "contactPhone" = '+20 100 123 4567'`
+}
+
+/** Marks the starter catalog as loaded in the DataLoad table. */
+export const STARTER_CATALOG_LOAD = "historic-sites-starter"
+
+/**
+ * Loads the starter historic-sites catalog the first time only. Claiming the
+ * load and inserting the sites happen in one transaction: two server instances
+ * starting together can't both run it, a failed insert leaves it unclaimed for
+ * the next start, and sites the admin later deletes don't come back.
+ */
+async function loadStarterCatalog() {
+  const count = await prisma.$transaction(async (tx) => {
+    const claimed = await tx.$executeRaw`INSERT INTO "DataLoad" ("id") VALUES (${STARTER_CATALOG_LOAD})
+      ON CONFLICT ("id") DO NOTHING`
+    if (claimed === 0) return null
+
+    const regions = await tx.region.findMany({ select: { id: true, slug: true } })
+    const regionIds = new Map(regions.map((r) => [r.slug, r.id]))
+    const { count } = await tx.historicSite.createMany({
+      data: STARTER_SITES.flatMap(({ regionSlug, ...site }) => {
+        const regionId = regionIds.get(regionSlug)
+        return regionId ? [{ ...site, regionId }] : []
+      }),
+      skipDuplicates: true,
+    })
+    return count
+  })
+  if (count !== null) console.info(`[schema] loaded ${count} historic sites into the catalog`)
 }

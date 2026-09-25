@@ -201,6 +201,24 @@ export const regionSchema = z.object({
   published: z.boolean().default(true),
 })
 
+export const historicSiteSchema = z.object({
+  name: z.string().min(2, "Name is required").max(120),
+  slug: z.string().min(2).max(90).optional().or(z.literal("")),
+  regionId: z.string().min(1, "Choose a region"),
+  location: z.string().max(160).default(""),
+  period: z.string().max(120).default(""),
+  summary: z.string().min(20, "Write a short summary").max(600),
+  history: z.string().min(50, "Write the history").max(40000),
+  facts: z.array(z.string().max(300)).default([]),
+  tips: z.array(z.string().max(400)).default([]),
+  imageUrl: z.string().min(1, "An image is required"),
+  imageCredit: z.string().max(200).default(""),
+  galleryUrls: z.array(z.string()).default([]),
+  keywords: z.array(z.string().max(60)).default([]),
+  sortOrder: z.coerce.number().int().default(0),
+  published: z.boolean().default(true),
+})
+
 export const settingsSchema = z.object({
   siteName: z.string().min(2).max(80),
   tagline: z.string().max(160),
@@ -227,6 +245,7 @@ export type TourInput = z.infer<typeof tourSchema>
 export type HotelInput = z.infer<typeof hotelSchema>
 export type CarInput = z.infer<typeof carSchema>
 export type RegionInput = z.infer<typeof regionSchema>
+export type HistoricSiteInput = z.infer<typeof historicSiteSchema>
 export type SettingsInput = z.infer<typeof settingsSchema>
 export type ReviewInput = z.infer<typeof reviewSchema>
 

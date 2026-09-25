@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma"
 import { linesToArray, slugify } from "@/lib/utils"
 import {
   carSchema,
+  historicSiteSchema,
   hotelSchema,
   regionSchema,
   settingsSchema,
@@ -54,7 +55,7 @@ function num(formData: FormData, key: string): number | null {
 
 /** Makes a slug unique within its table by appending -2, -3, … */
 async function uniqueSlug(
-  table: "tour" | "hotel" | "car" | "region",
+  table: "tour" | "hotel" | "car" | "region" | "historicSite",
   base: string,
   currentId?: string
 ): Promise<string> {
@@ -409,13 +410,14 @@ export async function deleteRegion(id: string) {
 
   const counts = await prisma.region.findUnique({
     where: { id },
-    select: { _count: { select: { tours: true, hotels: true, cars: true } } },
+    select: { _count: { select: { tours: true, hotels: true, cars: true, sites: true } } },
   })
 
   const total =
     (counts?._count.tours ?? 0) +
     (counts?._count.hotels ?? 0) +
-    (counts?._count.cars ?? 0)
+    (counts?._count.cars ?? 0) +
+    (counts?._count.sites ?? 0)
 
   if (total > 0) {
     throw new Error(
@@ -426,6 +428,89 @@ export async function deleteRegion(id: string) {
   await prisma.region.delete({ where: { id } })
   revalidatePath("/admin/regions")
   revalidatePath("/destinations")
+}
+
+// ------------------------------------------------------- historic sites
+
+export async function saveHistoricSite(
+  id: string | null,
+  _prev: AdminState,
+  formData: FormData
+): Promise<AdminState> {
+  await requireAdmin()
+
+  const parsed = historicSiteSchema.safeParse({
+    name: str(formData, "name"),
+    slug: str(formData, "slug"),
+    regionId: str(formData, "regionId"),
+    location: str(formData, "location"),
+    period: str(formData, "period"),
+    summary: str(formData, "summary"),
+    history: str(formData, "history"),
+    facts: linesToArray(str(formData, "facts")),
+    tips: linesToArray(str(formData, "tips")),
+    imageUrl: str(formData, "imageUrl"),
+    imageCredit: str(formData, "imageCredit"),
+    galleryUrls: linesToArray(str(formData, "galleryUrls")),
+    keywords: str(formData, "keywords")
+      .split(/[\n,]/)
+      .map((word) => word.trim().toLowerCase())
+      .filter(Boolean),
+    sortOrder: str(formData, "sortOrder") || "0",
+    published: bool(formData, "published"),
+  })
+
+  if (!parsed.success) {
+    return { ok: false, message: parsed.error.issues[0]?.message ?? "Invalid historic site" }
+  }
+
+  const { slug: requestedSlug, ...data } = parsed.data
+  const slug = await uniqueSlug(
+    "historicSite",
+    slugify(requestedSlug || data.name),
+    id ?? undefined
+  )
+
+  const previous = id
+    ? await prisma.historicSite.findUnique({ where: { id }, select: { slug: true } })
+    : null
+
+  if (id) {
+    await prisma.historicSite.update({ where: { id }, data: { ...data, slug } })
+  } else {
+    await prisma.historicSite.create({ data: { ...data, slug } })
+  }
+
+  revalidatePath("/admin/sites")
+  revalidatePath("/sites")
+  revalidatePath(`/sites/${slug}`)
+  if (previous && previous.slug !== slug) revalidatePath(`/sites/${previous.slug}`)
+  revalidatePath("/destinations/[slug]", "page")
+  // The chat assistant links to sites by name, so it should know about them at once.
+  updateTag("chat-catalogue")
+  redirect("/admin/sites")
+}
+
+export async function deleteHistoricSite(id: string) {
+  await requireAdmin()
+  const site = await prisma.historicSite.delete({ where: { id }, select: { slug: true } })
+  revalidatePath("/admin/sites")
+  revalidatePath("/sites")
+  revalidatePath(`/sites/${site.slug}`)
+  revalidatePath("/destinations/[slug]", "page")
+  // The chat assistant links to sites by name, so it should know about them at once.
+  updateTag("chat-catalogue")
+}
+
+export async function toggleHistoricSitePublished(id: string, published: boolean) {
+  await requireAdmin()
+  const site = await prisma.historicSite.update({ where: { id }, data: { published }, select: { slug: true } })
+  revalidatePath("/admin/sites")
+  revalidatePath("/sites")
+  revalidatePath(`/sites/${site.slug}`)
+  revalidatePath("/destinations/[slug]", "page")
+  // The chat assistant links to sites by name, so it should know about them at once.
+  updateTag("chat-catalogue")
 }
 
 // ------------------------------------------------------------- bookings
