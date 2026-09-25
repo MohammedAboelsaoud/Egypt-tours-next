@@ -68,7 +68,7 @@ export function Header({ phone }: { phone: string }) {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "relative rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "relative rounded-md px-2 py-2 text-sm font-medium whitespace-nowrap transition-colors xl:px-3",
                   solid
                     ? active
                       ? "text-lapis"
@@ -82,7 +82,7 @@ export function Header({ phone }: { phone: string }) {
                 {active && (
                   <span
                     className={cn(
-                      "absolute inset-x-3 -bottom-0.5 h-px",
+                      "absolute inset-x-2 -bottom-0.5 h-px xl:inset-x-3",
                       solid ? "bg-lapis" : "bg-white/80"
                     )}
                   />
@@ -96,7 +96,7 @@ export function Header({ phone }: { phone: string }) {
           <a
             href={`tel:${phone.replace(/\s/g, "")}`}
             className={cn(
-              "hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors xl:flex",
+              "hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-medium whitespace-nowrap transition-colors 2xl:flex",
               solid ? "text-basalt/75 hover:text-lapis" : "text-white/85 hover:text-white"
             )}
           >

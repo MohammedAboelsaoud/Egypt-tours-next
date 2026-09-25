@@ -10,6 +10,7 @@ import { PrismaClient, type Prisma } from "@prisma/client"
 import bcrypt from "bcryptjs"
 
 import { addDays, fromISODate, todayInEgypt } from "../src/lib/guides/availability"
+import { STARTER_SITES } from "../src/lib/sites/starter"
 
 const prisma = new PrismaClient()
 
@@ -56,6 +57,7 @@ const REGIONS = [
     tagline: "Pyramids, the Egyptian Museum, and a city that never sleeps",
     cities: ["Cairo", "Giza"],
     imageUrl: IMG.cairo,
+    galleryUrls: [IMG.cairo, IMG.hero],
     lat: 30.0444,
     lng: 31.2357,
     zoom: 10,
@@ -69,6 +71,7 @@ const REGIONS = [
     tagline: "The open-air museum of the Nile Valley",
     cities: ["Luxor", "Aswan"],
     imageUrl: IMG.luxor,
+    galleryUrls: [IMG.luxor, IMG.nile],
     lat: 25.6872,
     lng: 32.6396,
     zoom: 8,
@@ -82,6 +85,7 @@ const REGIONS = [
     tagline: "Marsa Matrouh, El Alamein & the turquoise Mediterranean",
     cities: ["Marsa Matrouh", "El Alamein", "Sidi Abdel Rahman"],
     imageUrl: IMG.north,
+    galleryUrls: [IMG.north, IMG.alamein],
     lat: 31.0,
     lng: 28.4,
     zoom: 8,
@@ -95,6 +99,7 @@ const REGIONS = [
     tagline: "Sharm El Sheikh, Dahab, Saint Catherine & world-class reefs",
     cities: ["Sharm El Sheikh", "Dahab", "Saint Catherine"],
     imageUrl: IMG.sinai,
+    galleryUrls: [IMG.sinai, IMG.catherine],
     lat: 28.2,
     lng: 34.0,
     zoom: 8,
@@ -1145,10 +1150,27 @@ async function main() {
   await seedGuides(demo.id)
 
   // Site settings singleton
+  // Historic sites catalog — `update: {}` keeps edits made in the admin.
+  for (const { regionSlug, ...site } of STARTER_SITES) {
+    const regionId = regionIds.get(regionSlug)
+    if (!regionId) continue
+    await prisma.historicSite.upsert({
+      where: { slug: site.slug },
+      update: {},
+      create: { ...site, regionId },
+    })
+  }
+  console.log(`  ✓ ${STARTER_SITES.length} historic sites`)
+
   await prisma.siteSetting.upsert({
     where: { id: "site" },
     update: {},
-    create: { id: "site" },
+    create: { id: "site", catalogSeededAt: new Date() },
+  })
+  // The catalog is loaded now, so the server's one-time load has nothing to do.
+  await prisma.siteSetting.updateMany({
+    where: { id: "site", catalogSeededAt: null },
+    data: { catalogSeededAt: new Date() },
   })
   console.log("  ✓ site settings")
 

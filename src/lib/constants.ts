@@ -4,9 +4,9 @@ export const SITE = {
   description:
     "Tailor-made tours, hand-picked hotels and private car rentals across Egypt — planned around you by local Egyptologists.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201001234567",
-  email: "hello@egyptjourneys.com",
-  phone: "+20 100 123 4567",
+  whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "201029350015",
+  email: "muhammedaboelsaoud@gmail.com",
+  phone: "+20 102 935 0015",
   address: "12 Brazil St, Zamalek, Cairo, Egypt",
 } as const
 
@@ -15,6 +15,7 @@ export const NAV_LINKS = [
   { href: "/tours", label: "Tours" },
   { href: "/hotels", label: "Hotels" },
   { href: "/car-rentals", label: "Car Rentals" },
+  { href: "/sites", label: "Historic Sites" },
   { href: "/guides", label: "Guides" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -27,6 +28,7 @@ export const ADMIN_NAV = [
   { href: "/admin/hotels", label: "Hotels", icon: "BedDouble" },
   { href: "/admin/cars", label: "Cars", icon: "Car" },
   { href: "/admin/regions", label: "Regions", icon: "Globe" },
+  { href: "/admin/sites", label: "Historic sites", icon: "Landmark" },
   { href: "/admin/guides", label: "Guides", icon: "UsersRound" },
   { href: "/admin/inquiries", label: "Inquiries", icon: "Inbox" },
   { href: "/admin/reviews", label: "Reviews", icon: "Star" },

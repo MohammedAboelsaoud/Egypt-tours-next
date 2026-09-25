@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import {
+  matchSite,
   parseCriteria,
   respond,
   type ChatKnowledge,
@@ -163,5 +164,53 @@ describe("respond — guides", () => {
 
   it("suggests guides after a tour search", () => {
     expect(respond("tours in Luxor", withGuides).suggestions).toContain("Guides in Luxor & Aswan")
+  })
+})
+
+describe("respond — historic sites", () => {
+  const site = (slug: string, title: string, regionSlug: string, keywords: string[]) =>
+    listing({
+      kind: "site",
+      slug,
+      title,
+      regionSlug,
+      price: 0,
+      href: `/sites/${slug}`,
+      unit: "Read the history",
+      detail: "c. 2000 BC",
+      summary: `${title} summary.`,
+      keywords,
+    })
+  const WITH_SITES: ChatKnowledge = {
+    ...KB,
+    sites: [
+      site("karnak", "Karnak Temple", "luxor-aswan", ["karnak", "amun"]),
+      site("abu-simbel", "Abu Simbel", "luxor-aswan", ["abu simbel", "ramses"]),
+      site("pyramids-of-giza", "Pyramids of Giza", "cairo-giza", ["pyramid", "pyramids", "khufu"]),
+    ],
+  }
+
+  it("tells the story of a named site first, then tours that visit it", () => {
+    const reply = respond("Tell me about Karnak", WITH_SITES)
+    expect(reply.text).toMatch(/Karnak Temple summary/)
+    expect(reply.listings?.[0]).toMatchObject({ kind: "site", href: "/sites/karnak" })
+    expect(reply.listings?.slice(1).every((l) => l.kind === "tour" && l.regionSlug === "luxor-aswan")).toBe(true)
+  })
+
+  it("matches keywords, not only the name", () => {
+    expect(matchSite("who was khufu?", WITH_SITES)?.slug).toBe("pyramids-of-giza")
+    expect(matchSite("where do I find the temple of amun", WITH_SITES)?.slug).toBe("karnak")
+  })
+
+  it("adds the history page to a catalogue search that names a site", () => {
+    const reply = respond("tours to Abu Simbel", WITH_SITES)
+    const kinds = reply.listings?.map((l) => l.kind)
+    expect(kinds?.[0]).toBe("tour")
+    expect(kinds?.at(-1)).toBe("site")
+  })
+
+  it("leaves searches that name no site unchanged", () => {
+    expect(respond("hotels in Cairo", WITH_SITES)).toEqual(respond("hotels in Cairo", KB))
+    expect(respond("Do I need a visa for Egypt?", WITH_SITES)).toEqual(respond("Do I need a visa for Egypt?", KB))
   })
 })

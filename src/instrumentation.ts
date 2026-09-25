@@ -9,7 +9,7 @@ export async function register() {
   try {
     const { ensureSchema } = await import("@/lib/db/ensure-schema")
     const result = await ensureSchema()
-    if (result === "updated") console.info("[schema] added missing guide and payment tables/columns")
+    if (result === "updated") console.info("[schema] added missing tables/columns")
   } catch (error) {
     // Never block start-up: pages that don't need the new objects keep working.
     console.error("[schema] could not check or update the database schema", error)

@@ -8,9 +8,11 @@ import { BreadcrumbJsonLd } from "@/components/layout/breadcrumb"
 import { PageHero } from "@/components/layout/page-hero"
 import { CarCard } from "@/components/cars/car-card"
 import { HotelCard } from "@/components/hotels/hotel-card"
+import { SiteCard } from "@/components/sites/site-card"
 import { RegionMap } from "@/components/maps/region-map-lazy"
 import { TourCard } from "@/components/tours/tour-card"
 import { EmptyState } from "@/components/ui/empty-state"
+import { Gallery } from "@/components/ui/gallery"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { SITE } from "@/lib/constants"
 import { prisma } from "@/lib/prisma"
@@ -50,6 +52,19 @@ async function getRegion(slug: string) {
   })
 }
 
+async function getRegionSites(regionId: string) {
+  try {
+    return await prisma.historicSite.findMany({
+      where: { regionId, published: true },
+      orderBy: { sortOrder: "asc" },
+      select: { slug: true, name: true, period: true, summary: true, imageUrl: true },
+    })
+  } catch {
+    // The catalog table is created on the server's first start after deploying.
+    return []
+  }
+}
+
 export async function generateMetadata({
   params,
 }: PageProps<"/destinations/[slug]">): Promise<Metadata> {
@@ -81,7 +96,10 @@ export default async function RegionPage({
 
   if (!region) notFound()
 
-  const ratings = await getTourRatings(region.tours.map((tour) => tour.id))
+  const [ratings, sites] = await Promise.all([
+    getTourRatings(region.tours.map((tour) => tour.id)),
+    getRegionSites(region.id),
+  ])
 
   const markers = [
     ...region.tours
@@ -216,6 +234,35 @@ export default async function RegionPage({
           />
         </div>
       </section>
+
+      {region.galleryUrls.length > 0 && (
+        <section className="container-page pb-16 sm:pb-20 lg:pb-24">
+          <SectionHeading eyebrow="Photos" title={`${region.name} in pictures`} className="mb-8" />
+          <Gallery images={[region.imageUrl, ...region.galleryUrls]} alt={region.name} />
+        </section>
+      )}
+
+      {/* Historic sites */}
+      {sites.length > 0 && (
+        <section className="container-page pb-16 sm:pb-20 lg:pb-24">
+          <SectionHeading
+            eyebrow="Read before you go"
+            title={`Historic sites in ${region.name}`}
+            description="The history behind the monuments you'll see."
+            className="mb-12"
+            action={
+              <Link href={`/sites#${region.slug}`} className="text-sm font-medium text-lapis hover:underline">
+                Full catalog →
+              </Link>
+            }
+          />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {sites.map((site) => (
+              <SiteCard key={site.slug} site={site} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Tours */}
       <section className="bg-papyrus">

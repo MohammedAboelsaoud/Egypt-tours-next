@@ -1,0 +1,620 @@
+/**
+ * The starter historic-sites catalog. It's loaded into the database once —
+ * by `bun run db:seed` locally, or automatically on the first start after
+ * deploying (see lib/db/ensure-schema.ts). After that, the admin
+ * (Admin → Historic sites) is the place to edit it; changing this file won't
+ * touch sites already in the database.
+ */
+export type StarterSite = {
+  slug: string
+  name: string
+  /** Slug of the region it belongs to. */
+  regionSlug: string
+  location: string
+  period: string
+  summary: string
+  history: string
+  facts: string[]
+  tips: string[]
+  imageUrl: string
+  galleryUrls: string[]
+  keywords: string[]
+  sortOrder: number
+}
+
+export const STARTER_SITES: StarterSite[] = [
+  {
+    "slug": "pyramids-of-giza",
+    "name": "Pyramids of Giza",
+    "regionSlug": "cairo-giza",
+    "location": "Giza plateau, western edge of Cairo",
+    "period": "c. 2600–2500 BC (4th Dynasty)",
+    "summary": "The tombs of the pharaohs Khufu, Khafre and Menkaure — the only one of the Seven Wonders of the Ancient World still standing.",
+    "history": "## Houses of eternity\n\nIn the Old Kingdom, the king was believed to become a god when he died, and his tomb was the machine that made that journey possible. The pyramid shape probably echoed the rays of the sun and the primeval mound from which the Egyptians believed the world had risen.\n\nKhufu's Great Pyramid, finished around 2560 BC, was the tallest human-made structure on Earth for roughly 3,800 years. His son Khafre built the second pyramid — it looks taller because it stands on higher ground and still has some of its original smooth casing stones at the top. Menkaure's much smaller pyramid completes the trio.\n\n## Who built them?\n\nNot slaves. Excavations south of the plateau uncovered a town of workers with bakeries, breweries, dormitories and cemeteries. The workers were organised in named gangs, fed on bread, beer and cattle, and buried with honour near the kings they served.\n\nThe core blocks were quarried on the plateau itself. The fine white casing limestone came by boat from Tura across the Nile, and granite for the burial chamber came from Aswan, almost 900 km upriver. A papyrus logbook found at Wadi al-Jarf records a team shipping Tura limestone for Khufu's pyramid.\n\n## A complete royal complex\n\nEach pyramid was the centre of a complex: a mortuary temple against its east face, a causeway down to a valley temple at the edge of the floodplain, smaller pyramids for queens, and rows of mastaba tombs for officials. Pits beside the Great Pyramid held full-size wooden boats; one, reassembled from more than 1,200 pieces, is now displayed at the Grand Egyptian Museum.",
+    "facts": [
+      "Built for: Khufu, Khafre and Menkaure",
+      "Great Pyramid height: About 146 m originally, about 138 m today",
+      "Stone blocks: Around 2.3 million in the Great Pyramid",
+      "UNESCO World Heritage: Since 1979, as part of Memphis and its Necropolis"
+    ],
+    "tips": [
+      "Arrive at opening time for cooler temperatures and fewer crowds.",
+      "Going inside the Great Pyramid needs a separate ticket; the smaller pyramids are often quieter.",
+      "The panoramic viewpoint on the desert side gives the classic photo of all three pyramids.",
+      "Combine with the Grand Egyptian Museum next door — plan a full day for both."
+    ],
+    "imageUrl": "/img/cairo-giza.jpg",
+    "galleryUrls": [
+      "/img/hero.jpg"
+    ],
+    "keywords": [
+      "pyramid",
+      "pyramids",
+      "giza",
+      "khufu",
+      "cheops",
+      "khafre",
+      "menkaure"
+    ],
+    "sortOrder": 0
+  },
+  {
+    "slug": "great-sphinx",
+    "name": "The Great Sphinx",
+    "regionSlug": "cairo-giza",
+    "location": "Giza plateau, beside Khafre's valley temple",
+    "period": "c. 2500 BC (4th Dynasty)",
+    "summary": "A lion with a king's head, carved straight out of the bedrock of the Giza plateau — the largest monolithic statue of the ancient world.",
+    "history": "## Carved from the hill\n\nThe Sphinx wasn't built — it was left behind. Workers cut away the limestone around a natural outcrop and shaped what remained into a recumbent lion with the head of a king wearing the royal nemes headcloth. Most Egyptologists attribute it to Khafre because it sits beside his causeway and valley temple, and its face is thought to be his portrait.\n\n## Buried and rediscovered\n\nDesert sand has repeatedly buried the Sphinx up to its neck. Between its paws stands the Dream Stela of Thutmose IV (about 1400 BC), which tells how the young prince fell asleep in its shadow and dreamed that the Sphinx promised him the throne if he cleared the sand away. Full excavation of the body only came in the 20th century.\n\n## The missing nose\n\nA popular story blames Napoleon's soldiers for shooting off the nose, but drawings made before his 1798 expedition already show it missing. Marks left by tools suggest it was deliberately chiselled off; the 15th-century historian al-Maqrizi records that a man damaged the statue in 1378. Fragments of the stone beard are in the British Museum and in Cairo.",
+    "facts": [
+      "Length: About 73 m",
+      "Height: About 20 m",
+      "Probably built for: Khafre",
+      "Material: Limestone bedrock, carved in place"
+    ],
+    "tips": [
+      "The best close-up view is from the terrace of Khafre's valley temple.",
+      "Late afternoon light is the most flattering for photos.",
+      "The evening sound and light show uses the Sphinx as its narrator."
+    ],
+    "imageUrl": "/img/hero.jpg",
+    "galleryUrls": [
+      "/img/cairo-giza.jpg"
+    ],
+    "keywords": [
+      "sphinx"
+    ],
+    "sortOrder": 1
+  },
+  {
+    "slug": "grand-egyptian-museum",
+    "name": "Grand Egyptian Museum",
+    "regionSlug": "cairo-giza",
+    "location": "Giza, about 2 km from the pyramids",
+    "period": "Opened in full in November 2025",
+    "summary": "One of the largest archaeological museums in the world, built to display Tutankhamun's treasures together for the first time.",
+    "history": "## A museum for a new century\n\nEgypt's collections long outgrew the historic museum on Tahrir Square. The Grand Egyptian Museum was designed to give them room, with a vast atrium, a grand staircase lined with royal statues and a façade facing the pyramids. Galleries opened in stages before the official opening in November 2025.\n\n## Tutankhamun, complete\n\nWhen Howard Carter found Tutankhamun's tomb in 1922, it held more than 5,000 objects: chariots, beds, thrones, jewellery, shrines and the nested coffins. For a century only part of this could be shown at once. At the Grand Egyptian Museum the collection is presented together, arranged to tell the story of the young king's life and burial.\n\n## Ramses at the door\n\nThe 11-metre granite statue of Ramses II that greets visitors in the atrium stood in a traffic-choked square in central Cairo for more than 50 years. In 2006 it was moved to Giza, and in 2018 it was moved again, upright, into the museum.",
+    "facts": [
+      "Highlights: Tutankhamun galleries, colossal Ramses II, Khufu's boat",
+      "Location: Beside the Giza pyramids",
+      "Time needed: At least half a day"
+    ],
+    "tips": [
+      "Book tickets in advance on the official website — time slots can sell out.",
+      "Start with the grand staircase for an overview of Egyptian history, then head to the Tutankhamun galleries.",
+      "An Egyptologist guide helps you see the highlights without getting lost."
+    ],
+    "imageUrl": "/img/cairo-giza.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "grand egyptian museum",
+      "gem",
+      "museum",
+      "tutankhamun",
+      "king tut"
+    ],
+    "sortOrder": 2
+  },
+  {
+    "slug": "egyptian-museum-tahrir",
+    "name": "Egyptian Museum (Tahrir)",
+    "regionSlug": "cairo-giza",
+    "location": "Tahrir Square, downtown Cairo",
+    "period": "Opened 1902",
+    "summary": "The historic home of Egyptology — more than a century of discoveries crammed into a grand pink building on Tahrir Square.",
+    "history": "## Saving Egypt's past\n\nIn the 19th century, antiquities left Egypt by the shipload. The French Egyptologist Auguste Mariette founded Egypt's antiquities service in 1858 and a museum to keep finds in the country. After moving twice, the collection settled in the purpose-built museum on Tahrir Square in 1902.\n\n## What to see\n\nThe museum is strongest on the earliest and grandest periods: the Narmer Palette, often described as recording the unification of Egypt around 3100 BC; the seated statue of Khafre carved in hard diorite; the lifelike painted statues of Rahotep and Nofret; and the gilded furniture of Yuya and Tjuyu, Tutankhamun's great-grandparents.\n\nThe royal mummies moved to the National Museum of Egyptian Civilization in April 2021, in a televised procession known as the Pharaohs' Golden Parade.",
+    "facts": [
+      "Opened: 1902",
+      "Highlights: Narmer Palette, Old Kingdom statues, Yuya and Tjuyu's tomb treasures",
+      "Time needed: 2–3 hours"
+    ],
+    "tips": [
+      "Less crowded than the Grand Egyptian Museum — a good choice on a busy day.",
+      "Pair it with a walk through downtown Cairo or a Nile felucca at sunset."
+    ],
+    "imageUrl": "/img/cairo-giza.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "egyptian museum",
+      "tahrir",
+      "narmer"
+    ],
+    "sortOrder": 3
+  },
+  {
+    "slug": "saqqara",
+    "name": "Saqqara & the Step Pyramid",
+    "regionSlug": "cairo-giza",
+    "location": "About 30 km south of Cairo",
+    "period": "c. 2670 BC onwards",
+    "summary": "The vast cemetery of ancient Memphis, home to Djoser's Step Pyramid — Egypt's first pyramid and one of the oldest large stone buildings in the world.",
+    "history": "## The first pyramid\n\nBefore Djoser, kings were buried under flat-topped mud-brick tombs called mastabas. His architect Imhotep stacked six stone mastabas of shrinking size on top of each other, creating the Step Pyramid around 2670 BC. It stood inside a walled complex of courtyards and dummy buildings imitating reed and wood in stone.\n\nImhotep was remembered for thousands of years; by the Late Period he was worshipped as a god of wisdom and healing.\n\n## A city of the dead\n\nSaqqara was used as a burial ground for more than 3,000 years. Highlights include the mastabas of officials such as Ti and Mereruka, with lively scenes of farming, fishing and crafts; the Pyramid of Unas, the first to carry the Pyramid Texts inside; and the Serapeum, underground galleries holding giant granite coffins for the sacred Apis bulls. New discoveries are still announced here almost every year.\n\n## Memphis\n\nNearby Memphis was Egypt's capital for much of the Old Kingdom. Little of the city survives above ground, but the open-air museum at Mit Rahina displays a colossal limestone statue of Ramses II and an alabaster sphinx.",
+    "facts": [
+      "Built for: King Djoser (3rd Dynasty)",
+      "Architect: Imhotep",
+      "Height: About 60 m, in six steps",
+      "UNESCO World Heritage: Since 1979, as part of Memphis and its Necropolis"
+    ],
+    "tips": [
+      "An easy half-day from Giza — or combine with Dahshur's Bent and Red Pyramids.",
+      "Bring water and a hat: the site is large and has little shade."
+    ],
+    "imageUrl": "/img/hero.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "saqqara",
+      "step pyramid",
+      "djoser",
+      "zoser",
+      "imhotep",
+      "memphis",
+      "serapeum"
+    ],
+    "sortOrder": 4
+  },
+  {
+    "slug": "islamic-cairo",
+    "name": "Islamic Cairo & the Citadel",
+    "regionSlug": "cairo-giza",
+    "location": "Historic Cairo, east of downtown",
+    "period": "From AD 969",
+    "summary": "A thousand years of mosques, madrasas, gates and markets — one of the richest collections of Islamic architecture anywhere.",
+    "history": "## The victorious city\n\nThe Fatimid dynasty conquered Egypt in 969 and founded a new walled royal city, al-Qahira — 'the Victorious', which gave Cairo its name. The next year they began Al-Azhar Mosque, whose school grew into one of the oldest continuously operating universities in the world. Three of the Fatimid city gates — Bab Zuweila, Bab al-Futuh and Bab al-Nasr — still stand.\n\n## Saladin's Citadel\n\nSalah al-Din (Saladin) began the Citadel around 1176 on a spur of the Muqattam hills, and it remained the seat of Egypt's rulers for almost 700 years. Its skyline is dominated by the Ottoman-style Mosque of Muhammad Ali, completed in the 19th century, often called the Alabaster Mosque.\n\n## Mamluk splendour\n\nUnder the Mamluk sultans (1250–1517) Cairo was one of the largest cities in the world. Al-Muizz Street is lined with their mosques, madrasas and hospitals, and the Sultan Hassan Mosque is one of the most monumental buildings of medieval Islam. The Khan el-Khalili bazaar grew from a caravanserai built in the 1380s and still trades in lamps, spices, silver and textiles.",
+    "facts": [
+      "Founded: AD 969 by the Fatimids",
+      "Highlights: Citadel of Saladin, Al-Azhar, Al-Muizz Street, Khan el-Khalili",
+      "UNESCO World Heritage: Historic Cairo, since 1979"
+    ],
+    "tips": [
+      "Dress modestly; women need a headscarf inside mosques.",
+      "Walk Al-Muizz Street in the late afternoon and finish at Khan el-Khalili for mint tea.",
+      "Friday midday prayers close some mosques to visitors."
+    ],
+    "imageUrl": "/img/cairo-giza.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "islamic cairo",
+      "citadel",
+      "saladin",
+      "al azhar",
+      "khan el khalili",
+      "muizz",
+      "mosque",
+      "sultan hassan"
+    ],
+    "sortOrder": 5
+  },
+  {
+    "slug": "coptic-cairo",
+    "name": "Coptic Cairo",
+    "regionSlug": "cairo-giza",
+    "location": "Old Cairo (Masr al-Qadima)",
+    "period": "Roman fortress, churches from the 4th–7th centuries onwards",
+    "summary": "Cairo's oldest quarter: a Roman fortress enclosing ancient churches, a historic synagogue and the Coptic Museum.",
+    "history": "## Fortress of Babylon\n\nLong before Cairo existed, the Romans built a fortress here called Babylon, guarding the Nile crossing. Parts of its walls and round towers survive. Egypt became largely Christian from the 4th century, and churches were built inside and against the fortress walls.\n\n## The Holy Family\n\nCoptic tradition holds that the Holy Family sheltered here during their flight into Egypt. The crypt of the Church of Abu Serga (St Sergius) is venerated as one of their resting places. The Hanging Church takes its name from being built over the gatehouse of the Roman fortress, so its nave seems to hang above the passage.\n\n## Ben Ezra and the Geniza\n\nThe Ben Ezra Synagogue held the Cairo Geniza — a storeroom where hundreds of thousands of manuscript fragments were kept over roughly a thousand years. Rediscovered in the 19th century, they are one of the richest sources for the daily life of medieval Jewish, and wider Mediterranean, communities.",
+    "facts": [
+      "Highlights: Hanging Church, Abu Serga, Ben Ezra Synagogue, Coptic Museum",
+      "Faiths: Coptic Christian, Jewish and Muslim sites side by side"
+    ],
+    "tips": [
+      "Take the metro to Mar Girgis station — the quarter is right outside.",
+      "The Coptic Museum's collection of textiles, icons and carved wood is often overlooked and well worth an hour."
+    ],
+    "imageUrl": "/img/cairo-giza.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "coptic",
+      "hanging church",
+      "ben ezra",
+      "abu serga",
+      "old cairo"
+    ],
+    "sortOrder": 6
+  },
+  {
+    "slug": "karnak",
+    "name": "Karnak Temple",
+    "regionSlug": "luxor-aswan",
+    "location": "East Bank, Luxor",
+    "period": "c. 2000 BC – 1st century AD",
+    "summary": "The largest religious complex of the ancient world, built and rebuilt by pharaohs for about 2,000 years in honour of the god Amun-Ra.",
+    "history": "## House of Amun\n\nThebes (modern Luxor) rose to power in the Middle Kingdom, and its local god Amun rose with it. Merged with the sun god Ra, Amun-Ra became king of the gods, and his temple at Karnak became the richest institution in Egypt, owning land, cattle and ships across the country.\n\nAlmost every pharaoh of the New Kingdom wanted to leave a mark here, so the temple grew outward in a series of gateways (pylons), courts and halls.\n\n## The Great Hypostyle Hall\n\nBegun under Seti I and completed by Ramses II, the hall is a forest of 134 sandstone columns covered in carved and once brightly painted scenes. The 12 central columns are about 21 metres tall; the difference in height allowed light in through stone window grilles. It was designed to evoke the papyrus marsh of creation.\n\n## Obelisks and the sacred lake\n\nHatshepsut raised two granite obelisks at Karnak; one still stands, nearly 30 metres tall. Nearby is the sacred lake, where priests purified themselves, and a giant granite scarab that visitors traditionally walk around for luck.",
+    "facts": [
+      "Dedicated to: Amun-Ra, Mut and Khonsu",
+      "Great Hypostyle Hall: 134 columns, the tallest about 21 m",
+      "UNESCO World Heritage: Since 1979, as part of Ancient Thebes"
+    ],
+    "tips": [
+      "Go at opening time or late afternoon — the site is huge and exposed.",
+      "The sound and light show at night is a different way to see the halls.",
+      "Allow at least two to three hours, and more with a guide."
+    ],
+    "imageUrl": "/img/luxor-aswan.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "karnak",
+      "hypostyle",
+      "amun",
+      "amun ra"
+    ],
+    "sortOrder": 7
+  },
+  {
+    "slug": "luxor-temple",
+    "name": "Luxor Temple",
+    "regionSlug": "luxor-aswan",
+    "location": "East Bank, Luxor, on the Corniche",
+    "period": "c. 1390–1213 BC, with later additions",
+    "summary": "An elegant temple in the heart of Luxor, joined to Karnak by the 3-km Avenue of Sphinxes and beautifully lit at night.",
+    "history": "## The Opet Festival\n\nLuxor Temple was the setting for the Opet Festival, when the statues of Amun, Mut and Khonsu were carried from Karnak to Luxor in a great procession, by land along the Avenue of Sphinxes or by river on golden barques. The festival renewed the king's divine power each year.\n\n## Layers of history\n\nAmenhotep III built the graceful colonnade and inner sanctuary; Ramses II added the great pylon, colossal statues and a pair of obelisks — one of which now stands in the Place de la Concorde in Paris. Alexander the Great rebuilt a shrine inside, Romans turned part of the temple into a military shrine, and the Mosque of Abu al-Haggag, still in use, sits on top of the ancient walls.",
+    "facts": [
+      "Built mainly by: Amenhotep III and Ramses II",
+      "Avenue of Sphinxes: About 2.7 km, reopened in 2021",
+      "Open: Into the evening — best after dark"
+    ],
+    "tips": [
+      "Visit after sunset, when the temple is lit up and cooler.",
+      "Walk part of the Avenue of Sphinxes from the temple's front."
+    ],
+    "imageUrl": "/img/luxor-aswan.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "luxor temple",
+      "avenue of sphinxes",
+      "opet",
+      "amenhotep"
+    ],
+    "sortOrder": 8
+  },
+  {
+    "slug": "valley-of-the-kings",
+    "name": "Valley of the Kings",
+    "regionSlug": "luxor-aswan",
+    "location": "West Bank, Luxor",
+    "period": "c. 1550–1070 BC (New Kingdom)",
+    "summary": "The hidden royal cemetery of the New Kingdom — more than 60 tombs cut deep into the hills, their walls painted with guides to the afterlife.",
+    "history": "## Hiding the kings\n\nThe pyramids had been robbed within a few centuries. New Kingdom pharaohs chose a different strategy: tombs cut deep into a remote valley under a natural pyramid-shaped peak, al-Qurn, with the temples for their cult built separately at the edge of the fields. Workmen from the village of Deir el-Medina dug and decorated the tombs, and their records survive on thousands of limestone flakes.\n\n## Maps of the underworld\n\nTomb walls are covered with religious books such as the Amduat and the Book of Gates, describing the sun god's journey through the twelve hours of night. The king, joined with the sun, would pass the same dangers and be reborn at dawn. Seti I's tomb is the longest and most finely decorated in the valley.\n\n## Tutankhamun\n\nAlmost every tomb was robbed in antiquity. Tutankhamun's small tomb survived largely intact because it was buried under debris from later tomb-building. Howard Carter found it in November 1922, working for Lord Carnarvon. The king's mummy still lies in the tomb.",
+    "facts": [
+      "Tombs found: More than 60 (numbered KV1 onwards)",
+      "Most famous: Tutankhamun (KV62), Seti I (KV17), Ramses VI (KV9)",
+      "UNESCO World Heritage: Since 1979, as part of Ancient Thebes"
+    ],
+    "tips": [
+      "A standard ticket covers a set number of tombs; Tutankhamun, Seti I and Ramses VI need extra tickets.",
+      "Photography rules change — check at the ticket office.",
+      "Go early: the valley traps the heat by midday."
+    ],
+    "imageUrl": "/img/luxor-aswan.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "valley of the kings",
+      "royal tomb",
+      "tomb",
+      "west bank",
+      "seti",
+      "deir el medina",
+      "howard carter"
+    ],
+    "sortOrder": 9
+  },
+  {
+    "slug": "temple-of-hatshepsut",
+    "name": "Temple of Hatshepsut",
+    "regionSlug": "luxor-aswan",
+    "location": "Deir el-Bahari, West Bank, Luxor",
+    "period": "c. 1479–1458 BC",
+    "summary": "The terraced mortuary temple of Egypt's most successful female pharaoh, set dramatically against the cliffs of Deir el-Bahari.",
+    "history": "## A woman on the throne\n\nHatshepsut was the daughter of Thutmose I and the widow of Thutmose II. She first ruled as regent for her young stepson Thutmose III, then took the full titles of a king, and was often shown in male royal dress with a false beard. Her reign of about 20 years was peaceful and prosperous, with major building across Egypt.\n\n## Djeser-djeseru\n\nHer temple, called Djeser-djeseru ('Holiest of Holies'), rises in three colonnaded terraces joined by ramps. Reliefs record her divine birth as the daughter of Amun and a trade expedition to the distant land of Punt, bringing back incense trees, ebony and exotic animals.\n\n## Erased and restored\n\nSome two decades after her death, many of her images and names were chiselled away, probably under Thutmose III as he secured the succession for his own line. A Polish-Egyptian mission has spent decades reconstructing the temple from thousands of fragments.",
+    "facts": [
+      "Built for: Queen-pharaoh Hatshepsut",
+      "Architect: Traditionally Senenmut",
+      "Famous reliefs: The expedition to the land of Punt"
+    ],
+    "tips": [
+      "A sunrise hot-air balloon flight passes right over the temple.",
+      "The electric train from the ticket office saves a hot walk."
+    ],
+    "imageUrl": "/img/luxor-aswan.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "hatshepsut",
+      "deir el bahari",
+      "deir el bahri",
+      "punt",
+      "senenmut"
+    ],
+    "sortOrder": 10
+  },
+  {
+    "slug": "edfu-kom-ombo",
+    "name": "Edfu & Kom Ombo Temples",
+    "regionSlug": "luxor-aswan",
+    "location": "On the Nile between Luxor and Aswan",
+    "period": "Ptolemaic period, c. 237–57 BC (Edfu)",
+    "summary": "Two temples on the Nile cruise route: Edfu, the best-preserved temple in Egypt, and the double temple of Kom Ombo above the river.",
+    "history": "## Edfu: a temple complete\n\nBuilt over nearly two centuries under the Ptolemies, the Temple of Horus at Edfu still has its roof, pylon, courts and sanctuary. Buried under sand and houses for centuries, it was protected until excavation in the 1860s. Its walls tell the myth of Horus's battle against Seth and record details of the temple's own construction and rituals.\n\n## Kom Ombo: two gods, one temple\n\nKom Ombo is unusual: it is symmetrical, with two entrances, two halls and two sanctuaries — one for the crocodile god Sobek, one for the falcon-headed Horus the Elder. Nile crocodiles once basked on the sandbanks here; a small museum beside the temple displays mummified crocodiles found nearby.",
+    "facts": [
+      "Edfu dedicated to: Horus",
+      "Kom Ombo dedicated to: Sobek and Horus the Elder",
+      "Built under: The Ptolemies (Greek kings of Egypt)"
+    ],
+    "tips": [
+      "Most Nile cruises stop at both; by car they fit into the drive between Luxor and Aswan.",
+      "Kom Ombo is lovely at sunset, when the temple glows above the river."
+    ],
+    "imageUrl": "/img/nile-felucca.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "edfu",
+      "kom ombo",
+      "horus temple",
+      "sobek",
+      "crocodile"
+    ],
+    "sortOrder": 11
+  },
+  {
+    "slug": "abu-simbel",
+    "name": "Abu Simbel",
+    "regionSlug": "luxor-aswan",
+    "location": "Near Lake Nasser, about 280 km south of Aswan",
+    "period": "c. 1264–1244 BC",
+    "summary": "Ramses II's two colossal rock-cut temples, saved from Lake Nasser in the 1960s by one of history's great rescue projects.",
+    "history": "## A message to Nubia\n\nRamses II carved two temples into the sandstone cliffs at the southern edge of his empire. The Great Temple, fronted by four colossal statues of the king, honours Amun-Ra, Ra-Horakhty, Ptah and the deified Ramses himself. The smaller temple is dedicated to the goddess Hathor and to his principal queen, Nefertari — one of the few Egyptian temples where a queen's statues are the same size as the king's.\n\n## The sun festival\n\nThe Great Temple was aligned so that twice a year — around 22 February and 22 October — the rising sun shines deep into the mountain and lights the statues in the innermost sanctuary. Only Ptah, a god linked to the underworld, stays in shadow.\n\n## Moving a mountain\n\nThe Aswan High Dam would have drowned the temples under Lake Nasser. In an international campaign led by UNESCO, engineers cut the temples into more than 1,000 blocks, some weighing up to 30 tonnes, and reassembled them on higher ground inside an artificial hill. The rescue inspired the creation of the World Heritage Convention.",
+    "facts": [
+      "Built by: Ramses II",
+      "Façade statues: Four seated figures of Ramses, about 20 m tall",
+      "Relocated: 1964–1968, about 65 m higher",
+      "UNESCO World Heritage: Nubian Monuments from Abu Simbel to Philae, since 1979"
+    ],
+    "tips": [
+      "Most visitors leave Aswan before dawn — the drive is about 3.5 hours each way.",
+      "Flights from Aswan make it a comfortable half-day.",
+      "For the sun festival days, book months ahead."
+    ],
+    "imageUrl": "/img/nile-felucca.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "abu simbel",
+      "sun festival",
+      "nefertari",
+      "ramses",
+      "rameses",
+      "ramesses"
+    ],
+    "sortOrder": 12
+  },
+  {
+    "slug": "philae",
+    "name": "Philae Temple",
+    "regionSlug": "luxor-aswan",
+    "location": "Agilkia Island, Aswan",
+    "period": "c. 380 BC – AD 6th century",
+    "summary": "The island temple of the goddess Isis, reached by boat — the last stronghold of ancient Egyptian religion.",
+    "history": "## Isis of Philae\n\nIsis, the devoted wife of Osiris and mother of Horus, was one of the most widely worshipped deities of the ancient world, with followers from Nubia to Rome. Her sanctuary at Philae was built mainly under the Ptolemies and Roman emperors, and pilgrims came from far to the south.\n\n## The end of an era\n\nThe last known inscription in hieroglyphs was carved here in AD 394, and the last demotic graffito decades later. Worship of Isis continued at Philae long after it had been banned elsewhere in the Roman Empire; the temple was closed in the 6th century under Emperor Justinian and later partly used as a church.\n\n## Rescued from the water\n\nAfter the first Aswan dam was built in 1902, Philae spent much of each year flooded. When the High Dam threatened to submerge it for good, the temples were dismantled and rebuilt on nearby Agilkia Island, landscaped to resemble the original.",
+    "facts": [
+      "Dedicated to: Isis",
+      "Last hieroglyphic inscription: AD 394",
+      "Relocated: To Agilkia Island, completed 1980"
+    ],
+    "tips": [
+      "Boats leave from the Shellal marina; agree the return time with your boatman.",
+      "The evening sound and light show is one of the best in Egypt."
+    ],
+    "imageUrl": "/img/nile-felucca.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "philae",
+      "isis",
+      "agilkia"
+    ],
+    "sortOrder": 13
+  },
+  {
+    "slug": "el-alamein-memorials",
+    "name": "El-Alamein War Memorials & Museum",
+    "regionSlug": "north-coast",
+    "location": "El-Alamein, Mediterranean coast",
+    "period": "1942 (Second World War)",
+    "summary": "The cemeteries and museum of the desert battles that turned the tide of the Second World War in North Africa.",
+    "history": "## The last line before the Nile\n\nBy mid-1942, Axis forces under Erwin Rommel had pushed across Libya into Egypt, threatening Alexandria, Cairo and the Suez Canal. El-Alamein was the last defensible position: a gap of about 60 km between the sea and the impassable Qattara Depression. In the First Battle of El-Alamein in July, the Allied Eighth Army halted the advance.\n\n## The turning point\n\nUnder Bernard Montgomery, the Eighth Army launched the Second Battle on 23 October 1942 with a massive artillery barrage. After nearly three weeks of fighting through minefields, the Axis forces retreated. Winston Churchill later wrote: 'Before Alamein we never had a victory. After Alamein we never had a defeat.'\n\n## Remembering the fallen\n\nThe Commonwealth War Cemetery holds thousands of graves of soldiers from Britain, Australia, New Zealand, South Africa, India and elsewhere. The German memorial is a fortress-like octagon on a hill above the sea, and the Italian memorial is a tall white tower. The El-Alamein Military Museum explains the campaign with maps, uniforms and vehicles.",
+    "facts": [
+      "First battle: July 1942",
+      "Second battle: 23 October – 11 November 1942",
+      "Commanders: Montgomery (Allies), Rommel (Axis)",
+      "Memorials: Commonwealth, German and Italian"
+    ],
+    "tips": [
+      "Easily combined with a beach stay on the North Coast.",
+      "Remembrance ceremonies are held around the October anniversary."
+    ],
+    "imageUrl": "/img/el-alamein.jpg",
+    "galleryUrls": [
+      "/img/north-coast.jpg"
+    ],
+    "keywords": [
+      "el alamein",
+      "alamein",
+      "ww2",
+      "wwii",
+      "world war",
+      "rommel",
+      "montgomery",
+      "war cemetery"
+    ],
+    "sortOrder": 14
+  },
+  {
+    "slug": "alexandria",
+    "name": "Alexandria",
+    "regionSlug": "north-coast",
+    "location": "Mediterranean coast, about 2 hours from El-Alamein",
+    "period": "Founded 331 BC",
+    "summary": "Alexander the Great's city: home of the ancient Lighthouse and Library, and Egypt's gateway to the Mediterranean.",
+    "history": "## Capital of the Ptolemies\n\nAlexander founded the city on a strip of land between the sea and Lake Mariout. After his death, his general Ptolemy made it the capital of a dynasty that ruled Egypt for three centuries, ending with Cleopatra VII. Alexandria became the largest city of the Greek world.\n\n## Lighthouse and Library\n\nThe Pharos lighthouse, completed in the 3rd century BC, was one of the Seven Wonders; it was damaged by earthquakes and finally collapsed in the 14th century. The Citadel of Qaitbay was built on its site in the 1470s, partly from its stones. The Great Library aimed to collect all the world's knowledge; scholars there measured the Earth's circumference and edited Homer. The modern Bibliotheca Alexandrina opened in 2002 in its memory.\n\n## Beneath the streets\n\nThe catacombs of Kom el-Shoqafa, from around the 2nd century AD, mix Egyptian, Greek and Roman art in a single tomb — Anubis dressed as a Roman soldier. Pompey's Pillar, a Roman column of red Aswan granite, stands nearby.",
+    "facts": [
+      "Founded by: Alexander the Great, 331 BC",
+      "Ancient wonders: The Pharos lighthouse and the Great Library",
+      "Visit today: Qaitbay Citadel, Bibliotheca Alexandrina, Kom el-Shoqafa catacombs"
+    ],
+    "tips": [
+      "A day trip from the North Coast or Cairo works well.",
+      "Finish with fresh seafood on the Corniche."
+    ],
+    "imageUrl": "/img/north-coast.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "alexandria",
+      "alexander",
+      "library",
+      "lighthouse",
+      "pharos",
+      "qaitbay",
+      "cleopatra"
+    ],
+    "sortOrder": 15
+  },
+  {
+    "slug": "st-catherines-monastery",
+    "name": "St. Catherine's Monastery",
+    "regionSlug": "sinai-red-sea",
+    "location": "Foot of Mount Sinai, South Sinai",
+    "period": "Built AD 548–565",
+    "summary": "One of the oldest working Christian monasteries in the world, guarding the site of the Burning Bush and a remarkable library of ancient manuscripts.",
+    "history": "## At the Burning Bush\n\nHermits lived at the foot of Mount Sinai from early Christian times, drawn by the tradition that this was where Moses saw the Burning Bush. In the 4th century, Empress Helena is said to have ordered a chapel built here. Between 548 and 565, Emperor Justinian surrounded it with massive granite walls to protect the monks — walls that still stand.\n\n## Catherine of Alexandria\n\nThe monastery was later named after St Catherine of Alexandria, a martyr whose remains, according to tradition, were carried by angels to the nearby mountain that bears her name. The monastery has been continuously inhabited by Greek Orthodox monks for about 1,500 years.\n\n## Treasures of the library\n\nIts library is one of the oldest continuously used libraries in the world, with thousands of manuscripts in Greek, Arabic, Syriac and other languages. The Codex Sinaiticus, one of the oldest complete manuscripts of the New Testament, was largely kept here until the 19th century. The monastery also holds some of the earliest surviving Christian icons. Within its walls stands a small mosque, built in the Fatimid period.",
+    "facts": [
+      "Founded by: Emperor Justinian",
+      "Church: Greek Orthodox",
+      "UNESCO World Heritage: Saint Catherine Area, since 2002"
+    ],
+    "tips": [
+      "Opening hours are short and it closes on some days and religious holidays — check before you go.",
+      "Visit after climbing Mount Sinai at sunrise; the monastery is at the bottom of the trail.",
+      "Dress modestly: shoulders and knees covered."
+    ],
+    "imageUrl": "/img/saint-catherine.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "monastery",
+      "st catherine",
+      "saint catherine",
+      "catherine",
+      "burning bush",
+      "justinian",
+      "codex sinaiticus"
+    ],
+    "sortOrder": 16
+  },
+  {
+    "slug": "mount-sinai",
+    "name": "Mount Sinai (Jebel Musa)",
+    "regionSlug": "sinai-red-sea",
+    "location": "South Sinai, above St. Catherine's Monastery",
+    "period": "Sacred since antiquity",
+    "summary": "The mountain where tradition says Moses received the Ten Commandments — climbed at night to watch the sunrise from the summit.",
+    "history": "## The mountain of Moses\n\nJewish, Christian and Muslim traditions all honour Mount Sinai as the place where God gave Moses the Law. Scholars debate which mountain the Bible meant, but Jebel Musa ('Mount of Moses') has been identified as Sinai since at least the 4th century, when Christian pilgrims and hermits began to come here.\n\n## Two ways up\n\nThe Camel Path, built in the 19th century, zig-zags gently up the mountain; camels can carry tired walkers most of the way. The steeper Steps of Repentance — about 3,750 stone steps said to have been laid by a single monk — climb straight up from behind the monastery. Both meet below the summit for the final 750 steps.\n\n## On the summit\n\nAt the top stand a small Greek Orthodox chapel and a mosque. Most visitors start around 1–2 am to arrive for sunrise, when the granite peaks of South Sinai turn red, pink and gold.",
+    "facts": [
+      "Height: 2,285 m",
+      "Routes: The Camel Path and the 3,750 Steps of Repentance",
+      "Climb time: About 2.5–3 hours up"
+    ],
+    "tips": [
+      "A Bedouin guide is required, and we can arrange one.",
+      "Bring warm layers, a torch and water — it can be freezing at the top, even in spring.",
+      "Take the Camel Path up in the dark and the Steps down in daylight."
+    ],
+    "imageUrl": "/img/saint-catherine.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "mount sinai",
+      "mount moses",
+      "jebel musa",
+      "moses",
+      "sunrise",
+      "climb",
+      "hike"
+    ],
+    "sortOrder": 17
+  },
+  {
+    "slug": "ras-mohammed",
+    "name": "Ras Mohammed National Park",
+    "regionSlug": "sinai-red-sea",
+    "location": "Southern tip of Sinai, near Sharm El Sheikh",
+    "period": "Protected since 1983",
+    "summary": "Egypt's first national park, where the Gulfs of Suez and Aqaba meet — famous for coral walls, sharks and shoals of fish.",
+    "history": "## Where two seas meet\n\nRas Mohammed is the headland at the very tip of the Sinai peninsula. Deep, nutrient-rich water rises against sheer coral walls here, attracting huge schools of fish, turtles, reef sharks and, in summer, spawning aggregations that divers travel across the world to see.\n\n## Wrecks and reefs\n\nAt Yolanda Reef, the remains of a cargo ship that sank in 1980 scattered toilets and bathtubs across the seabed. North of the park lies the SS Thistlegorm, a British supply ship sunk by German bombers in 1941, still loaded with motorbikes, trucks and a locomotive — one of the world's most famous wreck dives.\n\n## On land\n\nThe park also protects mangroves, salt lakes and fossil coral reefs raised above sea level. The Magic Lake and the mangrove channel are easy stops on a day trip.",
+    "facts": [
+      "Declared: 1983, Egypt's first national park",
+      "Famous dive sites: Shark Reef, Yolanda Reef, Jackfish Alley",
+      "Nearby wreck: SS Thistlegorm (sunk 1941)"
+    ],
+    "tips": [
+      "Visit by boat from Sharm El Sheikh for the best reefs, or by jeep for the beaches.",
+      "Bring your passport — there's a checkpoint at the entrance.",
+      "Use reef-safe sunscreen and never touch the coral."
+    ],
+    "imageUrl": "/img/sinai-red-sea.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "ras mohammed",
+      "sharm",
+      "tiran",
+      "thistlegorm",
+      "reef",
+      "coral",
+      "snorkel",
+      "diving",
+      "dive"
+    ],
+    "sortOrder": 18
+  },
+  {
+    "slug": "blue-hole-dahab",
+    "name": "The Blue Hole, Dahab",
+    "regionSlug": "sinai-red-sea",
+    "location": "About 8 km north of Dahab",
+    "period": "Natural wonder",
+    "summary": "A deep, round sinkhole in the reef just off the shore — beautiful for snorkelling, and famous among freedivers.",
+    "history": "## A hole in the reef\n\nThe Blue Hole is a vertical shaft in the coral reef, its deep blue water a sharp contrast with the turquoise shallows around it. Its rim is covered in healthy coral and busy with reef fish, making it one of the best snorkelling spots in Dahab.\n\n## Respect the depth\n\nAt around 55 m a tunnel called the Arch opens to the sea. It has tempted many divers beyond their limits, and memorial plaques on the rocks near the entrance remember those who died. Dives to the Arch are only for trained technical divers; recreational divers usually enter at 'the Bells' and swim along the wall into the Hole.\n\n## Dahab's freediving capital\n\nBecause deep water starts right at the shore with no current, the Blue Hole is one of the world's top freediving training spots and has hosted international competitions.",
+    "facts": [
+      "Depth: More than 100 m",
+      "The Arch: A tunnel to the open sea at about 55 m",
+      "Best for: Snorkelling the rim, freediving, shallow dives"
+    ],
+    "tips": [
+      "Bring water shoes — the entry is over rock and coral.",
+      "Combine with a jeep or camel trip to Ras Abu Galum protected area to the north."
+    ],
+    "imageUrl": "/img/sinai-red-sea.jpg",
+    "galleryUrls": [],
+    "keywords": [
+      "blue hole",
+      "dahab",
+      "freedive",
+      "freediving",
+      "canyon"
+    ],
+    "sortOrder": 19
+  }
+]

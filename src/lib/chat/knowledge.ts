@@ -8,7 +8,32 @@ import { prisma } from "@/lib/prisma"
 import { getSettings } from "@/lib/settings"
 import { toNumber } from "@/lib/utils"
 
-async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listings">> {
+async function loadSites(): Promise<ChatListing[]> {
+  const sites = await prisma.historicSite.findMany({
+    where: { published: true, region: { published: true } },
+    orderBy: { sortOrder: "asc" },
+    include: { region: { select: { slug: true, name: true } } },
+  })
+  return sites.map((s) => ({
+    kind: "site" as const,
+    slug: s.slug,
+    title: s.name,
+    href: `/sites/${s.slug}`,
+    imageUrl: s.imageUrl,
+    regionSlug: s.region.slug,
+    regionName: s.region.name,
+    price: 0,
+    currency: "USD",
+    unit: "Read the history",
+    detail: s.period,
+    capacity: 0,
+    summary: s.summary,
+    keywords: s.keywords,
+    searchText: `${s.name} ${s.summary}`.toLowerCase(),
+  }))
+}
+
+async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listings" | "sites">> {
   const published = { published: true, region: { published: true } }
   const region = { select: { slug: true, name: true } }
 
@@ -99,7 +124,10 @@ async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listing
     ),
   ]
 
-  return { regions, listings }
+  // The catalog table appears on the first server start after deploying.
+  const sites = await loadSites().catch(() => [])
+
+  return { regions, listings, sites }
 }
 
 const getCatalogue = unstable_cache(
@@ -108,7 +136,7 @@ const getCatalogue = unstable_cache(
       return await loadCatalogue()
     } catch {
       // Database not reachable: the assistant still answers FAQ questions.
-      return { regions: [], listings: [] }
+      return { regions: [], listings: [], sites: [] }
     }
   },
   ["chat-catalogue"],

@@ -54,6 +54,8 @@ export async function POST(request: Request) {
   const reply = respond(parsed.data.message, knowledge)
 
   // searchText is only for matching; keep the payload to what the widget shows.
-  const listings = reply.listings?.map(({ searchText: _searchText, ...listing }) => listing)
+  const listings = reply.listings?.map(
+    ({ searchText: _searchText, keywords: _keywords, ...listing }) => listing
+  )
   return NextResponse.json({ reply: { ...reply, listings } })
 }

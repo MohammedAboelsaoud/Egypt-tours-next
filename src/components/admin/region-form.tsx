@@ -12,7 +12,7 @@ import {
   TextField,
   TextareaField,
 } from "@/components/admin/form-fields"
-import { ImageUpload } from "@/components/admin/image-upload"
+import { GalleryUpload, ImageUpload } from "@/components/admin/image-upload"
 import { Button } from "@/components/ui/button"
 
 export type RegionFormValues = {
@@ -23,6 +23,7 @@ export type RegionFormValues = {
   summary: string
   cities: string[]
   imageUrl: string
+  galleryUrls: string[]
   lat: number | null
   lng: number | null
   zoom: number
@@ -88,12 +89,17 @@ export function RegionForm({ region }: { region?: RegionFormValues }) {
         />
       </FormSection>
 
-      <FormSection title="Image">
+      <FormSection title="Photos">
         <ImageUpload
           name="imageUrl"
           label="Region image"
           required
           defaultValue={region?.imageUrl}
+        />
+        <GalleryUpload
+          name="galleryUrls"
+          label="Gallery"
+          defaultValue={region?.galleryUrls}
         />
       </FormSection>
 

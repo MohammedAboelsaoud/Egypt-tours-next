@@ -19,7 +19,7 @@ Vitest + Playwright
 bun install
 cp .env.example .env          # then fill in DATABASE_URL and AUTH_SECRET
 bun run db:push               # create the schema
-bun run db:seed               # 4 regions, 8 tours, 8 hotels, 6 cars, admin user
+bun run db:seed               # 4 regions, 8 tours, 8 hotels, 6 cars, 20 historic sites, admin user
 bun run dev                   # http://localhost:3000
 ```
 
@@ -86,7 +86,7 @@ The admin **Settings** page shows which integrations are connected.
 src/
 ├── app/
 │   ├── (site)/          public site — home, destinations, tours, hotels,
-│   │                    car rentals, booking flow, account, about, faq
+│   │                    car rentals, historic sites, booking flow, account, about, faq
 │   ├── (auth)/          sign in / register
 │   ├── admin/           login + (dashboard) with CRUD for everything
 │   └── api/             auth, bookings, payments, uploads, public JSON API
@@ -132,6 +132,30 @@ Pricing rules:
 | Tour  | per person         |
 | Hotel | per night          |
 | Car   | per day, w/ driver |
+
+---
+
+## Historic sites catalog
+
+`/sites` is a catalog of Egypt's historic sites (20 to start with: the
+pyramids, Karnak, the Valley of the Kings, Abu Simbel, St. Catherine's and
+more). Each has its own page with its history, key facts, visiting tips and a
+photo gallery. Destination pages list the sites in their region, and the
+**Ask Nefer** chat links to a site when a question names it or one of its
+keywords ("Tell me about Karnak").
+
+Edit everything in **Admin → Historic sites**. The history is one text box:
+start each chapter with a line beginning `## `, and leave an empty line between
+paragraphs. Key facts are `Label: value` lines.
+
+The starter catalog lives in `src/lib/sites/starter.ts`. It's loaded once: by
+`bun run db:seed` locally, or automatically on the first server start after
+deploying (`lib/db/ensure-schema.ts`, recorded in
+`SiteSetting.catalogSeededAt`). After that the database is the source of
+truth, so sites you delete in the admin don't come back.
+
+Regions also have a photo gallery (**Admin → Regions → Photos**), shown on the
+destination page.
 
 ---
 
