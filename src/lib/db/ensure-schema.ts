@@ -22,6 +22,10 @@ const ENUMS: [name: string, values: string[]][] = [
 const COLUMNS = [
   `ALTER TABLE "User" ADD COLUMN IF NOT EXISTS "languages" TEXT[]`,
   `ALTER TABLE "Booking" ADD COLUMN IF NOT EXISTS "paymentMethod" "PaymentMethod" NOT NULL DEFAULT 'CARD'`,
+  `ALTER TABLE "Booking" ADD COLUMN IF NOT EXISTS "cancelledAt" TIMESTAMP(3)`,
+  `ALTER TABLE "Booking" ADD COLUMN IF NOT EXISTS "refundAmount" DECIMAL(10,2)`,
+  `ALTER TABLE "Booking" ADD COLUMN IF NOT EXISTS "refundId" TEXT`,
+  `ALTER TABLE "User" ALTER COLUMN "languages" SET DEFAULT ARRAY[]::TEXT[]`,
 ]
 
 const TABLES = [
@@ -145,7 +149,10 @@ async function upToDate(): Promise<boolean> {
       EXISTS (SELECT 1 FROM information_schema.columns
               WHERE table_schema = current_schema() AND table_name = 'Booking' AND column_name = 'paymentMethod')
       AND EXISTS (SELECT 1 FROM information_schema.columns
-              WHERE table_schema = current_schema() AND table_name = 'User' AND column_name = 'languages')
+              WHERE table_schema = current_schema() AND table_name = 'Booking' AND column_name = 'refundId')
+      AND EXISTS (SELECT 1 FROM information_schema.columns
+              WHERE table_schema = current_schema() AND table_name = 'User' AND column_name = 'languages'
+                AND column_default IS NOT NULL)
       AND EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '_GuideProfileToRegion_B_fkey')
       AND EXISTS (SELECT 1 FROM pg_enum e JOIN pg_type t ON t.oid = e.enumtypid
               WHERE t.typname = 'Role' AND e.enumlabel = 'GUIDE')
@@ -155,9 +162,14 @@ async function upToDate(): Promise<boolean> {
 
 /** Brings the database up to the current schema. Returns what it did. */
 export async function ensureSchema(): Promise<"up-to-date" | "updated"> {
-  if (await upToDate()) return "up-to-date"
-  for (const sql of statements()) {
-    await prisma.$executeRawUnsafe(sql)
+  let result: "up-to-date" | "updated" = "up-to-date"
+  if (!(await upToDate())) {
+    for (const sql of statements()) {
+      await prisma.$executeRawUnsafe(sql)
+    }
+    result = "updated"
   }
-  return "updated"
+  // Accounts created before languages existed hold NULL; the app expects a list.
+  await prisma.$executeRawUnsafe(`UPDATE "User" SET "languages" = ARRAY[]::TEXT[] WHERE "languages" IS NULL`)
+  return result
 }

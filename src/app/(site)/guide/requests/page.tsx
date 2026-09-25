@@ -113,7 +113,7 @@ type RequestWithTourist = {
   groupSize: number
   message: string
   guideReply: string | null
-  tourist: { name: string | null; nationality: string | null; languages: string[] }
+  tourist: { name: string | null; nationality: string | null; languages: string[] | null }
 }
 
 function RequestCard({
@@ -143,8 +143,8 @@ function RequestCard({
             {r.tourist.nationality && <span className="text-muted-foreground"> · {r.tourist.nationality}</span>}
             <span className="text-muted-foreground"> · {r.groupSize} {r.groupSize === 1 ? "traveller" : "travellers"}</span>
           </p>
-          {r.tourist.languages.length > 0 && (
-            <p className="mt-0.5 text-xs text-muted-foreground">Speaks {r.tourist.languages.join(", ")}</p>
+          {(r.tourist.languages ?? []).length > 0 && (
+            <p className="mt-0.5 text-xs text-muted-foreground">Speaks {(r.tourist.languages ?? []).join(", ")}</p>
           )}
         </div>
         <div className="flex items-center gap-2">

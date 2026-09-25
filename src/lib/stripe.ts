@@ -86,6 +86,27 @@ export function sessionPaymentId(session: Stripe.Checkout.Session) {
   return typeof intent === "string" ? intent : intent.id
 }
 
+/**
+ * Refunds part or all of a card payment. The idempotency key ties the refund
+ * to the booking, so a retried request can never refund twice.
+ */
+export async function refundPayment(input: {
+  paymentIntentId: string
+  amount: number
+  currency: string
+  bookingId: string
+}) {
+  return stripe().refunds.create(
+    {
+      payment_intent: input.paymentIntentId,
+      amount: toMinorUnits(input.amount, input.currency),
+      reason: "requested_by_customer",
+      metadata: { bookingId: input.bookingId },
+    },
+    { idempotencyKey: `refund-${input.bookingId}` }
+  )
+}
+
 export const webhookConfigured = Boolean(SECRET_KEY && WEBHOOK_SECRET)
 
 /** Verifies a webhook signature against the raw request body. */

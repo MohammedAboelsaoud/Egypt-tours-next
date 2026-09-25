@@ -16,7 +16,8 @@ export function LanguagePicker({
   idPrefix = "lang",
 }: {
   name?: string
-  defaultValue?: string[]
+  /** Accounts created before languages existed may hold null. */
+  defaultValue?: string[] | null
   registration?: UseFormRegisterReturn
   invalid?: boolean
   describedBy?: string
@@ -38,7 +39,7 @@ export function LanguagePicker({
               type="checkbox"
               value={language}
               className="peer sr-only"
-              {...(registration ?? { name, defaultChecked: defaultValue.includes(language) })}
+              {...(registration ?? { name, defaultChecked: (defaultValue ?? []).includes(language) })}
             />
             <span
               className={cn(

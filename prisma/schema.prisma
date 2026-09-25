@@ -67,7 +67,7 @@ model User {
   nationality   String?
   passportNo    String?
   /// Languages the traveller speaks, used to match them with a guide.
-  languages     String[]
+  languages     String[]   @default([])
   accounts      Account[]
   sessions      Session[]
   bookings      Booking[]
@@ -243,6 +243,10 @@ model Booking {
   paymentStatus   PaymentStatus @default(PENDING)
   /// CASH: reserved now, paid in cash on the day; an admin marks it PAID.
   paymentMethod   PaymentMethod @default(CARD)
+  cancelledAt     DateTime?
+  /// Amount refunded to the card when the traveller cancelled.
+  refundAmount    Decimal?      @db.Decimal(10, 2)
+  refundId        String?
   contactName     String?
   contactEmail    String?
   contactPhone    String?

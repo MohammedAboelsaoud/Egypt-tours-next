@@ -36,7 +36,7 @@ export default async function AccountPage() {
       </p>
 
       <div className="mt-8">
-        <ProfileForm user={user} />
+        <ProfileForm user={{ ...user, languages: user.languages ?? [] }} />
       </div>
     </div>
   )
