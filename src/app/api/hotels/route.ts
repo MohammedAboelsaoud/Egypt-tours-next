@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import type { Prisma } from "@prisma/client"
 
+import { applyMarkup } from "@/lib/markup"
+import { getHotelMarkupPercent } from "@/lib/pricing-settings"
 import { prisma } from "@/lib/prisma"
 import { toNumber } from "@/lib/utils"
 
@@ -24,13 +26,14 @@ export async function GET(request: Request) {
     include: { region: { select: { name: true, slug: true } } },
   })
 
+  const markup = await getHotelMarkupPercent()
   return NextResponse.json({
     hotels: hotels.map((hotel) => ({
       id: hotel.id,
       slug: hotel.slug,
       name: hotel.name,
       starRating: hotel.starRating,
-      pricePerNight: toNumber(hotel.pricePerNight),
+      pricePerNight: applyMarkup(toNumber(hotel.pricePerNight), markup),
       currency: hotel.currency,
       maxGuests: hotel.maxGuests,
       amenities: hotel.amenities,

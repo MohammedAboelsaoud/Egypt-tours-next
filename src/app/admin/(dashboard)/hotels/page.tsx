@@ -37,7 +37,7 @@ export default async function AdminHotelsPage() {
                   <th className="px-6 py-3 font-medium">Hotel</th>
                   <th className="px-4 py-3 font-medium">Region</th>
                   <th className="px-4 py-3 font-medium">Stars</th>
-                  <th className="px-4 py-3 font-medium">Per night</th>
+                  <th className="px-4 py-3 font-medium">Official rate</th>
                   <th className="px-4 py-3 font-medium">Bookings</th>
                   <th className="px-4 py-3 text-center font-medium">Live</th>
                   <th className="px-4 py-3" />

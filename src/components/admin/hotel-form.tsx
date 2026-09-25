@@ -114,16 +114,20 @@ export function HotelForm({
         />
       </FormSection>
 
-      <FormSection title="Pricing & capacity">
+      <FormSection
+        title="Pricing & capacity"
+        description="Room-type prices below are official rates too; the markup is added on the website."
+      >
         <div className="grid gap-5 sm:grid-cols-3">
           <TextField
             name="pricePerNight"
-            label="Price per night"
+            label="Official rate per night"
             type="number"
             min={0}
             step="0.01"
             required
             defaultValue={hotel?.pricePerNight ?? "0"}
+            hint="The hotel's own price. Travellers pay this plus the markup in Settings."
           />
           <TextField
             name="currency"

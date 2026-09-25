@@ -10,7 +10,8 @@ import { PrismaClient, type Prisma } from "@prisma/client"
 import bcrypt from "bcryptjs"
 
 import { addDays, fromISODate, todayInEgypt } from "../src/lib/guides/availability"
-import { STARTER_SITES } from "../src/lib/sites/starter"
+import { loadCatalogHotels, loadCatalogVehicles } from "../src/lib/catalog/load"
+import { HISTORIC_SITES } from "../src/lib/sites/details"
 
 const prisma = new PrismaClient()
 
@@ -23,29 +24,6 @@ const IMG = {
   sinai: "/img/sinai-red-sea.jpg",
   catherine: "/img/saint-catherine.jpg",
   hero: "/img/hero.jpg",
-}
-
-const U = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1600&q=80`
-
-const HOTEL_IMG = {
-  cairoRoom: U("photo-1618773928121-c32242e63f39"),
-  poolDusk: U("photo-1571896349842-33c89424de2d"),
-  poolside: U("photo-1566073771259-6a8506099945"),
-  terrace: U("photo-1596394516093-501ba68a0ba6"),
-  palms: U("photo-1551882547-ff40c63fe5fa"),
-  loungers: U("photo-1582719508461-905c673771fd"),
-}
-
-const CAR_IMG = {
-  sedan: U("photo-1541899481282-d53bffe3c35d"),
-  interior: U("photo-1449965408869-eaa3f722e40d"),
-  suv: U("photo-1533473359331-0135ef1b58bf"),
-  compactSuv: U("photo-1519641471654-76ce0107ad1b"),
-  luxury: U("photo-1583267746897-2cf415887172"),
-  luxuryAlt: U("photo-1503376780353-7e6692767b70"),
-  crossover: U("photo-1600661653561-629509216228"),
-  coach: U("photo-1570125909232-eb263c188f7e"),
-  coachNight: U("photo-1544620347-c4fd4a3d5957"),
 }
 
 // ---------------------------------------------------------------- regions
@@ -549,396 +527,6 @@ const TOURS: SeedTour[] = [
   },
 ]
 
-// ----------------------------------------------------------------- hotels
-
-const HOTELS = [
-  {
-    region: "cairo-giza",
-    slug: "nile-view-boutique-cairo",
-    name: "Nile View Boutique, Zamalek",
-    starRating: 5,
-    pricePerNight: 180,
-    maxGuests: 2,
-    imageUrl: HOTEL_IMG.cairoRoom,
-    galleryUrls: [HOTEL_IMG.cairoRoom, HOTEL_IMG.poolside],
-    address: "Zamalek Island, Cairo",
-    lat: 30.0614,
-    lng: 31.2197,
-    amenities: [
-      "Free Wi-Fi",
-      "Swimming pool",
-      "Restaurant",
-      "Bar",
-      "Airport transfer",
-      "Air conditioning",
-      "Room service",
-      "Nile view",
-    ],
-    roomTypes: [
-      { name: "Deluxe Nile View", price: 180, capacity: 2 },
-      { name: "Junior Suite", price: 265, capacity: 3 },
-      { name: "Family Room", price: 310, capacity: 4 },
-    ],
-    description:
-      "A 24-room townhouse hotel on the quiet western side of Zamalek, five minutes from the Cairo Tower and twenty from the Egyptian Museum. Rooms on the upper floors look straight down the river; the roof terrace serves breakfast until noon, which is the civilised way to start a day in Cairo.",
-  },
-  {
-    region: "cairo-giza",
-    slug: "giza-pyramids-view-resort",
-    name: "Giza Pyramids View Resort",
-    starRating: 5,
-    pricePerNight: 240,
-    maxGuests: 3,
-    imageUrl: HOTEL_IMG.poolDusk,
-    galleryUrls: [HOTEL_IMG.poolDusk, HOTEL_IMG.cairoRoom],
-    address: "Pyramids Road, Giza",
-    lat: 29.9765,
-    lng: 31.1442,
-    amenities: [
-      "Free Wi-Fi",
-      "Swimming pool",
-      "Spa",
-      "Restaurant",
-      "Gym",
-      "Air conditioning",
-      "Airport transfer",
-      "Family rooms",
-    ],
-    roomTypes: [
-      { name: "Garden Room", price: 240, capacity: 2 },
-      { name: "Pyramid View Room", price: 320, capacity: 2 },
-      { name: "Pyramid View Suite", price: 460, capacity: 4 },
-    ],
-    description:
-      "Close enough to the plateau that the Great Pyramid fills the window of every front-facing room, and close enough to walk to the site gate before the queues form. Large pool, three restaurants, and a spa that is genuinely worth using after a day of walking on sand.",
-  },
-  {
-    region: "luxor-aswan",
-    slug: "luxor-garden-wing-hotel",
-    name: "Luxor Garden Wing Hotel",
-    starRating: 5,
-    pricePerNight: 165,
-    maxGuests: 2,
-    imageUrl: HOTEL_IMG.poolside,
-    galleryUrls: [HOTEL_IMG.poolside, HOTEL_IMG.terrace],
-    address: "Corniche El Nil, Luxor",
-    lat: 25.6989,
-    lng: 32.6396,
-    amenities: [
-      "Free Wi-Fi",
-      "Swimming pool",
-      "Spa",
-      "Restaurant",
-      "Bar",
-      "Air conditioning",
-      "Nile view",
-      "Parking",
-    ],
-    roomTypes: [
-      { name: "Garden Room", price: 165, capacity: 2 },
-      { name: "Nile View Room", price: 215, capacity: 2 },
-      { name: "Terrace Suite", price: 340, capacity: 3 },
-    ],
-    description:
-      "A colonial-era garden hotel on the Corniche, a ten-minute walk from Luxor Temple and directly opposite the West Bank ferry. Old trees, a long pool, and staff who will have your breakfast packed at 4am if you are going up in a balloon.",
-  },
-  {
-    region: "luxor-aswan",
-    slug: "aswan-nile-terrace-retreat",
-    name: "Aswan Nile Terrace Retreat",
-    starRating: 4,
-    pricePerNight: 130,
-    maxGuests: 2,
-    imageUrl: HOTEL_IMG.terrace,
-    galleryUrls: [HOTEL_IMG.terrace, HOTEL_IMG.poolside],
-    address: "West Bank, Aswan",
-    lat: 24.0889,
-    lng: 32.8998,
-    amenities: [
-      "Free Wi-Fi",
-      "Swimming pool",
-      "Restaurant",
-      "Air conditioning",
-      "Nile view",
-      "Airport transfer",
-    ],
-    roomTypes: [
-      { name: "Nubian Room", price: 130, capacity: 2 },
-      { name: "River Terrace Room", price: 175, capacity: 2 },
-    ],
-    description:
-      "A small Nubian-built guesthouse on the west bank, reached by the hotel's own boat. Domed ceilings, painted walls, and a terrace over the water where the only sound after dark is the current. Aswan's souk is a five-minute crossing away.",
-  },
-  {
-    region: "north-coast",
-    slug: "sidi-abdel-rahman-beach-resort",
-    name: "Sidi Abdel Rahman Beach Resort",
-    starRating: 5,
-    pricePerNight: 210,
-    maxGuests: 4,
-    imageUrl: HOTEL_IMG.palms,
-    galleryUrls: [HOTEL_IMG.palms, HOTEL_IMG.loungers],
-    address: "Sidi Abdel Rahman, North Coast",
-    lat: 30.9645,
-    lng: 28.7,
-    amenities: [
-      "Free Wi-Fi",
-      "Private beach",
-      "Swimming pool",
-      "Restaurant",
-      "Bar",
-      "Family rooms",
-      "Air conditioning",
-      "Parking",
-    ],
-    roomTypes: [
-      { name: "Garden Chalet", price: 210, capacity: 3 },
-      { name: "Sea View Room", price: 275, capacity: 3 },
-      { name: "Beach Villa", price: 480, capacity: 6 },
-    ],
-    description:
-      "On the calmest bay of the North Coast, where the water stays waist-deep for a hundred metres and turns the colour of a swimming pool. Low-rise chalets set back among palms, a beach club at the water's edge, and El Alamein forty minutes east.",
-  },
-  {
-    region: "north-coast",
-    slug: "alamein-marina-suites",
-    name: "Alamein Marina Suites",
-    starRating: 4,
-    pricePerNight: 145,
-    maxGuests: 4,
-    imageUrl: HOTEL_IMG.loungers,
-    galleryUrls: [HOTEL_IMG.loungers, HOTEL_IMG.palms],
-    address: "El Alamein Marina, North Coast",
-    lat: 30.8283,
-    lng: 28.9498,
-    amenities: [
-      "Free Wi-Fi",
-      "Swimming pool",
-      "Restaurant",
-      "Air conditioning",
-      "Family rooms",
-      "Parking",
-      "Gym",
-    ],
-    roomTypes: [
-      { name: "Marina Studio", price: 145, capacity: 2 },
-      { name: "Two-Bedroom Suite", price: 245, capacity: 5 },
-    ],
-    description:
-      "Apartment-style suites above the new marina, with kitchens, laundry and enough space for a family that has had enough of hotel rooms. Ten minutes from the war cemeteries and the museum.",
-  },
-  {
-    region: "sinai-red-sea",
-    slug: "sharm-coral-bay-resort",
-    name: "Sharm Coral Bay Resort",
-    starRating: 5,
-    pricePerNight: 195,
-    maxGuests: 3,
-    imageUrl: HOTEL_IMG.poolDusk,
-    galleryUrls: [HOTEL_IMG.poolDusk, HOTEL_IMG.palms],
-    address: "Nabq Bay, Sharm El Sheikh",
-    lat: 27.9654,
-    lng: 34.3908,
-    amenities: [
-      "Free Wi-Fi",
-      "Private beach",
-      "Dive centre",
-      "Swimming pool",
-      "Spa",
-      "Restaurant",
-      "Bar",
-      "Airport transfer",
-      "Air conditioning",
-    ],
-    roomTypes: [
-      { name: "Standard Room", price: 195, capacity: 2 },
-      { name: "Sea View Room", price: 250, capacity: 3 },
-      { name: "Swim-up Suite", price: 395, capacity: 3 },
-    ],
-    description:
-      "A dive resort first and a beach hotel second: the house reef is reached by a jetty over the seagrass, tanks are filled on site, and the boat leaves from the resort's own pontoon. Ras Mohammed is a forty-minute crossing.",
-  },
-  {
-    region: "sinai-red-sea",
-    slug: "dahab-lagoon-lodge",
-    name: "Dahab Lagoon Lodge",
-    starRating: 3,
-    pricePerNight: 85,
-    maxGuests: 2,
-    imageUrl: HOTEL_IMG.terrace,
-    galleryUrls: [HOTEL_IMG.terrace, HOTEL_IMG.loungers],
-    address: "Lagoon, Dahab",
-    lat: 28.5091,
-    lng: 34.5136,
-    amenities: [
-      "Free Wi-Fi",
-      "Swimming pool",
-      "Restaurant",
-      "Dive centre",
-      "Air conditioning",
-      "Parking",
-    ],
-    roomTypes: [
-      { name: "Garden Room", price: 85, capacity: 2 },
-      { name: "Lagoon View Room", price: 115, capacity: 2 },
-    ],
-    description:
-      "Twelve rooms around a courtyard at the quiet lagoon end of Dahab, with kite-surfing on the doorstep and the Blue Hole twenty minutes north. Simple, spotless, and the best value on this coast.",
-  },
-]
-
-// ------------------------------------------------------------------- cars
-
-const CARS = [
-  {
-    region: "cairo-giza",
-    slug: "vw-passat-sedan-cairo",
-    name: "Volkswagen Passat — Private Sedan",
-    brand: "Volkswagen",
-    model: "Passat",
-    year: 2023,
-    type: "Sedan",
-    seats: 4,
-    transmission: "Automatic",
-    fuelType: "Petrol",
-    pricePerDay: 65,
-    imageUrl: CAR_IMG.sedan,
-    galleryUrls: [CAR_IMG.sedan, CAR_IMG.interior],
-    features: [
-      "Air conditioning",
-      "Automatic",
-      "English-speaking driver",
-      "Bottled water",
-      "Bluetooth",
-      "Unlimited mileage",
-    ],
-    description:
-      "Our standard city car for couples and solo travellers: comfortable for airport runs, museum days and the drive out to Giza, with a driver who knows which gate to use.",
-  },
-  {
-    region: "cairo-giza",
-    slug: "ford-expedition-family-suv",
-    name: "Ford Expedition — Family SUV",
-    brand: "Ford",
-    model: "Expedition",
-    year: 2023,
-    type: "SUV",
-    seats: 7,
-    transmission: "Automatic",
-    fuelType: "Petrol",
-    pricePerDay: 110,
-    imageUrl: CAR_IMG.suv,
-    galleryUrls: [CAR_IMG.suv, CAR_IMG.compactSuv],
-    features: [
-      "Air conditioning",
-      "Automatic",
-      "Child seat available",
-      "GPS navigation",
-      "English-speaking driver",
-      "Unlimited mileage",
-    ],
-    description:
-      "Seven seats and a boot that takes the luggage as well as the people — the usual choice for families combining Cairo with a few days on the coast or in the desert.",
-  },
-  {
-    region: "cairo-giza",
-    slug: "mercedes-s-class-luxury",
-    name: "Mercedes-Benz S-Class — Chauffeured",
-    brand: "Mercedes-Benz",
-    model: "S-Class",
-    year: 2024,
-    type: "Luxury",
-    seats: 3,
-    transmission: "Automatic",
-    fuelType: "Petrol",
-    pricePerDay: 190,
-    imageUrl: CAR_IMG.luxury,
-    galleryUrls: [CAR_IMG.luxury, CAR_IMG.luxuryAlt],
-    features: [
-      "Air conditioning",
-      "Automatic",
-      "English-speaking driver",
-      "Bottled water",
-      "Bluetooth",
-      "GPS navigation",
-    ],
-    description:
-      "For arrivals that matter and evenings that run late. Chauffeured only, with a driver in uniform, and available for airport meet-and-greet with fast-track through immigration.",
-  },
-  {
-    region: "luxor-aswan",
-    slug: "toyota-crossover-luxor",
-    name: "Toyota Crossover — Nile Valley",
-    brand: "Toyota",
-    model: "RAV4",
-    year: 2023,
-    type: "SUV",
-    seats: 5,
-    transmission: "Automatic",
-    fuelType: "Petrol",
-    pricePerDay: 85,
-    imageUrl: CAR_IMG.crossover,
-    galleryUrls: [CAR_IMG.crossover, CAR_IMG.compactSuv],
-    features: [
-      "Air conditioning",
-      "Automatic",
-      "English-speaking driver",
-      "GPS navigation",
-      "Unlimited mileage",
-      "Bottled water",
-    ],
-    description:
-      "Based in Luxor and sized for the West Bank's rougher tracks. The standard vehicle for Valley of the Kings mornings, Dendera and Abydos day trips, and the road down to Aswan.",
-  },
-  {
-    region: "sinai-red-sea",
-    slug: "toyota-hiace-minibus-sinai",
-    name: "Toyota Hiace — 12-Seat Minibus",
-    brand: "Toyota",
-    model: "Hiace",
-    year: 2022,
-    type: "Minivan",
-    seats: 12,
-    transmission: "Manual",
-    fuelType: "Diesel",
-    pricePerDay: 125,
-    imageUrl: CAR_IMG.coach,
-    galleryUrls: [CAR_IMG.coach, CAR_IMG.coachNight],
-    features: [
-      "Air conditioning",
-      "English-speaking driver",
-      "Bottled water",
-      "Child seat available",
-      "Unlimited mileage",
-    ],
-    description:
-      "The workhorse of Sinai: dive groups to Ras Mohammed, the night run to Saint Catherine, and Dahab transfers. Roof rack for tanks and boards on request.",
-  },
-  {
-    region: "north-coast",
-    slug: "coach-45-seat-north-coast",
-    name: "45-Seat Touring Coach",
-    brand: "Mercedes-Benz",
-    model: "Travego",
-    year: 2021,
-    type: "Coach",
-    seats: 45,
-    transmission: "Automatic",
-    fuelType: "Diesel",
-    pricePerDay: 340,
-    imageUrl: CAR_IMG.coachNight,
-    galleryUrls: [CAR_IMG.coachNight, CAR_IMG.coach],
-    features: [
-      "Air conditioning",
-      "English-speaking driver",
-      "Bottled water",
-      "Unlimited mileage",
-    ],
-    description:
-      "Full-size coach for groups moving between Cairo, Alexandria and the North Coast. Reclining seats, PA system for your guide, and a licensed long-distance driver.",
-  },
-]
-
 // ----------------------------------------------------------------- reviews
 
 const REVIEWS = [
@@ -1021,31 +609,11 @@ async function main() {
   console.log(`  ✓ ${TOURS.length} tours`)
 
   // Hotels
-  for (const { region, roomTypes, ...hotel } of HOTELS) {
-    const regionId = regionIds.get(region)!
-    const data = {
-      ...hotel,
-      roomTypes: roomTypes as unknown as Prisma.InputJsonValue,
-      regionId,
-    }
-    await prisma.hotel.upsert({
-      where: { slug: hotel.slug },
-      update: data,
-      create: data,
-    })
-  }
-  console.log(`  ✓ ${HOTELS.length} hotels`)
-
-  // Cars
-  for (const { region, ...car } of CARS) {
-    const data = { ...car, regionId: regionIds.get(region)! }
-    await prisma.car.upsert({
-      where: { slug: car.slug },
-      update: data,
-      create: data,
-    })
-  }
-  console.log(`  ✓ ${CARS.length} cars`)
+  // Hotels and vehicles — the same real list the live site loads.
+  const hotels = await loadCatalogHotels(prisma)
+  console.log(`  ✓ ${hotels.loaded} hotels`)
+  const vehicles = await loadCatalogVehicles(prisma)
+  console.log(`  ✓ ${vehicles.loaded} vehicles`)
 
   // Admin + demo customer
   const adminEmail = (process.env.SEED_ADMIN_EMAIL || "admin@egyptjourneys.com").toLowerCase()
@@ -1141,7 +709,7 @@ async function main() {
 
   // Site settings singleton
   // Historic sites catalog — `update: {}` keeps edits made in the admin.
-  for (const { regionSlug, ...site } of STARTER_SITES) {
+  for (const { regionSlug, ...site } of HISTORIC_SITES) {
     const regionId = regionIds.get(regionSlug)
     if (!regionId) continue
     await prisma.historicSite.upsert({
@@ -1150,14 +718,12 @@ async function main() {
       create: { ...site, regionId },
     })
   }
-  console.log(`  ✓ ${STARTER_SITES.length} historic sites`)
+  console.log(`  ✓ ${HISTORIC_SITES.length} historic sites`)
 
-  // The catalog is loaded now, so the server's one-time load has nothing to do.
-  await prisma.dataLoad.upsert({
-    where: { id: "historic-sites-starter" },
-    update: {},
-    create: { id: "historic-sites-starter" },
-  })
+  // Everything is loaded now, so the server's one-time loads have nothing to do.
+  for (const id of ["historic-sites-starter", "historic-sites-details-2026-09", "hotels-2026-09", "vehicles-2026-09"]) {
+    await prisma.dataLoad.upsert({ where: { id }, update: {}, create: { id } })
+  }
 
   await prisma.siteSetting.upsert({
     where: { id: "site" },

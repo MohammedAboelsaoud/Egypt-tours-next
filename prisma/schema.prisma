@@ -318,6 +318,14 @@ model SiteSetting {
   updatedAt      DateTime @default(now()) @updatedAt
 }
 
+/// Pricing rules edited in Admin → Settings. Hotels store their official
+/// rate; travellers see and pay that rate plus the markup.
+model PricingSetting {
+  id                 String   @id @default("site")
+  hotelMarkupPercent Decimal  @default(10) @db.Decimal(5, 2)
+  updatedAt          DateTime @default(now()) @updatedAt
+}
+
 /// One-time data loads that have already run (e.g. the starter historic-sites
 /// catalog), so they never run twice — see lib/db/ensure-schema.ts. A table of
 /// its own because preview builds read existing tables before any schema sync.

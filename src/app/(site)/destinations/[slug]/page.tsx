@@ -15,9 +15,12 @@ import { EmptyState } from "@/components/ui/empty-state"
 import { Gallery } from "@/components/ui/gallery"
 import { SectionHeading } from "@/components/ui/section-heading"
 import { SITE } from "@/lib/constants"
+import { applyMarkup } from "@/lib/markup"
+import { getHotelMarkupPercent } from "@/lib/pricing-settings"
 import { prisma } from "@/lib/prisma"
 import { getTourRatings } from "@/lib/queries"
 import { getSettings } from "@/lib/settings"
+import { toNumber } from "@/lib/utils"
 
 export const revalidate = 3600
 
@@ -96,9 +99,10 @@ export default async function RegionPage({
 
   if (!region) notFound()
 
-  const [ratings, sites] = await Promise.all([
+  const [ratings, sites, markup] = await Promise.all([
     getTourRatings(region.tours.map((tour) => tour.id)),
     getRegionSites(region.id),
+    getHotelMarkupPercent(),
   ])
   // The region's photos: its own image plus those of its historic sites,
   // which are edited in Admin → Historic sites.
@@ -335,7 +339,7 @@ export default async function RegionPage({
                   description: hotel.description,
                   imageUrl: hotel.imageUrl,
                   starRating: hotel.starRating,
-                  pricePerNight: hotel.pricePerNight.toString(),
+                  pricePerNight: applyMarkup(toNumber(hotel.pricePerNight), markup),
                   currency: hotel.currency,
                   maxGuests: hotel.maxGuests,
                   amenities: hotel.amenities,

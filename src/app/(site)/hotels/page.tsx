@@ -6,7 +6,10 @@ import { FilterBar } from "@/components/filters/filter-bar"
 import { HotelCard } from "@/components/hotels/hotel-card"
 import { PageHero } from "@/components/layout/page-hero"
 import { EmptyState } from "@/components/ui/empty-state"
+import { applyMarkup, removeMarkup } from "@/lib/markup"
+import { getHotelMarkupPercent } from "@/lib/pricing-settings"
 import { prisma } from "@/lib/prisma"
+import { toNumber } from "@/lib/utils"
 
 export const metadata: Metadata = {
   title: "Hotels",
@@ -53,12 +56,16 @@ export default async function HotelsPage({ searchParams }: PageProps<"/hotels">)
   const stars = typeof params.stars === "string" ? Number(params.stars) : undefined
   const query = typeof params.q === "string" ? params.q.trim() : ""
   const sort = typeof params.sort === "string" ? params.sort : "recommended"
+  const markup = await getHotelMarkupPercent()
 
   let priceFilter: Prisma.HotelWhereInput = {}
   if (typeof params.price === "string") {
     const [min, max] = params.price.split("-").map(Number)
     if (!Number.isNaN(min) && !Number.isNaN(max)) {
-      priceFilter = { pricePerNight: { gte: min, lte: max } }
+      // The bands are travellers' prices; the database holds official rates.
+      priceFilter = {
+        pricePerNight: { gte: removeMarkup(min, markup), lte: removeMarkup(max, markup) },
+      }
     }
   }
 
@@ -129,7 +136,7 @@ export default async function HotelsPage({ searchParams }: PageProps<"/hotels">)
                     description: hotel.description,
                     imageUrl: hotel.imageUrl,
                     starRating: hotel.starRating,
-                    pricePerNight: hotel.pricePerNight.toString(),
+                    pricePerNight: applyMarkup(toNumber(hotel.pricePerNight), markup),
                     currency: hotel.currency,
                     maxGuests: hotel.maxGuests,
                     amenities: hotel.amenities,

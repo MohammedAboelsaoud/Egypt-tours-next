@@ -4,6 +4,8 @@ import { unstable_cache } from "next/cache"
 
 import type { ChatKnowledge, ChatListing } from "@/lib/chat/engine"
 import { FAQ_GROUPS } from "@/lib/faq"
+import { applyMarkup } from "@/lib/markup"
+import { getHotelMarkupPercent } from "@/lib/pricing-settings"
 import { prisma } from "@/lib/prisma"
 import { getSettings } from "@/lib/settings"
 import { toNumber } from "@/lib/utils"
@@ -37,7 +39,7 @@ async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listing
   const published = { published: true, region: { published: true } }
   const region = { select: { slug: true, name: true } }
 
-  const [regions, tours, hotels, cars, guides] = await Promise.all([
+  const [regions, tours, hotels, cars, guides, markup] = await Promise.all([
     prisma.region.findMany({
       where: { published: true },
       orderBy: { sortOrder: "asc" },
@@ -50,6 +52,7 @@ async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listing
       where: { status: "APPROVED" },
       include: { regions: { select: { slug: true, name: true, imageUrl: true } } },
     }),
+    getHotelMarkupPercent(),
   ])
 
   const listings: ChatListing[] = [
@@ -78,7 +81,7 @@ async function loadCatalogue(): Promise<Pick<ChatKnowledge, "regions" | "listing
       imageUrl: h.imageUrl,
       regionSlug: h.region.slug,
       regionName: h.region.name,
-      price: toNumber(h.pricePerNight),
+      price: applyMarkup(toNumber(h.pricePerNight), markup),
       currency: h.currency,
       unit: "per night",
       detail: `${h.starRating}-star · up to ${h.maxGuests} guests`,

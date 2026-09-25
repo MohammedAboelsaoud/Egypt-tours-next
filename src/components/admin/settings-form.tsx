@@ -15,9 +15,11 @@ import { cn } from "@/lib/utils"
 
 export function SettingsForm({
   settings,
+  hotelMarkupPercent,
   integrations,
 }: {
   settings: SiteSettings
+  hotelMarkupPercent: number
   integrations: {
     stripe: boolean
     stripeWebhook: boolean
@@ -116,6 +118,25 @@ export function SettingsForm({
             label="Instagram URL"
             defaultValue={settings.instagramUrl}
             placeholder="https://instagram.com/…"
+          />
+        </div>
+      </FormSection>
+
+      <FormSection
+        title="Pricing"
+        description="Each hotel stores its official rate. Travellers see and pay that rate plus this markup."
+      >
+        <div className="grid gap-5 sm:grid-cols-2">
+          <TextField
+            name="hotelMarkupPercent"
+            label="Hotel markup (%)"
+            type="number"
+            min={0}
+            max={100}
+            step="0.5"
+            required
+            defaultValue={hotelMarkupPercent}
+            hint="e.g. 10 — an official rate of $200 is shown as $220"
           />
         </div>
       </FormSection>

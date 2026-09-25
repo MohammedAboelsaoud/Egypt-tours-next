@@ -3,6 +3,7 @@ import path from "node:path"
 import { describe, expect, it } from "vitest"
 
 import { parseFact, parseHistory } from "@/lib/sites/history"
+import { HISTORIC_SITES } from "@/lib/sites/details"
 import { STARTER_SITES } from "@/lib/sites/starter"
 import { historicSiteSchema } from "@/lib/validations"
 
@@ -37,19 +38,19 @@ describe("starter catalog", () => {
   const regions = new Set(["cairo-giza", "luxor-aswan", "north-coast", "sinai-red-sea"])
 
   it("has unique slugs in known regions", () => {
-    expect(new Set(STARTER_SITES.map((s) => s.slug)).size).toBe(STARTER_SITES.length)
-    for (const site of STARTER_SITES) expect(regions.has(site.regionSlug), site.slug).toBe(true)
+    expect(new Set(HISTORIC_SITES.map((s) => s.slug)).size).toBe(HISTORIC_SITES.length)
+    for (const site of HISTORIC_SITES) expect(regions.has(site.regionSlug), site.slug).toBe(true)
   })
 
   it("passes the admin form's validation", () => {
-    for (const { regionSlug: _regionSlug, ...site } of STARTER_SITES) {
+    for (const { regionSlug: _regionSlug, ...site } of HISTORIC_SITES) {
       const result = historicSiteSchema.safeParse({ ...site, regionId: "region" })
       expect(result.success, `${site.slug}: ${result.error?.issues[0]?.message}`).toBe(true)
     }
   })
 
   it("has readable chapters and labelled facts", () => {
-    for (const site of STARTER_SITES) {
+    for (const site of HISTORIC_SITES) {
       const chapters = parseHistory(site.history)
       expect(chapters.length, site.slug).toBeGreaterThan(0)
       expect(chapters.every((c) => c.heading && c.paragraphs.length > 0), site.slug).toBe(true)
@@ -58,10 +59,21 @@ describe("starter catalog", () => {
   })
 
   it("points at images that exist", () => {
-    for (const site of STARTER_SITES) {
+    for (const site of HISTORIC_SITES) {
       for (const src of [site.imageUrl, ...site.galleryUrls]) {
         expect(existsSync(path.join(process.cwd(), "public", src)), `${site.slug}: ${src}`).toBe(true)
       }
     }
+  })
+
+  it("adds chapters, facts and tips to every starter site", () => {
+    expect(HISTORIC_SITES).toHaveLength(STARTER_SITES.length)
+    HISTORIC_SITES.forEach((site, i) => {
+      const starter = STARTER_SITES[i]
+      expect(site.history.startsWith(starter.history), site.slug).toBe(true)
+      expect(parseHistory(site.history).length, site.slug).toBeGreaterThan(parseHistory(starter.history).length)
+      expect(site.facts.length, site.slug).toBeGreaterThan(starter.facts.length)
+      expect(site.tips.length, site.slug).toBeGreaterThan(starter.tips.length)
+    })
   })
 })

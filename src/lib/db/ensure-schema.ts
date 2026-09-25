@@ -2,6 +2,8 @@ import "server-only"
 
 import { prisma } from "@/lib/prisma"
 import { SITE } from "@/lib/constants"
+import { loadCatalogHotels, loadCatalogVehicles } from "@/lib/catalog/load"
+import { HISTORIC_SITES } from "@/lib/sites/details"
 import { STARTER_SITES } from "@/lib/sites/starter"
 
 /**
@@ -86,6 +88,12 @@ const TABLES = [
     "hidden" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "GuideReview_pkey" PRIMARY KEY ("id")
+  )`,
+  `CREATE TABLE IF NOT EXISTS "PricingSetting" (
+    "id" TEXT NOT NULL DEFAULT 'site',
+    "hotelMarkupPercent" DECIMAL(5,2) NOT NULL DEFAULT 10,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "PricingSetting_pkey" PRIMARY KEY ("id")
   )`,
   `CREATE TABLE IF NOT EXISTS "DataLoad" (
     "id" TEXT NOT NULL,
@@ -191,6 +199,8 @@ async function upToDate(): Promise<boolean> {
               WHERE t.typname = 'Role' AND e.enumlabel = 'GUIDE')
       AND EXISTS (SELECT 1 FROM information_schema.tables
               WHERE table_schema = current_schema() AND table_name = 'DataLoad')
+      AND EXISTS (SELECT 1 FROM information_schema.tables
+              WHERE table_schema = current_schema() AND table_name = 'PricingSetting')
       AND EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'HistoricSite_regionId_fkey')
       AS ok`
   return Boolean(rows[0]?.ok)
@@ -208,7 +218,22 @@ export async function ensureSchema(): Promise<"up-to-date" | "updated"> {
   // Accounts created before languages existed hold NULL; the app expects a list.
   await prisma.$executeRawUnsafe(`UPDATE "User" SET "languages" = ARRAY[]::TEXT[] WHERE "languages" IS NULL`)
   await replacePlaceholderContacts()
-  await loadStarterCatalog()
+  await runOnce(STARTER_CATALOG_LOAD, async (tx) => {
+    const count = await loadStarterSites(tx)
+    return `loaded ${count} historic sites into the catalog`
+  })
+  await runOnce(SITE_DETAILS_LOAD, async (tx) => {
+    const count = await addSiteDetails(tx)
+    return `added more history to ${count} historic sites`
+  })
+  await runOnce(CATALOG_HOTELS_LOAD, async (tx) => {
+    const { loaded, retired } = await loadCatalogHotels(tx)
+    return `loaded ${loaded} hotels, hid ${retired} demo hotels`
+  })
+  await runOnce(CATALOG_VEHICLES_LOAD, async (tx) => {
+    const { loaded, retired } = await loadCatalogVehicles(tx)
+    return `loaded ${loaded} vehicles, hid ${retired} demo vehicles`
+  })
   return result
 }
 
@@ -226,31 +251,58 @@ async function replacePlaceholderContacts() {
     WHERE "id" = 'site' AND "contactPhone" = '+20 100 123 4567'`
 }
 
-/** Marks the starter catalog as loaded in the DataLoad table. */
+/** One-time data loads, recorded by these ids in the DataLoad table. */
 export const STARTER_CATALOG_LOAD = "historic-sites-starter"
+export const SITE_DETAILS_LOAD = "historic-sites-details-2026-09"
+export const CATALOG_HOTELS_LOAD = "hotels-2026-09"
+export const CATALOG_VEHICLES_LOAD = "vehicles-2026-09"
+
+type Tx = Parameters<Parameters<typeof prisma.$transaction>[0]>[0]
 
 /**
- * Loads the starter historic-sites catalog the first time only. Claiming the
- * load and inserting the sites happen in one transaction: two server instances
- * starting together can't both run it, a failed insert leaves it unclaimed for
- * the next start, and sites the admin later deletes don't come back.
+ * Runs a data load the first time only. Claiming it and running it happen in
+ * one transaction: two server instances starting together can't both run it,
+ * a failure leaves it unclaimed for the next start, and data the admin later
+ * changes or deletes isn't put back.
  */
-async function loadStarterCatalog() {
-  const count = await prisma.$transaction(async (tx) => {
-    const claimed = await tx.$executeRaw`INSERT INTO "DataLoad" ("id") VALUES (${STARTER_CATALOG_LOAD})
-      ON CONFLICT ("id") DO NOTHING`
-    if (claimed === 0) return null
+async function runOnce(id: string, load: (tx: Tx) => Promise<string>) {
+  const done = await prisma.$transaction(
+    async (tx) => {
+      const claimed = await tx.$executeRaw`INSERT INTO "DataLoad" ("id") VALUES (${id})
+        ON CONFLICT ("id") DO NOTHING`
+      return claimed === 0 ? null : load(tx)
+    },
+    { timeout: 60_000 }
+  )
+  if (done !== null) console.info(`[schema] ${id}: ${done}`)
+}
 
-    const regions = await tx.region.findMany({ select: { id: true, slug: true } })
-    const regionIds = new Map(regions.map((r) => [r.slug, r.id]))
-    const { count } = await tx.historicSite.createMany({
-      data: STARTER_SITES.flatMap(({ regionSlug, ...site }) => {
-        const regionId = regionIds.get(regionSlug)
-        return regionId ? [{ ...site, regionId }] : []
-      }),
-      skipDuplicates: true,
-    })
-    return count
+async function loadStarterSites(tx: Tx): Promise<number> {
+  const regions = await tx.region.findMany({ select: { id: true, slug: true } })
+  const regionIds = new Map(regions.map((r) => [r.slug, r.id]))
+  const { count } = await tx.historicSite.createMany({
+    data: HISTORIC_SITES.flatMap(({ regionSlug, ...site }) => {
+      const regionId = regionIds.get(regionSlug)
+      return regionId ? [{ ...site, regionId }] : []
+    }),
+    skipDuplicates: true,
   })
-  if (count !== null) console.info(`[schema] loaded ${count} historic sites into the catalog`)
+  return count
+}
+
+/**
+ * Gives sites loaded from the first starter text their extra chapters, facts
+ * and tips. A site is only updated while its history is still the starter
+ * text, so anything written in Admin → Historic sites is kept.
+ */
+async function addSiteDetails(tx: Tx): Promise<number> {
+  let count = 0
+  for (const [i, site] of HISTORIC_SITES.entries()) {
+    const { count: updated } = await tx.historicSite.updateMany({
+      where: { slug: site.slug, history: STARTER_SITES[i].history },
+      data: { history: site.history, facts: site.facts, tips: site.tips },
+    })
+    count += updated
+  }
+  return count
 }
