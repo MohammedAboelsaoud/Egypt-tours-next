@@ -89,7 +89,7 @@
   --accent-foreground: var(--lapis-deep);
   --destructive: var(--carnelian);
   --border: #dddbd3;
-  --input: #cfccc2;
+  --input: #8a877d; /* control borders: 3.4:1 on papyrus */
   --ring: var(--lapis);
   --chart-1: #1d4e89;
   --chart-2: #0f7a70;
@@ -123,8 +123,8 @@
   --accent: #22324a;
   --accent-foreground: #cfe0f5;
   --destructive: #e07a64;
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
+  --border: #2c3342;
+  --input: #737b8d;
   --ring: #8db4e6;
   --sidebar: #1b2130;
   --sidebar-foreground: #f0eee8;
@@ -132,7 +132,7 @@
   --sidebar-primary-foreground: #12151c;
   --sidebar-accent: #232a3a;
   --sidebar-accent-foreground: #cfe0f5;
-  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-border: #2c3342;
   --sidebar-ring: #8db4e6;
 }
 
