@@ -36,7 +36,7 @@ export function UserMenu({ solid = true }: { solid?: boolean }) {
         size="lg"
         className={cn(
           "h-10 px-3",
-          solid ? "text-ink/80 hover:text-gold" : "text-white/90 hover:bg-white/10 hover:text-white"
+          solid ? "text-basalt/80 hover:text-lapis" : "text-white/90 hover:bg-white/10 hover:text-white"
         )}>
         Sign in
       </ButtonLink>
@@ -61,7 +61,7 @@ export function UserMenu({ solid = true }: { solid?: boolean }) {
       >
         <Avatar className="size-9">
           <AvatarImage src={user.image ?? undefined} alt={user.name ?? "Account"} />
-          <AvatarFallback className="bg-gold/15 text-xs font-semibold text-gold">
+          <AvatarFallback className="bg-lapis/15 text-xs font-semibold text-lapis">
             {initials(user.name)}
           </AvatarFallback>
         </Avatar>

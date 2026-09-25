@@ -22,7 +22,7 @@ const PILLARS = [
 
 export function WhyUs() {
   return (
-    <section className="bg-ivory">
+    <section className="bg-papyrus">
       <div className="container-page section-y">
         <SectionHeading
           eyebrow="Why travel with us"
@@ -35,9 +35,9 @@ export function WhyUs() {
           {PILLARS.map((pillar) => (
             <div
               key={pillar.title}
-              className="group rounded-2xl border border-border bg-sand p-8 transition-colors duration-300 hover:border-gold/40"
+              className="group rounded-2xl border border-border bg-limestone p-8 transition-colors duration-300 hover:border-lapis/40"
             >
-              <div className="flex size-12 items-center justify-center rounded-xl bg-gold/10 text-gold transition-colors duration-300 group-hover:bg-gold group-hover:text-white">
+              <div className="flex size-12 items-center justify-center rounded-xl bg-lapis/10 text-lapis transition-colors duration-300 group-hover:bg-lapis group-hover:text-white">
                 <pillar.icon className="size-5" />
               </div>
               <h3 className="mt-6 font-heading text-xl">{pillar.title}</h3>

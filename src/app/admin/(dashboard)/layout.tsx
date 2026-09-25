@@ -26,7 +26,7 @@ export default async function AdminLayout({
   ])
 
   return (
-    <div className="min-h-screen bg-sand">
+    <div className="min-h-screen bg-limestone">
       <AdminSidebar
         pendingInquiries={pendingInquiries}
         pendingReviews={pendingReviews}

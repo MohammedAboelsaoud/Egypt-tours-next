@@ -122,16 +122,16 @@ export default async function CarPage({
                 {specs.map((spec) => (
                   <div
                     key={spec.label}
-                    className="rounded-xl border border-border bg-ivory p-4"
+                    className="rounded-xl border border-border bg-papyrus p-4"
                   >
                     <dt className="flex items-center gap-2 text-xs tracking-[0.1em] text-muted-foreground uppercase">
-                      <spec.icon className="size-3.5 text-gold" />
+                      <spec.icon className="size-3.5 text-lapis" />
                       {spec.label}
                     </dt>
                     <dd className="mt-1.5 font-medium">{spec.value}</dd>
                   </div>
                 ))}
-                <div className="rounded-xl border border-border bg-ivory p-4">
+                <div className="rounded-xl border border-border bg-papyrus p-4">
                   <dt className="text-xs tracking-[0.1em] text-muted-foreground uppercase">
                     Vehicle
                   </dt>
@@ -149,9 +149,9 @@ export default async function CarPage({
                   {car.features.map((feature) => (
                     <li
                       key={feature}
-                      className="flex items-center gap-3 rounded-xl border border-border bg-ivory px-4 py-3 text-sm"
+                      className="flex items-center gap-3 rounded-xl border border-border bg-papyrus px-4 py-3 text-sm"
                     >
-                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-teal/10 text-teal">
+                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-faience/10 text-faience">
                         <Check className="size-3" />
                       </span>
                       {feature}
@@ -161,7 +161,7 @@ export default async function CarPage({
               </section>
             )}
 
-            <section className="rounded-2xl border border-border bg-ivory p-7">
+            <section className="rounded-2xl border border-border bg-papyrus p-7">
               <h2 className="font-heading text-xl">Good to know</h2>
               <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-muted-foreground">
                 <li>
@@ -201,7 +201,7 @@ export default async function CarPage({
       </div>
 
       {alternatives.length > 0 && (
-        <section className="bg-ivory">
+        <section className="bg-papyrus">
           <div className="container-page section-y">
             <SectionHeading
               eyebrow="Other options"

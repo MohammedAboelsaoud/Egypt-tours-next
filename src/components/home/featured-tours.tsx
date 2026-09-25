@@ -25,7 +25,7 @@ export function FeaturedTours({ tours }: { tours: TourCardData[] }) {
         action={
           <Link
             href="/tours"
-            className="group hidden items-center gap-2 text-sm font-medium text-gold sm:flex"
+            className="group hidden items-center gap-2 text-sm font-medium text-lapis sm:flex"
           >
             All tours
             <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

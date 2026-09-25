@@ -70,7 +70,7 @@ export function ProfileForm({
             id="nationality"
             name="nationality"
             defaultValue={user.nationality ?? ""}
-            className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+            className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
           >
             <option value="">Select…</option>
             {NATIONALITIES.map((nationality) => (
@@ -100,7 +100,7 @@ export function ProfileForm({
         <Button
           type="submit"
           disabled={pending}
-          className="h-11 bg-gold px-7 text-white hover:bg-gold-light"
+          className="h-11 bg-lapis px-7 text-white hover:bg-lapis-deep"
         >
           {pending ? "Saving…" : "Save changes"}
         </Button>
@@ -109,7 +109,7 @@ export function ProfileForm({
           <p
             className={cn(
               "flex items-center gap-2 text-sm",
-              state.ok ? "text-teal" : "text-destructive"
+              state.ok ? "text-faience" : "text-destructive"
             )}
           >
             {state.ok && <CheckCircle2 className="size-4" />}

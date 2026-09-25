@@ -55,7 +55,7 @@ export function FilterBar({
   return (
     <div
       className={cn(
-        "rounded-2xl border border-border bg-ivory p-5 transition-opacity sm:p-6",
+        "rounded-2xl border border-border bg-papyrus p-5 transition-opacity sm:p-6",
         pending && "opacity-60"
       )}
     >
@@ -83,7 +83,7 @@ export function FilterBar({
                 ;(window as unknown as { __filterTimer?: number }).__filterTimer =
                   window.setTimeout(() => setParam("q", value), 350)
               }}
-              className="h-11 w-full rounded-lg border border-input bg-background pr-3 pl-10 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+              className="h-11 w-full rounded-lg border border-input bg-background pr-3 pl-10 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
             />
           </div>
         </div>
@@ -100,7 +100,7 @@ export function FilterBar({
               id={`filter-${field.name}`}
               value={searchParams.get(field.name) ?? ""}
               onChange={(event) => setParam(field.name, event.target.value)}
-              className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+              className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
             >
               <option value="">Any</option>
               {field.options.map((option) => (
@@ -123,7 +123,7 @@ export function FilterBar({
             id="filter-sort"
             value={searchParams.get("sort") ?? sortOptions[0]?.value ?? ""}
             onChange={(event) => setParam("sort", event.target.value)}
-            className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+            className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -136,7 +136,7 @@ export function FilterBar({
 
       <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-border pt-4">
         <span className="flex items-center gap-2 text-sm text-muted-foreground">
-          <SlidersHorizontal className="size-4 text-gold" />
+          <SlidersHorizontal className="size-4 text-lapis" />
           {resultCount} {resultCount === 1 ? "result" : "results"}
         </span>
 
@@ -145,7 +145,7 @@ export function FilterBar({
             key={field.name}
             type="button"
             onClick={() => setParam(field.name, "")}
-            className="flex items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1.5 text-xs font-medium text-gold transition-colors hover:bg-gold/20"
+            className="flex items-center gap-1.5 rounded-full bg-lapis/10 px-3 py-1.5 text-xs font-medium text-lapis transition-colors hover:bg-lapis/20"
           >
             {field.options.find((option) => option.value === value)?.label ?? value}
             <X className="size-3" />
@@ -158,7 +158,7 @@ export function FilterBar({
             onClick={() =>
               startTransition(() => router.push(basePath, { scroll: false }))
             }
-            className="ml-auto text-xs font-medium text-muted-foreground underline-offset-4 hover:text-gold hover:underline"
+            className="ml-auto text-xs font-medium text-muted-foreground underline-offset-4 hover:text-lapis hover:underline"
           >
             Clear all
           </button>

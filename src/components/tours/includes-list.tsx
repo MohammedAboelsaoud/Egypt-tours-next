@@ -17,7 +17,7 @@ export function IncludesList({
           <ul className="mt-5 space-y-3">
             {includes.map((item) => (
               <li key={item} className="flex gap-3 text-sm leading-relaxed">
-                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-teal/10 text-teal">
+                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-faience/10 text-faience">
                   <Check className="size-3" />
                 </span>
                 {item}

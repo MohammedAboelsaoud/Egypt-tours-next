@@ -90,7 +90,7 @@ export function AdminLoginForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="h-11 w-full bg-gold text-white hover:bg-gold-light"
+        className="h-11 w-full bg-lapis text-white hover:bg-lapis-deep"
       >
         {isSubmitting ? "Signing in…" : "Sign in"}
       </Button>

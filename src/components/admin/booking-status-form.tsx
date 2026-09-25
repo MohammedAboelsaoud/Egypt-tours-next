@@ -47,7 +47,7 @@ export function BookingStatusForm({
           onChange={(event) =>
             setNextStatus(event.target.value as BookingStatus)
           }
-          className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+          className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
         >
           {BOOKING_STATUSES.map((value) => (
             <option key={value} value={value}>
@@ -65,7 +65,7 @@ export function BookingStatusForm({
           onChange={(event) =>
             setNextPayment(event.target.value as PaymentStatus)
           }
-          className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+          className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
         >
           {PAYMENT_STATUSES.map((value) => (
             <option key={value} value={value}>
@@ -81,7 +81,7 @@ export function BookingStatusForm({
 
       <Button
         disabled={!dirty || pending}
-        className="h-11 w-full bg-gold text-white hover:bg-gold-light"
+        className="h-11 w-full bg-lapis text-white hover:bg-lapis-deep"
         onClick={() =>
           startTransition(async () => {
             try {

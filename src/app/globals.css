@@ -7,17 +7,20 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-heading: var(--font-playfair);
+  --font-sans: var(--font-body);
+  --font-heading: var(--font-display);
   --font-mono: ui-monospace, SFMono-Regular, monospace;
 
-  /* Egypt Journeys brand palette */
-  --color-gold: var(--gold);
-  --color-gold-light: var(--gold-light);
-  --color-sand: var(--sand);
-  --color-ink: var(--ink);
-  --color-teal: var(--teal);
-  --color-ivory: var(--ivory);
+  /* Faience & Limestone — Egypt Journeys brand palette */
+  --color-lapis: var(--lapis);
+  --color-lapis-deep: var(--lapis-deep);
+  --color-sun: var(--sun);
+  --color-ochre: var(--ochre);
+  --color-faience: var(--faience);
+  --color-basalt: var(--basalt);
+  --color-limestone: var(--limestone);
+  --color-papyrus: var(--papyrus);
+  --color-carnelian: var(--carnelian);
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -58,76 +61,79 @@
 }
 
 :root {
-  /* Brand */
-  --gold: #b8860b;
-  --gold-light: #daa520;
-  --sand: #faf7f2;
-  --ink: #1c1917;
-  --teal: #0f766e;
-  --ivory: #fffef9;
+  /* Brand — named after the materials of ancient Egypt */
+  --lapis: #1d4e89; /* Egyptian-blue pigment: actions, links, prices */
+  --lapis-deep: #163d6c; /* pressed/hover state of lapis fills */
+  --sun: #e2b04a; /* sun disc: accent on dark grounds, rating stars */
+  --ochre: #8d5c0f; /* warm labels on light grounds */
+  --faience: #0f7a70; /* faience glaze: success, secondary accent */
+  --basalt: #161a22; /* text and dark sections */
+  --limestone: #f4f3ef; /* page background */
+  --papyrus: #fbfaf7; /* cards, header, popovers */
+  --carnelian: #b23a26; /* errors and destructive actions */
 
   /* Semantic tokens mapped onto the brand */
-  --background: var(--sand);
-  --foreground: var(--ink);
-  --card: var(--ivory);
-  --card-foreground: var(--ink);
-  --popover: var(--ivory);
-  --popover-foreground: var(--ink);
-  --primary: var(--gold);
-  --primary-foreground: #fffef9;
-  --secondary: #f2ece1;
-  --secondary-foreground: var(--ink);
-  --muted: #f4efe6;
-  --muted-foreground: #78706a;
-  --accent: #f6efe0;
-  --accent-foreground: #7a5a06;
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: #e7ded0;
-  --input: #ded3c2;
-  --ring: var(--gold-light);
-  --chart-1: #b8860b;
-  --chart-2: #0f766e;
-  --chart-3: #a16207;
-  --chart-4: #57534e;
-  --chart-5: #d6bd7a;
-  --radius: 0.625rem;
+  --background: var(--limestone);
+  --foreground: var(--basalt);
+  --card: var(--papyrus);
+  --card-foreground: var(--basalt);
+  --popover: var(--papyrus);
+  --popover-foreground: var(--basalt);
+  --primary: var(--lapis);
+  --primary-foreground: #ffffff;
+  --secondary: #e9e8e2;
+  --secondary-foreground: var(--basalt);
+  --muted: #ecebe6;
+  --muted-foreground: #5a6170;
+  --accent: #e4ebf4;
+  --accent-foreground: var(--lapis-deep);
+  --destructive: var(--carnelian);
+  --border: #dddbd3;
+  --input: #8a877d; /* control borders: 3.4:1 on papyrus */
+  --ring: var(--lapis);
+  --chart-1: #1d4e89;
+  --chart-2: #0f7a70;
+  --chart-3: #e2b04a;
+  --chart-4: #5a6170;
+  --chart-5: #8fb3dd;
+  --radius: 0.375rem;
   --sidebar: #ffffff;
-  --sidebar-foreground: var(--ink);
-  --sidebar-primary: var(--gold);
-  --sidebar-primary-foreground: #fffef9;
-  --sidebar-accent: #f6efe0;
-  --sidebar-accent-foreground: #7a5a06;
-  --sidebar-border: #ece4d6;
-  --sidebar-ring: var(--gold-light);
+  --sidebar-foreground: var(--basalt);
+  --sidebar-primary: var(--lapis);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e4ebf4;
+  --sidebar-accent-foreground: var(--lapis-deep);
+  --sidebar-border: #e3e1da;
+  --sidebar-ring: var(--lapis);
 }
 
 .dark {
-  --background: #14110f;
-  --foreground: #f7f3ec;
-  --card: #1c1917;
-  --card-foreground: #f7f3ec;
-  --popover: #1c1917;
-  --popover-foreground: #f7f3ec;
-  --primary: var(--gold-light);
-  --primary-foreground: #14110f;
-  --secondary: #29241f;
-  --secondary-foreground: #f7f3ec;
-  --muted: #29241f;
-  --muted-foreground: #a8a09a;
-  --accent: #33291a;
-  --accent-foreground: #f0d99b;
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 12%);
-  --input: oklch(1 0 0 / 16%);
-  --ring: var(--gold-light);
-  --sidebar: #1c1917;
-  --sidebar-foreground: #f7f3ec;
-  --sidebar-primary: var(--gold-light);
-  --sidebar-primary-foreground: #14110f;
-  --sidebar-accent: #29241f;
-  --sidebar-accent-foreground: #f0d99b;
-  --sidebar-border: oklch(1 0 0 / 12%);
-  --sidebar-ring: var(--gold-light);
+  --background: #12151c;
+  --foreground: #f0eee8;
+  --card: #1b2130;
+  --card-foreground: #f0eee8;
+  --popover: #1b2130;
+  --popover-foreground: #f0eee8;
+  --primary: #8db4e6;
+  --primary-foreground: #12151c;
+  --secondary: #232a3a;
+  --secondary-foreground: #f0eee8;
+  --muted: #232a3a;
+  --muted-foreground: #a3a9b5;
+  --accent: #22324a;
+  --accent-foreground: #cfe0f5;
+  --destructive: #e07a64;
+  --border: #2c3342;
+  --input: #737b8d;
+  --ring: #8db4e6;
+  --sidebar: #1b2130;
+  --sidebar-foreground: #f0eee8;
+  --sidebar-primary: #8db4e6;
+  --sidebar-primary-foreground: #12151c;
+  --sidebar-accent: #232a3a;
+  --sidebar-accent-foreground: #cfe0f5;
+  --sidebar-border: #2c3342;
+  --sidebar-ring: #8db4e6;
 }
 
 @layer base {
@@ -147,13 +153,14 @@
   h3,
   h4 {
     @apply font-heading;
+    font-synthesis: none;
   }
 }
 
 @layer components {
   /* Small uppercase label that sits above a section heading. */
   .eyebrow {
-    @apply text-[0.7rem] font-semibold tracking-[0.18em] text-gold uppercase;
+    @apply text-[0.7rem] font-semibold tracking-[0.18em] text-ochre uppercase;
   }
 
   /* Standard page gutter, shared by every section. */
@@ -165,8 +172,13 @@
     @apply py-16 sm:py-20 lg:py-24;
   }
 
-  .gold-rule {
-    @apply h-px w-16 bg-gradient-to-r from-gold to-transparent;
+  /* The horizon: a short lapis bar ending in a sun disc. */
+  .horizon-rule {
+    @apply relative h-0.5 w-12 bg-lapis;
+    &::after {
+      content: "";
+      @apply absolute top-1/2 -right-3 size-1.5 -translate-y-1/2 rounded-full bg-sun;
+    }
   }
 
   .card-hover {

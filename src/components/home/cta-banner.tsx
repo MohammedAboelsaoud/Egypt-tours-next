@@ -19,11 +19,11 @@ export function CtaBanner({ whatsapp }: { whatsapp: string }) {
         sizes="100vw"
         className="-z-10 object-cover"
       />
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-ink/92 via-ink/75 to-ink/55" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-basalt/92 via-basalt/75 to-basalt/55" />
 
       <div className="container-page py-20 sm:py-28">
         <div className="max-w-2xl">
-          <p className="eyebrow text-gold-light">Ready when you are</p>
+          <p className="eyebrow text-sun">Ready when you are</p>
           <h2 className="mt-4 font-heading text-3xl leading-tight text-white text-balance sm:text-4xl lg:text-5xl">
             Tell us your dates. We&apos;ll send an itinerary within a day.
           </h2>
@@ -33,7 +33,7 @@ export function CtaBanner({ whatsapp }: { whatsapp: string }) {
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/contact" className="h-13 bg-gold px-8 text-base text-white hover:bg-gold-light">
+            <ButtonLink href="/contact" className="h-13 bg-lapis px-8 text-base text-white hover:bg-lapis-deep">
               Plan my trip
               <ArrowRight className="size-4" />
             </ButtonLink>

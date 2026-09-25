@@ -27,7 +27,7 @@ export function Breadcrumb({
             href="/"
             className={cn(
               "transition-colors",
-              light ? "hover:text-white" : "hover:text-gold"
+              light ? "hover:text-white" : "hover:text-lapis"
             )}
           >
             Home
@@ -41,13 +41,13 @@ export function Breadcrumb({
                 href={item.href}
                 className={cn(
                   "transition-colors",
-                  light ? "hover:text-white" : "hover:text-gold"
+                  light ? "hover:text-white" : "hover:text-lapis"
                 )}
               >
                 {item.label}
               </Link>
             ) : (
-              <span className={light ? "text-white" : "text-ink"}>{item.label}</span>
+              <span className={light ? "text-white" : "text-basalt"}>{item.label}</span>
             )}
           </li>
         ))}

@@ -16,7 +16,7 @@ export default function GlobalError({
   }, [error])
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-sand px-5 py-20">
+    <div className="flex min-h-screen items-center justify-center bg-limestone px-5 py-20">
       <div className="max-w-lg text-center">
         <p className="eyebrow">Something went wrong</p>
         <h1 className="mt-4 font-heading text-3xl text-balance sm:text-4xl">
@@ -36,14 +36,14 @@ export default function GlobalError({
           <button
             type="button"
             onClick={reset}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-gold px-7 py-3 text-sm font-medium text-white transition-colors hover:bg-gold-light"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-lapis px-7 py-3 text-sm font-medium text-white transition-colors hover:bg-lapis-deep"
           >
             <RefreshCw className="size-4" />
             Try again
           </button>
           <Link
             href="/contact"
-            className="rounded-lg border border-border px-7 py-3 text-sm font-medium transition-colors hover:border-gold hover:text-gold"
+            className="rounded-lg border border-border px-7 py-3 text-sm font-medium transition-colors hover:border-lapis hover:text-lapis"
           >
             Contact us
           </Link>

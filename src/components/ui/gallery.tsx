@@ -44,7 +44,7 @@ export function Gallery({
           sizes="(min-width: 1024px) 66vw, 100vw"
           className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
         />
-        <span className="absolute right-4 bottom-4 rounded-full bg-ink/70 px-3 py-1 text-xs text-white backdrop-blur-sm">
+        <span className="absolute right-4 bottom-4 rounded-full bg-basalt/70 px-3 py-1 text-xs text-white backdrop-blur-sm">
           {active + 1} / {photos.length}
         </span>
       </button>
@@ -61,7 +61,7 @@ export function Gallery({
               className={cn(
                 "relative aspect-[4/3] w-24 shrink-0 overflow-hidden rounded-lg border-2 transition-all sm:w-28",
                 index === active
-                  ? "border-gold opacity-100"
+                  ? "border-lapis opacity-100"
                   : "border-transparent opacity-65 hover:opacity-100"
               )}
             >
@@ -79,7 +79,7 @@ export function Gallery({
 
       {lightbox && (
         <div
-          className="fixed inset-0 z-100 flex items-center justify-center bg-ink/95 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-100 flex items-center justify-center bg-basalt/95 p-4 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           onClick={() => setLightbox(false)}

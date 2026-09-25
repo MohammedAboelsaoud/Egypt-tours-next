@@ -12,8 +12,8 @@ export function EmptyState({
   icon?: React.ReactNode
 }) {
   return (
-    <div className="flex flex-col items-center rounded-2xl border border-dashed border-border bg-ivory px-6 py-16 text-center">
-      <div className="flex size-12 items-center justify-center rounded-full bg-gold/10 text-gold">
+    <div className="flex flex-col items-center rounded-2xl border border-dashed border-border bg-papyrus px-6 py-16 text-center">
+      <div className="flex size-12 items-center justify-center rounded-full bg-lapis/10 text-lapis">
         {icon ?? <SearchX className="size-5" />}
       </div>
       <h3 className="mt-5 font-heading text-xl">{title}</h3>

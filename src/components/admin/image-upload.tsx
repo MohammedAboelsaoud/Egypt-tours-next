@@ -59,7 +59,7 @@ export function ImageUpload({
 
       <div className="mt-2 flex flex-col gap-3 sm:flex-row">
         <div
-          className="relative flex aspect-[4/3] w-full shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-dashed border-input bg-muted/40 transition-colors hover:border-gold sm:w-44"
+          className="relative flex aspect-[4/3] w-full shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-dashed border-input bg-muted/40 transition-colors hover:border-lapis sm:w-44"
           onClick={() => inputRef.current?.click()}
           onDragOver={(event) => event.preventDefault()}
           onDrop={(event) => {
@@ -83,7 +83,7 @@ export function ImageUpload({
                   event.stopPropagation()
                   setValue("")
                 }}
-                className="absolute top-2 right-2 rounded-full bg-ink/70 p-1.5 text-white transition-colors hover:bg-destructive"
+                className="absolute top-2 right-2 rounded-full bg-basalt/70 p-1.5 text-white transition-colors hover:bg-destructive"
                 aria-label="Remove image"
               >
                 <X className="size-3.5" />
@@ -92,9 +92,9 @@ export function ImageUpload({
           ) : (
             <span className="flex flex-col items-center gap-2 p-4 text-center text-xs text-muted-foreground">
               {busy ? (
-                <Loader2 className="size-5 animate-spin text-gold" />
+                <Loader2 className="size-5 animate-spin text-lapis" />
               ) : (
-                <ImageUp className="size-5 text-gold" />
+                <ImageUp className="size-5 text-lapis" />
               )}
               {busy ? "Uploading…" : "Click or drop an image"}
             </span>
@@ -173,7 +173,7 @@ export function GalleryUpload({
             <button
               type="button"
               onClick={() => setUrls(urls.filter((_, i) => i !== index))}
-              className="absolute top-1.5 right-1.5 rounded-full bg-ink/70 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+              className="absolute top-1.5 right-1.5 rounded-full bg-basalt/70 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
               aria-label="Remove"
             >
               <X className="size-3" />
@@ -184,7 +184,7 @@ export function GalleryUpload({
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
-          className="flex aspect-square items-center justify-center rounded-lg border border-dashed border-input text-muted-foreground transition-colors hover:border-gold hover:text-gold"
+          className="flex aspect-square items-center justify-center rounded-lg border border-dashed border-input text-muted-foreground transition-colors hover:border-lapis hover:text-lapis"
         >
           {busy ? (
             <Loader2 className="size-5 animate-spin" />

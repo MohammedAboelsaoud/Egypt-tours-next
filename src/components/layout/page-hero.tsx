@@ -30,7 +30,7 @@ export function PageHero({
     <section
       className={cn(
         "relative isolate overflow-hidden",
-        hasImage ? "bg-ink" : "border-b border-border bg-ivory"
+        hasImage ? "bg-basalt" : "border-b border-border bg-papyrus"
       )}
     >
       {hasImage && (
@@ -43,7 +43,7 @@ export function PageHero({
             sizes="100vw"
             className="object-cover opacity-60"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/70" />
+          <div className="absolute inset-0 bg-gradient-to-t from-basalt via-basalt/55 to-basalt/70" />
         </>
       )}
 
@@ -63,7 +63,7 @@ export function PageHero({
           <p
             className={cn(
               "text-[0.7rem] font-semibold tracking-[0.18em] uppercase",
-              hasImage ? "text-gold-light" : "text-gold"
+              hasImage ? "text-sun" : "text-ochre"
             )}
           >
             {eyebrow}
@@ -73,7 +73,7 @@ export function PageHero({
         <h1
           className={cn(
             "mt-3 max-w-3xl font-heading text-4xl leading-[1.1] text-balance sm:text-5xl lg:text-[3.4rem]",
-            hasImage ? "text-white" : "text-ink"
+            hasImage ? "text-white" : "text-basalt"
           )}
         >
           {title}

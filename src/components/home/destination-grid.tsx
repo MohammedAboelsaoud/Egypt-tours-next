@@ -33,7 +33,7 @@ export function DestinationGrid({
           action={
             <Link
               href="/destinations"
-              className="group hidden items-center gap-2 text-sm font-medium text-gold sm:flex"
+              className="group hidden items-center gap-2 text-sm font-medium text-lapis sm:flex"
             >
               All destinations
               <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -58,10 +58,10 @@ export function DestinationGrid({
               sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
               className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/25 to-transparent transition-opacity duration-300 group-hover:from-ink/95" />
+            <div className="absolute inset-0 bg-gradient-to-t from-basalt/90 via-basalt/25 to-transparent transition-opacity duration-300 group-hover:from-basalt/95" />
 
             <div className="absolute inset-x-0 bottom-0 p-6">
-              <p className="text-[0.65rem] font-semibold tracking-[0.16em] text-gold-light uppercase">
+              <p className="text-[0.65rem] font-semibold tracking-[0.16em] text-sun uppercase">
                 {region._count ? `${region._count.tours} tours` : "Explore"}
               </p>
               <h3 className="mt-2 font-heading text-2xl text-white">

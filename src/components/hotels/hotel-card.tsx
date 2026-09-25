@@ -29,7 +29,7 @@ export function HotelCard({
   return (
     <article
       className={cn(
-        "group card-hover relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-ivory",
+        "group card-hover relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-papyrus",
         className
       )}
     >
@@ -45,11 +45,11 @@ export function HotelCard({
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover transition-transform duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-basalt/70 via-transparent to-transparent" />
 
-        <span className="absolute top-4 left-4 flex items-center gap-0.5 rounded-full bg-ivory/95 px-2.5 py-1">
+        <span className="absolute top-4 left-4 flex items-center gap-0.5 rounded-full bg-papyrus/95 px-2.5 py-1">
           {Array.from({ length: hotel.starRating }).map((_, i) => (
-            <Star key={i} className="size-3 fill-gold text-gold" />
+            <Star key={i} className="size-3 fill-sun text-ochre" />
           ))}
         </span>
 
@@ -63,7 +63,7 @@ export function HotelCard({
         <h3 className="font-heading text-xl leading-snug">
           <Link
             href={`/hotels/${hotel.slug}`}
-            className="transition-colors after:absolute after:inset-0 hover:text-gold"
+            className="transition-colors after:absolute after:inset-0 hover:text-lapis"
           >
             {hotel.name}
           </Link>
@@ -91,7 +91,7 @@ export function HotelCard({
 
         <div className="mt-auto flex items-end justify-between gap-3 pt-6">
           <div>
-            <p className="font-heading text-2xl text-gold">
+            <p className="font-heading text-2xl text-lapis">
               {formatPrice(toNumber(hotel.pricePerNight), hotel.currency, {
                 compact: true,
               })}

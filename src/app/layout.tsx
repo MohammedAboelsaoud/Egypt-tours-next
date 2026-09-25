@@ -1,19 +1,21 @@
 import type { Metadata, Viewport } from "next"
-import { Inter, Playfair_Display } from "next/font/google"
+import { Gloock, Hanken_Grotesk } from "next/font/google"
 
 import { Providers } from "@/components/providers"
 import { Toaster } from "@/components/ui/sonner"
 import { SITE } from "@/lib/constants"
 import "./globals.css"
 
-const inter = Inter({
-  variable: "--font-inter",
+const body = Hanken_Grotesk({
+  variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
 })
 
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
+// Gloock ships a single weight; headings never ask for a synthetic bold.
+const display = Gloock({
+  variable: "--font-display",
+  weight: "400",
   subsets: ["latin"],
   display: "swap",
 })
@@ -54,7 +56,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#b8860b",
+  themeColor: "#1d4e89",
   width: "device-width",
   initialScale: 1,
 }
@@ -65,7 +67,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       // Opts out of smooth scrolling during route transitions only.
       data-scroll-behavior="smooth"
-      className={`${inter.variable} ${playfair.variable} h-full antialiased`}
+      className={`${body.variable} ${display.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
         <Providers>{children}</Providers>

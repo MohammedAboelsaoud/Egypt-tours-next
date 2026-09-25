@@ -35,7 +35,7 @@ export function Header({ phone }: { phone: string }) {
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300",
         solid
-          ? "border-b border-border/70 bg-ivory/90 backdrop-blur-md"
+          ? "border-b border-border/70 bg-papyrus/90 backdrop-blur-md"
           : "bg-gradient-to-b from-black/45 to-transparent"
       )}
     >
@@ -44,10 +44,10 @@ export function Header({ phone }: { phone: string }) {
           <span
             className={cn(
               "font-heading text-xl tracking-tight transition-colors sm:text-[1.35rem]",
-              solid ? "text-ink" : "text-white"
+              solid ? "text-basalt" : "text-white"
             )}
           >
-            Egypt <span className="text-gold">Journeys</span>
+            Egypt <span className={solid ? "text-lapis" : "text-sun"}>Journeys</span>
           </span>
           <span
             className={cn(
@@ -71,8 +71,8 @@ export function Header({ phone }: { phone: string }) {
                   "relative rounded-md px-3 py-2 text-sm font-medium transition-colors",
                   solid
                     ? active
-                      ? "text-gold"
-                      : "text-ink/75 hover:text-gold"
+                      ? "text-lapis"
+                      : "text-basalt/75 hover:text-lapis"
                     : active
                       ? "text-white"
                       : "text-white/80 hover:text-white"
@@ -83,7 +83,7 @@ export function Header({ phone }: { phone: string }) {
                   <span
                     className={cn(
                       "absolute inset-x-3 -bottom-0.5 h-px",
-                      solid ? "bg-gold" : "bg-white/80"
+                      solid ? "bg-lapis" : "bg-white/80"
                     )}
                   />
                 )}
@@ -97,7 +97,7 @@ export function Header({ phone }: { phone: string }) {
             href={`tel:${phone.replace(/\s/g, "")}`}
             className={cn(
               "hidden items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors xl:flex",
-              solid ? "text-ink/75 hover:text-gold" : "text-white/85 hover:text-white"
+              solid ? "text-basalt/75 hover:text-lapis" : "text-white/85 hover:text-white"
             )}
           >
             <Phone className="size-4" />
@@ -109,7 +109,7 @@ export function Header({ phone }: { phone: string }) {
           </div>
 
           <ButtonLink href="/contact" size="lg"
-            className="hidden bg-gold text-white hover:bg-gold-light sm:inline-flex">
+            className="hidden bg-lapis text-white hover:bg-lapis-deep sm:inline-flex">
             Start Planning
           </ButtonLink>
 

@@ -46,12 +46,12 @@ export default async function ContactPage() {
           </Suspense>
 
           <aside className="space-y-6">
-            <div className="rounded-2xl border border-border bg-ivory p-7">
+            <div className="rounded-2xl border border-border bg-papyrus p-7">
               <h2 className="font-heading text-xl">Reach us directly</h2>
 
               <ul className="mt-6 space-y-5 text-sm">
                 <li className="flex gap-4">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-lapis/10 text-lapis">
                     <Phone className="size-4" />
                   </span>
                   <span>
@@ -60,7 +60,7 @@ export default async function ContactPage() {
                     </span>
                     <a
                       href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
-                      className="mt-1 block font-medium hover:text-gold"
+                      className="mt-1 block font-medium hover:text-lapis"
                     >
                       {settings.contactPhone}
                     </a>
@@ -68,7 +68,7 @@ export default async function ContactPage() {
                 </li>
 
                 <li className="flex gap-4">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-lapis/10 text-lapis">
                     <Mail className="size-4" />
                   </span>
                   <span>
@@ -77,7 +77,7 @@ export default async function ContactPage() {
                     </span>
                     <a
                       href={`mailto:${settings.contactEmail}`}
-                      className="mt-1 block font-medium hover:text-gold"
+                      className="mt-1 block font-medium hover:text-lapis"
                     >
                       {settings.contactEmail}
                     </a>
@@ -85,7 +85,7 @@ export default async function ContactPage() {
                 </li>
 
                 <li className="flex gap-4">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-lapis/10 text-lapis">
                     <MapPin className="size-4" />
                   </span>
                   <span>
@@ -99,7 +99,7 @@ export default async function ContactPage() {
                 </li>
 
                 <li className="flex gap-4">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold/10 text-gold">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-lapis/10 text-lapis">
                     <Clock className="size-4" />
                   </span>
                   <span>
@@ -127,7 +127,7 @@ export default async function ContactPage() {
               </a>
             </div>
 
-            <div className="rounded-2xl border border-gold/25 bg-gradient-to-br from-gold/10 to-transparent p-7">
+            <div className="rounded-2xl border border-lapis/25 bg-gradient-to-br from-lapis/10 to-transparent p-7">
               <h2 className="font-heading text-xl">What happens next</h2>
               <ol className="mt-5 space-y-4 text-sm text-muted-foreground">
                 {[
@@ -137,7 +137,7 @@ export default async function ContactPage() {
                   "You book online by card through Stripe, and we take it from there.",
                 ].map((step, index) => (
                   <li key={step} className="flex gap-3">
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gold text-xs font-semibold text-white">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-lapis text-xs font-semibold text-white">
                       {index + 1}
                     </span>
                     {step}

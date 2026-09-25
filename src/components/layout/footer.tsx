@@ -27,13 +27,13 @@ const REGIONS = [
 
 export function Footer({ settings }: { settings: SiteSettings }) {
   return (
-    <footer className="mt-auto bg-ink text-white/70">
+    <footer className="mt-auto bg-basalt text-white/70">
       <div className="container-page grid gap-10 py-16 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
         <div className="lg:pr-8">
           <div className="font-heading text-2xl text-white">
-            Egypt <span className="text-gold-light">Journeys</span>
+            Egypt <span className="text-sun">Journeys</span>
           </div>
-          <div className="mt-4 h-px w-14 bg-gradient-to-r from-gold-light to-transparent" />
+          <div className="mt-4 h-px w-14 bg-gradient-to-r from-sun to-transparent" />
           <p className="mt-4 text-sm leading-relaxed">
             Tailor-made journeys through Egypt, built by people who live here.
             One planner from your first enquiry to your last transfer.
@@ -46,7 +46,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook"
-                className="rounded-full border border-white/15 p-2 transition-colors hover:border-gold-light hover:text-gold-light"
+                className="rounded-full border border-white/15 p-2 transition-colors hover:border-sun hover:text-sun"
               >
                 <FacebookIcon className="size-4" />
               </a>
@@ -57,7 +57,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
-                className="rounded-full border border-white/15 p-2 transition-colors hover:border-gold-light hover:text-gold-light"
+                className="rounded-full border border-white/15 p-2 transition-colors hover:border-sun hover:text-sun"
               >
                 <InstagramIcon className="size-4" />
               </a>
@@ -69,16 +69,16 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         <FooterColumn title="Regions" links={REGIONS} />
 
         <div>
-          <h3 className="text-[0.7rem] font-semibold tracking-[0.18em] text-gold-light uppercase">
+          <h3 className="text-[0.7rem] font-semibold tracking-[0.18em] text-sun uppercase">
             Get in touch
           </h3>
           <ul className="mt-5 space-y-3 text-sm">
             <li className="flex gap-3">
-              <MapPin className="mt-0.5 size-4 shrink-0 text-gold-light" />
+              <MapPin className="mt-0.5 size-4 shrink-0 text-sun" />
               <span>{settings.address}</span>
             </li>
             <li className="flex gap-3">
-              <Phone className="mt-0.5 size-4 shrink-0 text-gold-light" />
+              <Phone className="mt-0.5 size-4 shrink-0 text-sun" />
               <a
                 href={`tel:${settings.contactPhone.replace(/\s/g, "")}`}
                 className="transition-colors hover:text-white"
@@ -87,7 +87,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
               </a>
             </li>
             <li className="flex gap-3">
-              <Mail className="mt-0.5 size-4 shrink-0 text-gold-light" />
+              <Mail className="mt-0.5 size-4 shrink-0 text-sun" />
               <a
                 href={`mailto:${settings.contactEmail}`}
                 className="transition-colors hover:text-white"
@@ -130,7 +130,7 @@ function FooterColumn({
 }) {
   return (
     <div>
-      <h3 className="text-[0.7rem] font-semibold tracking-[0.18em] text-gold-light uppercase">
+      <h3 className="text-[0.7rem] font-semibold tracking-[0.18em] text-sun uppercase">
         {title}
       </h3>
       <ul className="mt-5 space-y-2.5 text-sm">

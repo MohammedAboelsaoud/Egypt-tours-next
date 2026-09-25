@@ -97,7 +97,7 @@ export function EditLink({ href }: { href: string }) {
     <Link
       href={href}
       aria-label="Edit"
-      className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-gold"
+      className="flex size-7 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-lapis"
     >
       <Pencil className="size-4" />
     </Link>

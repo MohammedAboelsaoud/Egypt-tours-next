@@ -65,14 +65,14 @@ export function AdminSidebar({
             className={cn(
               "flex items-center gap-3 rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors",
               active
-                ? "bg-gold/12 text-gold"
-                : "text-muted-foreground hover:bg-muted hover:text-ink"
+                ? "bg-lapis/12 text-lapis"
+                : "text-muted-foreground hover:bg-muted hover:text-basalt"
             )}
           >
             <item.icon className="size-4 shrink-0" />
             <span className="flex-1">{item.label}</span>
             {count !== null && (
-              <span className="rounded-full bg-gold px-1.5 py-0.5 text-[0.65rem] font-semibold text-white">
+              <span className="rounded-full bg-lapis px-1.5 py-0.5 text-[0.65rem] font-semibold text-white">
                 {count}
               </span>
             )}
@@ -97,7 +97,7 @@ export function AdminSidebar({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="fixed top-4 left-4 z-50 flex size-10 items-center justify-center rounded-lg border border-border bg-ivory lg:hidden"
+        className="fixed top-4 left-4 z-50 flex size-10 items-center justify-center rounded-lg border border-border bg-papyrus lg:hidden"
         aria-label="Open admin menu"
       >
         <Menu className="size-5" />
@@ -105,21 +105,21 @@ export function AdminSidebar({
 
       {open && (
         <div
-          className="fixed inset-0 z-50 bg-ink/40 lg:hidden"
+          className="fixed inset-0 z-50 bg-basalt/40 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-ivory transition-transform lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-border bg-papyrus transition-transform lg:translate-x-0",
           open ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex items-center justify-between border-b border-border px-5 py-5">
           <Link href="/admin" className="flex flex-col leading-none">
             <span className="font-heading text-lg">
-              Egypt <span className="text-gold">Journeys</span>
+              Egypt <span className="text-lapis">Journeys</span>
             </span>
             <span className="mt-1 text-[0.6rem] tracking-[0.2em] text-muted-foreground uppercase">
               Admin
@@ -140,7 +140,7 @@ export function AdminSidebar({
         <div className="mt-auto border-t border-border p-4">
           <Link
             href="/"
-            className="block rounded-lg bg-muted px-3.5 py-2.5 text-center text-sm font-medium transition-colors hover:bg-gold hover:text-white"
+            className="block rounded-lg bg-muted px-3.5 py-2.5 text-center text-sm font-medium transition-colors hover:bg-lapis hover:text-white"
           >
             View website ↗
           </Link>

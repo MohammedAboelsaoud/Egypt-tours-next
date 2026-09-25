@@ -107,7 +107,7 @@ export default async function AdminBookingsPage({
                       <td className="px-6 py-3">
                         <Link
                           href={`/admin/bookings/${booking.id}`}
-                          className="font-mono text-xs font-medium hover:text-gold"
+                          className="font-mono text-xs font-medium hover:text-lapis"
                         >
                           {booking.reference}
                         </Link>

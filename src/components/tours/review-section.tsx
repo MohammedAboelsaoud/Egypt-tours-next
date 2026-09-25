@@ -43,7 +43,7 @@ export function ReviewSection({
         {reviews.length > 0 ? (
           <>
             <div className="flex items-baseline gap-4">
-              <span className="font-heading text-5xl text-gold">
+              <span className="font-heading text-5xl text-lapis">
                 {average.toFixed(1)}
               </span>
               <div>
@@ -59,11 +59,11 @@ export function ReviewSection({
               {reviews.map((review) => (
                 <li
                   key={review.id}
-                  className="rounded-2xl border border-border bg-ivory p-6"
+                  className="rounded-2xl border border-border bg-papyrus p-6"
                 >
                   <div className="flex items-center gap-3">
                     <Avatar className="size-10">
-                      <AvatarFallback className="bg-gold/15 text-xs font-semibold text-gold">
+                      <AvatarFallback className="bg-lapis/15 text-xs font-semibold text-lapis">
                         {initials(review.author)}
                       </AvatarFallback>
                     </Avatar>
@@ -89,7 +89,7 @@ export function ReviewSection({
         )}
       </div>
 
-      <div className="h-fit rounded-2xl border border-border bg-ivory p-6 lg:sticky lg:top-28">
+      <div className="h-fit rounded-2xl border border-border bg-papyrus p-6 lg:sticky lg:top-28">
         <h3 className="font-heading text-xl">Write a review</h3>
 
         {status === "authenticated" ? (
@@ -112,7 +112,7 @@ export function ReviewSection({
                       className={cn(
                         "size-6",
                         value <= rating
-                          ? "fill-gold text-gold"
+                          ? "fill-sun text-ochre"
                           : "fill-transparent text-muted-foreground/40"
                       )}
                     />
@@ -139,7 +139,7 @@ export function ReviewSection({
               <p
                 className={cn(
                   "text-sm",
-                  state.ok ? "text-teal" : "text-destructive"
+                  state.ok ? "text-faience" : "text-destructive"
                 )}
               >
                 {state.message}
@@ -149,7 +149,7 @@ export function ReviewSection({
             <Button
               type="submit"
               disabled={pending}
-              className="h-11 w-full bg-gold text-white hover:bg-gold-light"
+              className="h-11 w-full bg-lapis text-white hover:bg-lapis-deep"
             >
               {pending ? "Submitting…" : "Submit review"}
             </Button>
@@ -163,7 +163,7 @@ export function ReviewSection({
             <p className="text-sm text-muted-foreground">
               Sign in to share your experience of this tour.
             </p>
-            <ButtonLink href="/login" className="mt-4 h-11 w-full bg-gold text-white hover:bg-gold-light">
+            <ButtonLink href="/login" className="mt-4 h-11 w-full bg-lapis text-white hover:bg-lapis-deep">
               Sign in to review
             </ButtonLink>
           </div>

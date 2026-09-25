@@ -45,7 +45,7 @@ export function ReviewActions({
         </Button>
       ) : (
         <Button
-          className="h-9 gap-1.5 bg-teal text-white hover:bg-teal/90"
+          className="h-9 gap-1.5 bg-faience text-white hover:bg-faience/90"
           disabled={pending}
           onClick={() =>
             run(() => setReviewApproved(id, true), "Review published")

@@ -142,8 +142,8 @@ function EmbeddedStripeCheckout(props: Props) {
 
   if (confirming) {
     return (
-      <p className="flex items-center gap-2.5 rounded-xl border border-border bg-ivory p-5 text-sm">
-        <LoaderCircle className="size-4 animate-spin text-gold" />
+      <p className="flex items-center gap-2.5 rounded-xl border border-border bg-papyrus p-5 text-sm">
+        <LoaderCircle className="size-4 animate-spin text-lapis" />
         Payment received — confirming your booking…
       </p>
     )
@@ -176,7 +176,7 @@ function EmbeddedStripeCheckout(props: Props) {
       </div>
 
       <p className="flex items-start gap-2 text-xs text-muted-foreground">
-        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-teal" />
+        <ShieldCheck className="mt-0.5 size-4 shrink-0 text-faience" />
         Payments are processed securely by Stripe. We never see or store your
         card details.
       </p>
@@ -191,9 +191,9 @@ function SimulatedCheckout({ bookingId, amount, currency, onPaid }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-xl border border-dashed border-gold/50 bg-gold/5 p-5">
+      <div className="rounded-xl border border-dashed border-lapis/50 bg-lapis/5 p-5">
         <p className="flex items-start gap-2.5 text-sm">
-          <AlertCircle className="mt-0.5 size-4 shrink-0 text-gold" />
+          <AlertCircle className="mt-0.5 size-4 shrink-0 text-lapis" />
           <span>
             <strong className="font-medium">Stripe is not configured yet.</strong>{" "}
             Add <code className="rounded bg-muted px-1">STRIPE_SECRET_KEY</code>{" "}
@@ -212,7 +212,7 @@ function SimulatedCheckout({ bookingId, amount, currency, onPaid }: Props) {
       <Button
         type="button"
         disabled={working}
-        className="h-12 w-full bg-gold text-base text-white hover:bg-gold-light"
+        className="h-12 w-full bg-lapis text-base text-white hover:bg-lapis-deep"
         onClick={async () => {
           setWorking(true)
           setError(null)

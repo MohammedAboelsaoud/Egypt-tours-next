@@ -91,7 +91,7 @@ export async function BookingPageShell({
     kind === "tour" ? "/tours" : kind === "hotel" ? "/hotels" : "/car-rentals"
 
   return (
-    <div className="border-b border-border bg-sand">
+    <div className="border-b border-border bg-limestone">
       <div className="container-page pt-28 pb-20 sm:pt-32">
         <Breadcrumb
           items={[

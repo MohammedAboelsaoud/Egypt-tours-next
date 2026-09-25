@@ -79,7 +79,7 @@ export default async function AboutPage() {
             <h2 className="mt-3 font-heading text-3xl sm:text-4xl">
               Built by people who grew up here
             </h2>
-            <div className="mt-5 gold-rule" />
+            <div className="mt-5 horizon-rule" />
 
             <div className="mt-7 space-y-4 text-lg leading-relaxed text-muted-foreground">
               <p>
@@ -126,7 +126,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-ivory">
+      <section className="bg-papyrus">
         <div className="container-page section-y">
           <SectionHeading
             eyebrow="What we stand for"
@@ -139,9 +139,9 @@ export default async function AboutPage() {
             {VALUES.map((value) => (
               <div
                 key={value.title}
-                className="rounded-2xl border border-border bg-sand p-8"
+                className="rounded-2xl border border-border bg-limestone p-8"
               >
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gold/10 text-gold">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-lapis/10 text-lapis">
                   <value.icon className="size-5" />
                 </div>
                 <h3 className="mt-6 font-heading text-xl">{value.title}</h3>
@@ -166,7 +166,7 @@ export default async function AboutPage() {
           {TEAM.map((person) => (
             <article
               key={person.name}
-              className="overflow-hidden rounded-2xl border border-border bg-ivory"
+              className="overflow-hidden rounded-2xl border border-border bg-papyrus"
             >
               <div className="relative aspect-[4/3]">
                 <Image
@@ -176,11 +176,11 @@ export default async function AboutPage() {
                   sizes="(min-width: 1024px) 33vw, 50vw"
                   className="object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/60 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-basalt/60 to-transparent" />
               </div>
               <div className="p-6">
                 <h3 className="font-heading text-xl">{person.name}</h3>
-                <p className="mt-1 text-sm text-gold">{person.role}</p>
+                <p className="mt-1 text-sm text-lapis">{person.role}</p>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
                   {person.bio}
                 </p>

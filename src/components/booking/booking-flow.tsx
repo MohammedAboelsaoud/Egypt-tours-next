@@ -225,10 +225,10 @@ export function BookingFlow({
                   className={cn(
                     "flex size-9 shrink-0 items-center justify-center rounded-full border text-xs font-semibold transition-colors",
                     done
-                      ? "border-gold bg-gold text-white"
+                      ? "border-lapis bg-lapis text-white"
                       : active
-                        ? "border-gold bg-gold/10 text-gold"
-                        : "border-border bg-ivory text-muted-foreground"
+                        ? "border-lapis bg-lapis/10 text-lapis"
+                        : "border-border bg-papyrus text-muted-foreground"
                   )}
                 >
                   {done ? <Check className="size-4" /> : entry.id}
@@ -236,7 +236,7 @@ export function BookingFlow({
                 <span
                   className={cn(
                     "hidden text-xs font-medium sm:block",
-                    active ? "text-ink" : "text-muted-foreground"
+                    active ? "text-basalt" : "text-muted-foreground"
                   )}
                 >
                   {entry.label}
@@ -245,7 +245,7 @@ export function BookingFlow({
                   <span
                     className={cn(
                       "h-px flex-1",
-                      done ? "bg-gold" : "bg-border"
+                      done ? "bg-lapis" : "bg-border"
                     )}
                   />
                 )}
@@ -310,7 +310,7 @@ export function BookingFlow({
                   id="guests"
                   value={guests}
                   onChange={(event) => setGuests(Number(event.target.value))}
-                  className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+                  className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
                 >
                   {Array.from({ length: item.maxGuests }, (_, i) => i + 1).map(
                     (value) => (
@@ -328,7 +328,7 @@ export function BookingFlow({
 
             <div className="mt-10 flex justify-end">
               <Button
-                className="h-12 gap-2 bg-gold px-7 text-white hover:bg-gold-light"
+                className="h-12 gap-2 bg-lapis px-7 text-white hover:bg-lapis-deep"
                 onClick={() => {
                   if (new Date(checkOut) <= new Date(checkIn)) {
                     setError("The end date must be after the start date.")
@@ -404,7 +404,7 @@ export function BookingFlow({
                   <Label htmlFor="nationality">Nationality</Label>
                   <select
                     id="nationality"
-                    className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-gold focus-visible:ring-3 focus-visible:ring-gold/20"
+                    className="mt-2 h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-lapis focus-visible:ring-3 focus-visible:ring-lapis/20"
                     {...guestForm.register("nationality")}
                   >
                     <option value="">Select…</option>
@@ -456,7 +456,7 @@ export function BookingFlow({
                 </Button>
                 <Button
                   type="submit"
-                  className="h-12 gap-2 bg-gold px-7 text-white hover:bg-gold-light"
+                  className="h-12 gap-2 bg-lapis px-7 text-white hover:bg-lapis-deep"
                 >
                   Review booking
                   <ArrowRight className="size-4" />
@@ -474,7 +474,7 @@ export function BookingFlow({
               Nothing is charged until you complete payment on the next step.
             </p>
 
-            <dl className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-ivory">
+            <dl className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-papyrus">
               <Row label={item.kind === "TOUR" ? "Tour" : item.kind === "HOTEL" ? "Hotel" : "Vehicle"} value={item.name} />
               <Row
                 label={item.kind === "HOTEL" ? "Check-in" : "Start"}
@@ -502,7 +502,7 @@ export function BookingFlow({
               )}
             </dl>
 
-            <label className="mt-7 flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-ivory p-5">
+            <label className="mt-7 flex cursor-pointer items-start gap-3 rounded-xl border border-border bg-papyrus p-5">
               <Checkbox
                 checked={terms}
                 onCheckedChange={(value) => setTerms(value === true)}
@@ -529,7 +529,7 @@ export function BookingFlow({
               <Button
                 type="button"
                 disabled={creating}
-                className="h-12 gap-2 bg-gold px-7 text-white hover:bg-gold-light"
+                className="h-12 gap-2 bg-lapis px-7 text-white hover:bg-lapis-deep"
                 onClick={goToPayment}
               >
                 {creating ? "Preparing…" : "Continue to payment"}
@@ -545,7 +545,7 @@ export function BookingFlow({
             <h2 className="font-heading text-2xl">Payment</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Booking reference{" "}
-              <span className="font-medium text-ink">{booking.reference}</span> —
+              <span className="font-medium text-basalt">{booking.reference}</span> —
               held for 30 minutes while you pay.
             </p>
 
@@ -576,7 +576,7 @@ export function BookingFlow({
 
       {/* Summary */}
       <aside className="lg:sticky lg:top-28 lg:h-fit">
-        <div className="overflow-hidden rounded-2xl border border-border bg-ivory">
+        <div className="overflow-hidden rounded-2xl border border-border bg-papyrus">
           <div className="relative aspect-[16/10]">
             <Image
               src={item.imageUrl}
@@ -592,7 +592,7 @@ export function BookingFlow({
               {item.regionName}
             </p>
             <h3 className="mt-1.5 font-heading text-xl leading-snug">
-              <Link href={item.href} className="hover:text-gold">
+              <Link href={item.href} className="hover:text-lapis">
                 {item.name}
               </Link>
             </h3>
@@ -622,7 +622,7 @@ export function BookingFlow({
 
             <div className="mt-5 flex items-baseline justify-between border-t border-border pt-5">
               <span className="font-medium">Total</span>
-              <span className="font-heading text-3xl text-gold">
+              <span className="font-heading text-3xl text-lapis">
                 {formatPrice(price.total, price.currency)}
               </span>
             </div>
@@ -670,7 +670,7 @@ function Confirmation({
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-teal/10 text-teal">
+      <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-faience/10 text-faience">
         <PartyPopper className="size-7" />
       </div>
 
@@ -682,11 +682,11 @@ function Confirmation({
         within one business day to arrange timings and pickup details.
       </p>
 
-      <div className="mt-9 rounded-2xl border border-border bg-ivory p-7 text-left">
+      <div className="mt-9 rounded-2xl border border-border bg-papyrus p-7 text-left">
         <p className="text-center text-xs tracking-[0.16em] text-muted-foreground uppercase">
           Booking reference
         </p>
-        <p className="mt-2 text-center font-heading text-3xl tracking-wide text-gold">
+        <p className="mt-2 text-center font-heading text-3xl tracking-wide text-lapis">
           {reference}
         </p>
 
@@ -707,7 +707,7 @@ function Confirmation({
           </div>
           <div className="flex justify-between gap-4 border-t border-border pt-3">
             <dt className="font-medium">Paid</dt>
-            <dd className="font-heading text-xl text-gold">
+            <dd className="font-heading text-xl text-lapis">
               {formatPrice(total, currency)}
             </dd>
           </div>
@@ -717,7 +717,7 @@ function Confirmation({
       <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
         <ButtonLink
           href="/account/bookings"
-          className="h-12 bg-gold px-7 text-white hover:bg-gold-light"
+          className="h-12 bg-lapis px-7 text-white hover:bg-lapis-deep"
         >
           View my bookings
         </ButtonLink>

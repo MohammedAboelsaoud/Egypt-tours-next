@@ -33,7 +33,7 @@ export default async function EditTourPage({
           <Link
             href={`/tours/${tour.slug}`}
             target="_blank"
-            className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:border-gold hover:text-gold"
+            className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:border-lapis hover:text-lapis"
           >
             View on site ↗
           </Link>

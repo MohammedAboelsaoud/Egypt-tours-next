@@ -74,7 +74,7 @@ export function WishlistButton({
       aria-pressed={saved}
       className={cn("h-12 gap-2", className)}
     >
-      <Heart className={cn("size-4", saved && "fill-gold text-gold")} />
+      <Heart className={cn("size-4", saved && "fill-lapis text-lapis")} />
       {label && (saved ? "Saved" : "Save for later")}
     </Button>
   )

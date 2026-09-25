@@ -60,7 +60,7 @@ export default async function AdminBookingDetailPage({
     <>
       <Link
         href="/admin/bookings"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-gold"
+        className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-lapis"
       >
         <ArrowLeft className="size-4" />
         All bookings
@@ -104,7 +104,7 @@ export default async function AdminBookingDetailPage({
                     <Link
                       href={itemHref}
                       target="_blank"
-                      className="hover:text-gold"
+                      className="hover:text-lapis"
                     >
                       {itemName} ↗
                     </Link>
@@ -146,7 +146,7 @@ export default async function AdminBookingDetailPage({
 
             <div className="flex items-center justify-between border-t border-border bg-muted/30 px-6 py-4">
               <span className="text-sm text-muted-foreground">Total</span>
-              <span className="font-heading text-2xl text-gold">
+              <span className="font-heading text-2xl text-lapis">
                 {formatPrice(booking.totalPrice, booking.currency)}
               </span>
             </div>
@@ -238,7 +238,7 @@ function Row({
         {href ? (
           <a
             href={href}
-            className="inline-flex items-center gap-1.5 hover:text-gold"
+            className="inline-flex items-center gap-1.5 hover:text-lapis"
           >
             {icon}
             {value}

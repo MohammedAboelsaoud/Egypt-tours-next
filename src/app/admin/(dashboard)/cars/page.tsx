@@ -60,7 +60,7 @@ export default async function AdminCarsPage() {
                         <div className="min-w-0">
                           <Link
                             href={`/admin/cars/${car.id}/edit`}
-                            className="block max-w-[16rem] truncate font-medium hover:text-gold"
+                            className="block max-w-[16rem] truncate font-medium hover:text-lapis"
                           >
                             {car.name}
                           </Link>

@@ -197,3 +197,11 @@ export type CarInput = z.infer<typeof carSchema>
 export type RegionInput = z.infer<typeof regionSchema>
 export type SettingsInput = z.infer<typeof settingsSchema>
 export type ReviewInput = z.infer<typeof reviewSchema>
+
+export const chatRequestSchema = z.object({
+  message: z
+    .string()
+    .trim()
+    .min(1, "Type a question first")
+    .max(500, "Keep questions under 500 characters"),
+})

@@ -125,6 +125,31 @@ Pricing rules:
 
 ---
 
+## Chat assistant ("Ask Nefer")
+
+A floating assistant on every public page answers travellers' questions. It is
+**free to run**: no AI provider, no API key, no per-message cost. It answers from
+the site's own content:
+
+- **Practical questions** (visas, safety, seasons, tipping, dress, payment,
+  cancellation…) from the same FAQ data as `/faq` (`src/lib/faq.ts`)
+- **Tours, hotels and cars** by place, budget ("under $500"), trip length
+  ("3 days"), group size and car type, shown as cards linking to their pages
+- **Trip enquiries**: asking to plan a trip opens a short form in the chat that
+  posts to `/api/inquiries`, so it lands in **Admin → Inquiries** and sends the
+  usual emails
+- **Human hand-off**: WhatsApp, phone, email and the contact page
+
+How it fits together: `src/lib/chat/engine.ts` (pure matching logic, unit
+tested), `src/lib/chat/knowledge.ts` (catalogue snapshot, cached 10 minutes),
+`POST /api/chat` (validated, rate-limited per IP) and
+`src/components/chat/chat-widget.tsx`. New tours, hotels and cars added in the
+admin show up in answers automatically. To teach it a new practical topic, add
+the question to `src/lib/faq.ts` and its trigger words to `FAQ_TOPICS` in the
+engine.
+
+---
+
 ## Admin dashboard (`/admin`)
 
 Restricted to `ADMIN` users; enforced in `proxy.ts` and again in the layout.
@@ -145,13 +170,13 @@ All site content is editable from here — no code changes needed.
 ## Testing
 
 ```bash
-bun run test       # 39 unit + integration tests
-bun run test:e2e   # 40 end-to-end tests (desktop Chrome + Pixel 7)
+bun run test       # 57 unit + integration tests
+bun run test:e2e   # 48 end-to-end tests (desktop Chrome + Pixel 7)
 ```
 
 The E2E suite covers the public site, the full booking flow through to a
-confirmed payment, wishlist, auth gates, and admin CRUD including creating,
-editing and deleting a tour.
+confirmed payment, wishlist, auth gates, admin CRUD including creating,
+editing and deleting a tour, and the chat assistant.
 
 > **Note on Bun:** Playwright skips its own TypeScript loader when it detects
 > Bun (`if ("Bun" in globalThis) return` in its ESM loader), so the files in
@@ -193,7 +218,7 @@ Add the OAuth redirect URLs in each provider's console:
 - Server Components throughout; ISR (`revalidate = 3600`) on region, tour, hotel
   and car pages — 72 pages are prerendered at build time
 - `next/image` with remote patterns for Cloudinary and Unsplash
-- `next/font` for Playfair Display and Inter (no layout shift)
+- `next/font` for Gloock and Hanken Grotesk (no layout shift)
 - Skeleton loading states, and dynamic imports for the map and Stripe checkout
 - Per-page metadata and canonical URLs, Open Graph images
 - JSON-LD: `TravelAgency`, `TouristDestination`, `Product`, `Hotel`,
@@ -205,16 +230,28 @@ is never baked into a cached page.
 
 ---
 
-## Brand
+## Brand: "Faience & Limestone"
 
-| Token        | Hex       | Use                            |
-| ------------ | --------- | ------------------------------ |
-| `gold`       | `#B8860B` | Primary accent, CTAs, prices   |
-| `gold-light` | `#DAA520` | Hover states, gradients        |
-| `sand`       | `#FAF7F2` | Page background                |
-| `ink`        | `#1C1917` | Primary text, dark sections    |
-| `teal`       | `#0F766E` | Secondary accent, success      |
-| `ivory`      | `#FFFEF9` | Card backgrounds               |
+Named after the materials of ancient Egypt. Tokens live in `src/app/globals.css`
+and are exposed as Tailwind utilities (`bg-lapis`, `text-ochre`, `bg-basalt`…).
 
-Headings use **Playfair Display**, body copy **Inter**, with small uppercase
-letter-spaced eyebrow labels above section headings.
+| Token        | Hex       | Use                                                  |
+| ------------ | --------- | ---------------------------------------------------- |
+| `lapis`      | `#1D4E89` | Egyptian blue. Primary actions, links, prices, icons |
+| `lapis-deep` | `#163D6C` | Hover and pressed state of lapis fills               |
+| `sun`        | `#E2B04A` | Sun disc. Accents on dark grounds, rating stars      |
+| `ochre`      | `#8D5C0F` | Eyebrow labels and warm accents on light grounds     |
+| `faience`    | `#0F7A70` | Success states, secondary accent                     |
+| `basalt`     | `#161A22` | Text, dark sections, footer                          |
+| `limestone`  | `#F4F3EF` | Page background                                      |
+| `papyrus`    | `#FBFAF7` | Cards, header, popovers                              |
+| `carnelian`  | `#B23A26` | Errors and destructive actions                       |
+
+Headings use **Gloock**, body copy **Hanken Grotesk**. Small uppercase
+letter-spaced eyebrow labels (`.eyebrow`, ochre) sit above section headings,
+followed by the `.horizon-rule`: a short lapis bar ending in a sun disc. Corners
+are tight (`--radius: 0.375rem`) and badges can take the `cartouche` variant.
+Every text colour meets WCAG AA on the grounds listed above.
+
+The full design system (tokens, type scale, component guidelines and previews)
+is published as a Design System artifact.

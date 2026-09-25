@@ -33,8 +33,8 @@ export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
             className={cn(
               "flex shrink-0 items-center gap-2.5 rounded-lg px-4 py-3 text-sm font-medium transition-colors",
               active
-                ? "bg-gold/10 text-gold"
-                : "text-muted-foreground hover:bg-muted hover:text-ink"
+                ? "bg-lapis/10 text-lapis"
+                : "text-muted-foreground hover:bg-muted hover:text-basalt"
             )}
           >
             <link.icon className="size-4" />
@@ -46,7 +46,7 @@ export function AccountNav({ isAdmin }: { isAdmin: boolean }) {
       {isAdmin && (
         <Link
           href="/admin"
-          className="flex shrink-0 items-center gap-2.5 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-ink"
+          className="flex shrink-0 items-center gap-2.5 rounded-lg px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-basalt"
         >
           <LayoutDashboard className="size-4" />
           Admin dashboard

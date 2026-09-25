@@ -106,7 +106,7 @@ export function LoginForm({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="h-11 w-full bg-gold text-white hover:bg-gold-light"
+            className="h-11 w-full bg-lapis text-white hover:bg-lapis-deep"
           >
             {isSubmitting ? "Signing in…" : "Sign in"}
           </Button>
@@ -116,7 +116,7 @@ export function LoginForm({
           New here?{" "}
           <Link
             href={`/register?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-            className="font-medium text-gold hover:underline"
+            className="font-medium text-lapis hover:underline"
           >
             Create an account
           </Link>

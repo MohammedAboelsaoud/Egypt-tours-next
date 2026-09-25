@@ -154,7 +154,7 @@ export default async function CarRentalsPage({
               action={
                 <Link
                   href="/contact"
-                  className="rounded-lg bg-gold px-6 py-3 text-sm font-medium text-white hover:bg-gold-light"
+                  className="rounded-lg bg-lapis px-6 py-3 text-sm font-medium text-white hover:bg-lapis-deep"
                 >
                   Request a vehicle
                 </Link>

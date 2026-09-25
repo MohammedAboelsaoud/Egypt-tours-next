@@ -177,7 +177,7 @@ export default async function AdminOverviewPage() {
           <div className="border-t border-border px-6 py-3">
             <Link
               href="/admin/bookings"
-              className="text-sm font-medium text-gold hover:underline"
+              className="text-sm font-medium text-lapis hover:underline"
             >
               All bookings →
             </Link>
@@ -210,7 +210,7 @@ export default async function AdminOverviewPage() {
           <div className="border-t border-border px-6 py-3">
             <Link
               href="/admin/inquiries"
-              className="text-sm font-medium text-gold hover:underline"
+              className="text-sm font-medium text-lapis hover:underline"
             >
               All inquiries →
             </Link>
