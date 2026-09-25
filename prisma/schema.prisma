@@ -306,6 +306,10 @@ model SiteSetting {
   address        String   @default("Zamalek, Cairo, Egypt")
   facebookUrl    String   @default("")
   instagramUrl   String   @default("")
+  /// Legacy, unused since the switch to Stripe. Kept because production
+  /// databases still hold a value here, and removing the field would make
+  /// schema pushes drop that data (and so refuse to run).
+  paypalMode     String   @default("sandbox")
   updatedAt      DateTime @default(now()) @updatedAt
 }
 
