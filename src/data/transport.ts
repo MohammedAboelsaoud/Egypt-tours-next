@@ -1,72 +1,19 @@
-/**
- * ─── TRANSPORT ────────────────────────────────────────────────────────────
- * Cars and buses with driver. `pricePerDay` is in USD.
- * Set `pricePerDay` to null to show "Price on request" instead of a price.
- *
- * `kind` picks the icon: "car", "suv", "van" or "bus".
- */
+import vehicles from "@/content/transport.json"
 
 export type Vehicle = {
   id: string
   name: string
   model: string
+  /** Picks the fallback icon when there's no photo. */
   kind: "car" | "suv" | "van" | "bus"
   seats: number
+  /** USD per day; null shows "Price on request". */
   pricePerDay: number | null
+  image?: string
+  imageCredit?: string
   description: string
   features: string[]
 }
 
-export const VEHICLES: Vehicle[] = [
-  {
-    id: "economy-sedan",
-    name: "Economy sedan",
-    model: "Hyundai Elantra",
-    kind: "car",
-    seats: 4,
-    pricePerDay: 30,
-    description: "Comfortable and air-conditioned — ideal for couples and city transfers.",
-    features: ["Air conditioning", "Driver included", "Airport pickups"],
-  },
-  {
-    id: "suv",
-    name: "SUV",
-    model: "Nissan X-Trail",
-    kind: "suv",
-    seats: 4,
-    pricePerDay: 45,
-    description: "More space and luggage room for small families and longer drives.",
-    features: ["Air conditioning", "Driver included", "Large boot"],
-  },
-  {
-    id: "vip-minivan",
-    name: "VIP minivan",
-    model: "Mercedes Vito",
-    kind: "van",
-    seats: 7,
-    pricePerDay: 60,
-    description: "Leather seats and room for the whole family or a small group.",
-    features: ["Air conditioning", "Driver included", "Groups up to 7"],
-  },
-  {
-    id: "premium-sedan",
-    name: "Premium sedan",
-    model: "Mercedes-Benz",
-    kind: "car",
-    seats: 4,
-    pricePerDay: 90,
-    description: "Business-class comfort for VIP guests, events and executive travel.",
-    features: ["Air conditioning", "Professional chauffeur", "Bottled water"],
-  },
-  {
-    id: "superjet-bus",
-    name: "Superjet bus charter",
-    model: "49-seat coach",
-    kind: "bus",
-    seats: 49,
-    pricePerDay: null,
-    description:
-      "A full coach with driver for big groups, school trips and events. Tell us your route and dates for a quote.",
-    features: ["49 seats", "Air conditioning", "Luggage hold"],
-  },
-]
+/** Edit in /admin/ or src/content/transport.json. */
+export const VEHICLES = vehicles as Vehicle[]

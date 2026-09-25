@@ -5,54 +5,67 @@ Egypt. Visitors book by sending a WhatsApp message; there are no accounts,
 payments or database.
 
 **Pages:** Home · Destinations (Cairo & Giza, Luxor & Aswan, North Coast &
-El-Alamein, Sinai) · Hotels · Transport · Tour Guides · Contact. A chat
-assistant is available on every page.
+El-Alamein, Sinai) · Historic Sites (a catalog of 20 sites with their history)
+· Hotels · Transport · Tour Guides · Contact · Admin. A chat assistant is
+available on every page.
 
 Built with Next.js, React and Tailwind CSS. The build is a static site, so it
-can be hosted for free on Netlify.
+can be hosted for free on Vercel or Netlify.
 
 ---
 
-## Before you publish: 3 things to change
+## Editing the website yourself: the admin page
 
-Open `src/data/site.ts` and change:
+Go to **`/admin/`** on your site (for example `https://your-site.vercel.app/admin/`).
+From there you can edit everything without touching code:
 
-1. **`whatsapp`**: your WhatsApp number. Write the country code and number as
-   digits only. For example, `0100 123 4567` becomes `201001234567`.
-   **The number there now is a placeholder.**
-2. **`email`**, **`hours`** and **`location`**: your contact details.
-3. **`url`**: the address of your site once it's live, for example
-   `https://egyptjourneys.netlify.app`.
+| Section            | What you can change                                                          |
+| ------------------ | ---------------------------------------------------------------------------- |
+| **Settings**       | Business name, WhatsApp number, email, hours, social links                   |
+| **Destinations**   | Text, highlights, main photo and photo gallery of the four regions           |
+| **Historic sites** | The catalog: add or edit sites, their history chapters, facts, tips, photos  |
+| **Hotels**         | Add, remove or edit hotels, prices, stars, ratings and photos                |
+| **Transport**      | Vehicles, prices ("price on request" is a tick box) and photos               |
+| **Tour guides**    | Guide profiles and photos                                                    |
 
----
+**Photos:** press **Upload photo** and pick a file from your computer or phone.
+Big photos are shrunk to web size automatically.
 
-## Editing prices, hotels, cars and guides
+**Saving:** press **Save & publish**. The site rebuilds itself and shows the
+change about a minute later.
 
-Everything is in `src/data/`. You don't need to know how to code; change
-the text between the quotes, or the numbers:
+### Signing in (one time)
 
-| File              | What's in it                                             |
-| ----------------- | -------------------------------------------------------- |
-| `site.ts`         | Business name, WhatsApp number, email, hours, socials    |
-| `hotels.ts`       | Hotels: name, stars, guest rating, price per night (USD) |
-| `transport.ts`    | Vehicles and price per day (`null` = "on request")       |
-| `guides.ts`       | Tour guide profiles                                      |
-| `destinations.ts` | Destination text, highlights and best time to visit      |
+The admin page saves your changes straight into this GitHub repository, so it
+needs a GitHub access token instead of a password:
 
-**Photos:** put image files in `public/img/` and write the path in the data
-file, for example `image: "/img/hotels/mena-house.jpg"`. The hotels use
-destination photos for now; replace them with real photos of each hotel
-(use photos you have permission to use).
+1. Open [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new).
+2. Name it "Website admin" and pick an expiration date.
+3. **Repository access** → **Only select repositories** → `Egypt-tours-next`.
+4. **Permissions** → **Repository permissions** → **Contents** → **Read and write**.
+5. Click **Generate token**, copy it, and paste it into the admin page.
 
-**Chat assistant:** it answers from `src/lib/chatbot.ts` and the data files,
-so hotel and car prices in its answers always match the site. To teach it a new
-answer, add a new entry to `KNOWLEDGE` with a list of keywords and a reply.
+Treat the token like a password. If it ever leaks, delete it on the same GitHub
+page; the website keeps working and you can create a new one.
 
-After any change, run the build again (step 3 below) and upload the new `out` folder.
+> The admin needs the site to be hosted by a service that rebuilds when the
+> repository changes. **Vercel is already connected to this repository**, so
+> every save goes live automatically. (Netlify drag-and-drop does *not* rebuild
+> automatically; connect Netlify to the GitHub repository instead if you prefer it.)
+
+### Where the content lives
+
+Everything the admin edits is plain JSON in `src/content/`. You can also edit
+those files by hand on GitHub. The chat assistant reads the same files, so
+its prices and history answers always match the site. Historic sites you add
+get their own page, and the assistant links to them using the site's keywords.
 
 ---
 
 ## Publish it (free)
+
+**Easiest:** the repository is already connected to Vercel, so merging to
+`main` publishes the site. The steps below are for hosting it somewhere else.
 
 1. Install **Node.js LTS** from [nodejs.org](https://nodejs.org).
 2. Open a terminal in this folder and run:
@@ -92,6 +105,10 @@ npm test        # unit tests (chatbot, WhatsApp links, data files)
   that needs a server (API routes, server actions, cookies, image optimisation)
   won't work.
 - Booking forms build a `wa.me` link (`src/lib/whatsapp.ts`); nothing is sent to a server.
+- `/admin/` is a client-only editor (`src/components/admin/`). It reads and
+  commits `src/content/*.json` through the GitHub REST API using the visitor's own
+  token. Its forms are generated from `schema.ts`, and `validate()` there runs
+  before every save and in the tests.
 - The chatbot (`src/lib/chatbot.ts`) runs in the browser and is rule-based,
   using keyword scoring plus parsers for budgets, group sizes and trip lengths.
   It makes no API calls and works offline.

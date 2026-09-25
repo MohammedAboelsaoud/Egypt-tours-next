@@ -16,6 +16,9 @@ export function HotelCard({ hotel }: { hotel: Hotel }) {
           {hotel.rating.toFixed(1)}
           <span className="font-normal text-white/60">/10</span>
         </span>
+        {hotel.imageCredit && (
+          <span className="absolute bottom-2 left-2 rounded bg-ink/60 px-1.5 py-0.5 text-[0.6rem] text-white/80">Photo: {hotel.imageCredit}</span>
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-5">

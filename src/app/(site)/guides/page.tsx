@@ -55,7 +55,7 @@ export default function GuidesPage() {
 
               <div className="mt-auto pt-7">
                 <p className="text-xs text-muted-foreground">Price depends on the day&apos;s programme — ask for a quote.</p>
-                <WhatsAppRequest subject={`${g.title} guide — ${g.coverage}`} title={`Book a ${g.title.toLowerCase()}`} fields={REQUEST_FORMS.guide} className="mt-3 w-full" />
+                <WhatsAppRequest subject={`${g.title} — ${g.coverage}`} title={`Book: ${g.title}`} fields={REQUEST_FORMS.guide} className="mt-3 w-full" />
               </div>
             </article>
           )

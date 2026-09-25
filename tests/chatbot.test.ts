@@ -87,3 +87,15 @@ describe("chatbot", () => {
     }
   })
 })
+
+describe("chatbot and the historic sites catalog", () => {
+  it("links history answers to the catalog page", () => {
+    const r = getBotReply("Tell me about Karnak")
+    expect(r.links?.some((l) => l.href === "/sites/karnak/")).toBe(true)
+  })
+
+  it("answers from the catalog when there's no hand-written answer", () => {
+    const r = getBotReply("Coptic Cairo")
+    expect(r.links?.[0].href).toBe("/sites/coptic-cairo/")
+  })
+})

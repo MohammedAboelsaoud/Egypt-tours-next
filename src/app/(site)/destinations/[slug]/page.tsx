@@ -4,13 +4,16 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { ArrowRight, CalendarDays, Heart } from "lucide-react"
 
+import { Gallery } from "@/components/gallery"
 import { HotelCard } from "@/components/hotel-card"
 import { WhatsAppIcon } from "@/components/icons"
 import { PageHero } from "@/components/page-hero"
 import { SectionHeading } from "@/components/section-heading"
+import { SiteCard } from "@/components/site-card"
 import { DESTINATIONS, getDestination } from "@/data/destinations"
 import { GUIDES } from "@/data/guides"
 import { HOTELS } from "@/data/hotels"
+import { SITES } from "@/data/sites"
 import { whatsappLink } from "@/lib/whatsapp"
 
 // Only the four areas exist; anything else is a 404.
@@ -31,6 +34,7 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
 
   const hotels = HOTELS.filter((h) => h.area === destination.slug)
   const guides = GUIDES.filter((g) => g.areas.includes(destination.slug))
+  const sites = SITES.filter((s) => s.area === destination.slug)
 
   return (
     <>
@@ -61,6 +65,13 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
               </li>
             ))}
           </ul>
+
+          {destination.gallery && destination.gallery.length > 0 && (
+            <>
+              <h2 className="mt-12 text-3xl">Photos</h2>
+              <Gallery photos={destination.gallery} className="mt-6" />
+            </>
+          )}
         </div>
 
         <aside className="space-y-4 lg:pt-2">
@@ -99,6 +110,20 @@ export default async function DestinationPage({ params }: PageProps<"/destinatio
           </div>
         </aside>
       </section>
+
+      {sites.length > 0 && (
+        <section className="container-page pb-16 sm:pb-20 lg:pb-24">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <SectionHeading eyebrow="Read before you go" title={`Historic sites in ${destination.name}`} />
+            <Link href={`/sites/#${destination.slug}`} className="flex items-center gap-2 text-sm font-semibold text-gold hover:underline">
+              Full catalog <ArrowRight className="size-4" />
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {sites.map((site) => <SiteCard key={site.slug} site={site} />)}
+          </div>
+        </section>
+      )}
 
       {destination.spots && (
         <section className="bg-ivory">

@@ -5,16 +5,22 @@ import { ArrowRight, ArrowUpRight, BedDouble, CarFront, CircleCheck, Compass, Mo
 import { AskAssistantButton } from "@/components/ask-assistant-button"
 import { WhatsAppIcon } from "@/components/icons"
 import { SectionHeading } from "@/components/section-heading"
+import { SiteCard } from "@/components/site-card"
 import { DESTINATIONS } from "@/data/destinations"
 import { GUIDES } from "@/data/guides"
 import { HOTELS } from "@/data/hotels"
 import { SITE } from "@/data/site"
+import { SITES } from "@/data/sites"
 import { VEHICLES } from "@/data/transport"
 import { formatUSD } from "@/lib/utils"
 import { whatsappLink } from "@/lib/whatsapp"
 
 const cheapestHotel = Math.min(...HOTELS.map((h) => h.pricePerNight))
 const cheapestCar = Math.min(...VEHICLES.flatMap((v) => (v.pricePerDay == null ? [] : [v.pricePerDay])))
+
+// Falls back to the first three if any of these are renamed or removed in the admin.
+const picked = ["pyramids-of-giza", "valley-of-the-kings", "abu-simbel"].flatMap((slug) => SITES.filter((s) => s.slug === slug))
+const featuredSites = picked.length === 3 ? picked : SITES.slice(0, 3)
 
 const SERVICES = [
   {
@@ -142,8 +148,26 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Historic sites catalog */}
       <section className="container-page section-y">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <SectionHeading
+            eyebrow="Historic sites"
+            title="Read the stories behind the monuments"
+            description={`Our catalog of ${SITES.length} sites — from the pyramids to St. Catherine's Monastery — with their history and tips for visiting.`}
+          />
+          <Link href="/sites/" className="flex shrink-0 items-center gap-2 text-sm font-semibold text-gold hover:underline">
+            Open the catalog <ArrowRight className="size-4" />
+          </Link>
+        </div>
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {featuredSites.map((site) => <SiteCard key={site.slug} site={site} />)}
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="bg-ivory">
+        <div className="container-page section-y">
         <SectionHeading center eyebrow="How it works" title="Book in three simple steps" description="No accounts, no online payments, no forms to lose. Just a conversation." />
         <ol className="mt-12 grid gap-5 md:grid-cols-3">
           {STEPS.map((step, i) => (
@@ -157,10 +181,11 @@ export default function HomePage() {
             </li>
           ))}
         </ol>
+        </div>
       </section>
 
       {/* CTA */}
-      <section className="container-page pb-20">
+      <section className="container-page py-20">
         <div className="relative isolate overflow-hidden rounded-3xl bg-ink px-6 py-14 text-center sm:px-12">
           <Image src="/img/nile-felucca.jpg" alt="" fill sizes="100vw" className="-z-10 object-cover opacity-35" />
           <h2 className="mx-auto max-w-2xl text-3xl text-balance text-white sm:text-4xl">Not sure where to start?</h2>

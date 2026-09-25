@@ -13,6 +13,7 @@ import { DESTINATIONS, type AreaSlug } from "@/data/destinations"
 import { GUIDES } from "@/data/guides"
 import { HOTELS, type Hotel } from "@/data/hotels"
 import { SITE } from "@/data/site"
+import { SITES, type HistoricSite } from "@/data/sites"
 import { VEHICLES } from "@/data/transport"
 import { formatUSD } from "@/lib/utils"
 
@@ -248,6 +249,28 @@ function itinerary(days: number): BotReply {
     links: [{ label: "Plan it with us", href: "/contact/" }],
     suggestions: ["Hotels in Luxor", "Which car for 4 people?", "Best time to visit?"],
   }
+}
+
+/** The catalog page that best matches the question, if any. */
+function matchSite(text: string): HistoricSite | undefined {
+  let best: HistoricSite | undefined
+  let bestScore = 0
+  for (const site of SITES) {
+    const s = score(text, [site.name, ...site.keywords])
+    if (s > bestScore) {
+      best = site
+      bestScore = s
+    }
+  }
+  return best
+}
+
+/** Adds a "Read the history" link to the matching catalog page. */
+function withSiteLink(reply: BotReply, site: HistoricSite | undefined): BotReply {
+  if (!site) return reply
+  const href = `/sites/${site.slug}/`
+  if (reply.links?.some((l) => l.href === href)) return reply
+  return { ...reply, links: [{ label: `History of ${site.name}`, href }, ...(reply.links ?? [])] }
 }
 
 // ─── Knowledge base ──────────────────────────────────────────────────────
@@ -640,7 +663,17 @@ export function getBotReply(input: string): BotReply {
   const area = detectArea(text)
   if (area && bestScore === 0) return destinationReply(area)
 
-  if (best) return typeof best.reply === "function" ? best.reply(text) : best.reply
+  const site = matchSite(text)
+  if (best) return withSiteLink(typeof best.reply === "function" ? best.reply(text) : best.reply, site)
+
+  // Sites added through the admin page are answered from the catalog itself.
+  if (site) {
+    return {
+      text: `${site.name} (${site.period}): ${site.summary}`,
+      links: [{ label: `History of ${site.name}`, href: `/sites/${site.slug}/` }],
+      suggestions: ["Best time to visit?", "How do I book?"],
+    }
+  }
 
   return {
     text: "Sorry, I didn't quite catch that. I can help with Egyptian history, destinations, hotels, transport, guides and booking. Try one of these — or message us on WhatsApp and a person will answer.",
