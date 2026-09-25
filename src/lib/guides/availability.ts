@@ -121,3 +121,19 @@ export function formatDay(day: Date | string, style: "short" | "long" = "short")
     timeZone: "UTC",
   }).format(date)
 }
+
+/**
+ * A traveller's dates as one line for enquiries and emails:
+ * "12 Mar 2027 – 20 Mar 2027 (9 days)", "From 12 Mar 2027", or "".
+ */
+export function describeDateRange(start?: string, end?: string): string {
+  const from = start && isISODate(start) ? start : ""
+  const to = end && isISODate(end) ? end : ""
+  if (from && to) {
+    const days = tripLength({ start: from, end: to })
+    return `${formatDay(from)} – ${formatDay(to)} (${days} ${days === 1 ? "day" : "days"})`
+  }
+  if (from) return `From ${formatDay(from)}`
+  if (to) return `Until ${formatDay(to)}`
+  return ""
+}

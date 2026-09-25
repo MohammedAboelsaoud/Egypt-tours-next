@@ -147,7 +147,7 @@ function BookingRow({
               {kindLabel}
             </span>
             <BookingStatusBadge status={booking.status} />
-            <PaymentStatusBadge status={booking.paymentStatus} />
+            <PaymentStatusBadge status={booking.paymentStatus} method={booking.paymentMethod} />
           </div>
 
           <h3 className="mt-2 font-heading text-lg leading-snug">

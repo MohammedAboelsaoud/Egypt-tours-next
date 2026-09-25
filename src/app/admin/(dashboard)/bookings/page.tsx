@@ -150,7 +150,7 @@ export default async function AdminBookingsPage({
                       </td>
 
                       <td className="px-4 py-3">
-                        <PaymentStatusBadge status={booking.paymentStatus} />
+                        <PaymentStatusBadge status={booking.paymentStatus} method={booking.paymentMethod} />
                       </td>
                     </tr>
                   )

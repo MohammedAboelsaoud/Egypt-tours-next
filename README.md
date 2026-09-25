@@ -113,8 +113,13 @@ tests/                   unit/ · integration/ · e2e/
    When the card is accepted, `/api/payments/stripe/confirm` re-reads the
    session from Stripe before confirming. The `checkout.session.completed`
    webhook confirms it as well, in case the traveller closes the tab first.
-5. **Confirmation** — booking becomes `CONFIRMED` / `PAID`, reference shown,
-   confirmation email sent to the traveller and an alert to the admin
+   **Or pay in cash:** on the same step the traveller can choose "Pay in cash
+   on the day". `/api/bookings/[id]/pay-later` confirms the booking with
+   `paymentMethod: CASH` while payment stays `PENDING`. It shows as "Cash on
+   the day" in the account and admin; an admin marks it **Paid** once the cash
+   is collected (Admin → Bookings → the booking).
+5. **Confirmation** — booking becomes `CONFIRMED` (`PAID` for card), reference
+   shown, confirmation email sent to the traveller and an alert to the admin
 
 Prices are **always recalculated server-side** in `/api/bookings` before a
 Stripe payment is created — the client's number is never trusted. Capacity limits
@@ -205,8 +210,8 @@ All site content is editable from here — no code changes needed.
 ## Testing
 
 ```bash
-bun run test       # 75 unit + integration tests
-bun run test:e2e   # 56 end-to-end tests (desktop Chrome + Pixel 7)
+bun run test       # 79 unit + integration tests
+bun run test:e2e   # 60 end-to-end tests (desktop Chrome + Pixel 7)
 ```
 
 The E2E suite covers the public site, the full booking flow through to a

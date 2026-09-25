@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest"
 import {
   addDays,
   busyDays,
+  describeDateRange,
+  formatDay,
   conflictingPending,
   eachDay,
   isExpired,
@@ -13,6 +15,7 @@ import {
   tripRangeError,
 } from "@/lib/guides/availability"
 import {
+  inquirySchema,
   guideProfileSchema,
   guideRequestSchema,
   guideReviewSchema,
@@ -136,5 +139,33 @@ describe("guide schemas", () => {
     expect(guideRequestSchema.safeParse({ guideId: "g", startDate: "next week", endDate: "2027-03-03", groupSize: 2, message: "Pyramids please" }).success).toBe(false)
     expect(guideReviewSchema.safeParse({ requestId: "r", rating: 6, comment: "Wonderful day out" }).success).toBe(false)
     expect(guideReviewSchema.safeParse({ requestId: "r", rating: 5, comment: "Wonderful day out" }).success).toBe(true)
+  })
+})
+
+describe("trip day formatting", () => {
+  it("never shifts a stored day, whatever the viewer's time zone", () => {
+    expect(formatDay(new Date("2027-03-12T00:00:00Z"))).toBe("12 Mar 2027")
+    expect(formatDay("2027-03-12", "long")).toBe("12 March 2027")
+  })
+
+  it("summarises an enquiry's dates in one line", () => {
+    expect(describeDateRange("2027-03-12", "2027-03-20")).toBe("12 Mar 2027 – 20 Mar 2027 (9 days)")
+    expect(describeDateRange("2027-03-12", "")).toBe("From 12 Mar 2027")
+    expect(describeDateRange("", "")).toBe("")
+  })
+})
+
+describe("inquirySchema dates", () => {
+  const base = { name: "Sam Lee", email: "sam@example.com", message: "Ten days in Luxor and Aswan, please." }
+
+  it("accepts no dates or a valid range", () => {
+    expect(inquirySchema.safeParse(base).success).toBe(true)
+    expect(inquirySchema.safeParse({ ...base, startDate: "2027-03-12", endDate: "2027-03-20" }).success).toBe(true)
+  })
+
+  it("rejects an end before the start", () => {
+    const result = inquirySchema.safeParse({ ...base, startDate: "2027-03-12", endDate: "2027-03-10" })
+    expect(result.success).toBe(false)
+    if (!result.success) expect(result.error.issues[0].path).toEqual(["endDate"])
   })
 })

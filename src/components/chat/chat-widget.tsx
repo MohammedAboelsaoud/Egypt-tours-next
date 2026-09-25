@@ -6,6 +6,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { ArrowUp, X } from "lucide-react"
 
 import { ChatEnquiryForm } from "@/components/chat/chat-enquiry-form"
+import { NeferAvatar } from "@/components/chat/nefer-avatar"
 import { ButtonLink } from "@/components/ui/button-link"
 import type { ChatAction, ChatListing as Listing } from "@/lib/chat/engine"
 import { STARTER_SUGGESTIONS } from "@/lib/chat/engine"
@@ -55,16 +56,6 @@ function saveHistory(messages: Message[]) {
   } catch {
     // Storage blocked (private mode): the chat still works for this page view.
   }
-}
-
-/** The sun disc over the horizon: Nefer's mark. */
-function NeferMark({ className }: { className?: string }) {
-  return (
-    <span aria-hidden className={cn("relative inline-flex size-7 shrink-0 items-end justify-center overflow-hidden rounded-full bg-lapis", className)}>
-      <span className="absolute top-1.5 size-3 rounded-full bg-sun" />
-      <span className="relative h-2 w-full bg-lapis-deep" />
-    </span>
-  )
 }
 
 function ListingCard({ listing }: { listing: ChatListing }) {
@@ -208,7 +199,7 @@ export function ChatWidget({ whatsapp }: { whatsapp: string }) {
           open && "pointer-events-none translate-y-4 opacity-0"
         )}
       >
-        <NeferMark />
+        <NeferAvatar className="size-8" />
         Ask Nefer
       </button>
 
@@ -221,7 +212,7 @@ export function ChatWidget({ whatsapp }: { whatsapp: string }) {
         className="fixed inset-x-3 top-20 bottom-3 z-50 flex flex-col overflow-hidden rounded-xl border border-border bg-limestone shadow-2xl shadow-basalt/20 sm:inset-x-auto sm:top-auto sm:right-5 sm:bottom-5 sm:h-[min(38rem,calc(100dvh-7rem))] sm:w-[24rem]"
       >
         <header className="flex items-center gap-3 bg-basalt px-4 py-3 text-white">
-          <NeferMark className="size-9 [&>span:first-child]:top-2 [&>span:first-child]:size-4 [&>span:last-child]:h-2.5" />
+          <NeferAvatar className="size-11 ring-2 ring-sun/70" />
           <div className="min-w-0 flex-1">
             <h2 id={titleId} className="font-heading text-lg leading-tight">
               Nefer
@@ -241,17 +232,20 @@ export function ChatWidget({ whatsapp }: { whatsapp: string }) {
         <div ref={logRef} role="log" aria-live="polite" className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
           {messages.map((m) => (
             <div key={m.id} className={cn("flex flex-col gap-2", m.role === "user" ? "items-end" : "items-start")}>
-              <p
-                className={cn(
-                  "max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line",
-                  m.role === "user"
-                    ? "rounded-br-sm bg-lapis text-white"
-                    : "rounded-bl-sm border border-border bg-papyrus text-basalt"
-                )}
-              >
-                <span className="sr-only">{m.role === "user" ? "You: " : "Nefer: "}</span>
-                {m.text}
-              </p>
+              <div className={cn("flex max-w-[92%] items-end gap-2", m.role === "user" && "justify-end")}>
+                {m.role === "assistant" && <NeferAvatar className="mb-0.5 size-7" />}
+                <p
+                  className={cn(
+                    "rounded-xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-line",
+                    m.role === "user"
+                      ? "rounded-br-sm bg-lapis text-white"
+                      : "rounded-bl-sm border border-border bg-papyrus text-basalt"
+                  )}
+                >
+                  <span className="sr-only">{m.role === "user" ? "You: " : "Nefer: "}</span>
+                  {m.text}
+                </p>
+              </div>
 
               {m.listings && m.listings.length > 0 && (
                 <div className="w-full space-y-2">

@@ -45,16 +45,30 @@ export const profileSchema = z.object({
   passportNo: z.string().max(40).optional().or(z.literal("")),
 })
 
-export const inquirySchema = z.object({
-  name: z.string().min(2, "Please enter your name").max(80),
-  email: z.email("Enter a valid email address"),
-  phone: z.string().max(30).optional().or(z.literal("")),
-  destination: z.string().max(80).optional().or(z.literal("")),
-  travelDates: z.string().max(80).optional().or(z.literal("")),
-  partySize: z.string().max(30).optional().or(z.literal("")),
-  message: z.string().min(10, "Tell us a little more (10+ characters)").max(2000),
-  planTitle: z.string().max(160).optional().or(z.literal("")),
-})
+const optionalDay = z
+  .string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Choose a date")
+  .optional()
+  .or(z.literal(""))
+
+export const inquirySchema = z
+  .object({
+    name: z.string().min(2, "Please enter your name").max(80),
+    email: z.email("Enter a valid email address"),
+    phone: z.string().max(30).optional().or(z.literal("")),
+    destination: z.string().max(80).optional().or(z.literal("")),
+    /** Free text, for older clients. New forms send startDate / endDate. */
+    travelDates: z.string().max(80).optional().or(z.literal("")),
+    startDate: optionalDay,
+    endDate: optionalDay,
+    partySize: z.string().max(30).optional().or(z.literal("")),
+    message: z.string().min(10, "Tell us a little more (10+ characters)").max(2000),
+    planTitle: z.string().max(160).optional().or(z.literal("")),
+  })
+  .refine((d) => !d.startDate || !d.endDate || d.endDate >= d.startDate, {
+    message: "The end date must be on or after the start date",
+    path: ["endDate"],
+  })
 
 export const bookingDatesSchema = z
   .object({

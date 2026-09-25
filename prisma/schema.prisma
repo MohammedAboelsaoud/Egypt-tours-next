@@ -38,6 +38,11 @@ enum BookingStatus {
   COMPLETED
 }
 
+enum PaymentMethod {
+  CARD
+  CASH
+}
+
 enum PaymentStatus {
   PENDING
   PAID
@@ -236,6 +241,8 @@ model Booking {
   status          BookingStatus @default(PENDING)
   paymentId       String?
   paymentStatus   PaymentStatus @default(PENDING)
+  /// CASH: reserved now, paid in cash on the day; an admin marks it PAID.
+  paymentMethod   PaymentMethod @default(CARD)
   contactName     String?
   contactEmail    String?
   contactPhone    String?

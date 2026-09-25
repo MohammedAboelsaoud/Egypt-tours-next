@@ -90,19 +90,31 @@ export type BookingEmailData = {
   customerName: string
   customerEmail: string
   specialRequests?: string | null
+  /** CASH bookings are confirmed now and paid on the day. */
+  paymentMethod?: "CARD" | "CASH"
 }
 
 export async function sendBookingConfirmation(booking: BookingEmailData) {
   const details = `
-    <p>Hi ${booking.customerName}, your booking is confirmed and paid. We have you down for:</p>
+    <p>Hi ${booking.customerName}, your booking is confirmed${
+      booking.paymentMethod === "CASH" ? "" : " and paid"
+    }. We have you down for:</p>
     <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
       ${row("Booking reference", booking.reference)}
       ${row(booking.itemType, booking.itemName)}
       ${row("Start", formatDate(booking.checkIn, "long"))}
       ${row("End", formatDate(booking.checkOut, "long"))}
       ${row("Guests", String(booking.guests))}
-      ${row("Total paid", formatPrice(booking.totalPrice, booking.currency))}
+      ${row(
+        booking.paymentMethod === "CASH" ? "To pay in cash on the day" : "Total paid",
+        formatPrice(booking.totalPrice, booking.currency)
+      )}
     </table>
+    ${
+      booking.paymentMethod === "CASH"
+        ? `<p>You chose to pay in cash. Please have the amount ready on the first day; your coordinator will confirm who to pay and when.</p>`
+        : ""
+    }
     ${
       booking.specialRequests
         ? `<p style="color:#5a6170"><strong>Your notes:</strong> ${booking.specialRequests}</p>`
@@ -125,7 +137,11 @@ export async function sendBookingConfirmation(booking: BookingEmailData) {
 
 export async function sendAdminBookingAlert(booking: BookingEmailData) {
   const details = `
-    <p>A new booking has been paid.</p>
+    <p>${
+      booking.paymentMethod === "CASH"
+        ? "A new booking has been reserved. <strong>Payment: cash on the day</strong> — mark it paid in the admin once collected."
+        : "A new booking has been paid."
+    }</p>
     <table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
       ${row("Reference", booking.reference)}
       ${row("Customer", `${booking.customerName} (${booking.customerEmail})`)}

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { todayInEgypt } from "@/lib/guides/availability"
 import { inquirySchema, type InquiryInput } from "@/lib/validations"
 
 /**
@@ -29,6 +30,7 @@ export function ChatEnquiryForm({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<InquiryInput>({
     resolver: zodResolver(inquirySchema),
@@ -36,6 +38,8 @@ export function ChatEnquiryForm({
       name: "",
       email: "",
       travelDates: "",
+      startDate: "",
+      endDate: "",
       partySize: "",
       message: draft.length >= 10 ? draft : "",
       planTitle: "Chat assistant enquiry",
@@ -58,6 +62,7 @@ export function ChatEnquiryForm({
   })
 
   const field = "space-y-1"
+  const today = todayInEgypt()
   const hint = "text-xs text-destructive"
 
   return (
@@ -79,10 +84,15 @@ export function ChatEnquiryForm({
           {errors.email && <p className={hint}>{errors.email.message}</p>}
         </div>
         <div className={field}>
-          <Label htmlFor="chat-dates" className="text-xs">Travel dates</Label>
-          <Input id="chat-dates" placeholder="e.g. March 2027" {...register("travelDates")} />
+          <Label htmlFor="chat-start" className="text-xs">Start date</Label>
+          <Input id="chat-start" type="date" min={today} {...register("startDate")} />
         </div>
         <div className={field}>
+          <Label htmlFor="chat-end" className="text-xs">End date</Label>
+          <Input id="chat-end" type="date" min={watch("startDate") || today} aria-invalid={Boolean(errors.endDate)} {...register("endDate")} />
+          {errors.endDate && <p className={hint}>{errors.endDate.message}</p>}
+        </div>
+        <div className={`${field} col-span-2`}>
           <Label htmlFor="chat-party" className="text-xs">Travellers</Label>
           <Input id="chat-party" placeholder="e.g. 2 adults" {...register("partySize")} />
         </div>

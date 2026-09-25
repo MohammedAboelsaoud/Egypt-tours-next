@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { todayInEgypt } from "@/lib/guides/availability"
 import { inquirySchema, type InquiryInput } from "@/lib/validations"
 
 export function ContactForm({
@@ -24,6 +25,7 @@ export function ContactForm({
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<InquiryInput>({
     resolver: zodResolver(inquirySchema),
@@ -33,11 +35,16 @@ export function ContactForm({
       phone: "",
       destination: searchParams.get("destination") ?? "",
       travelDates: "",
+      startDate: "",
+      endDate: "",
       partySize: "",
       message: "",
       planTitle: searchParams.get("plan") ?? "",
     },
   })
+
+  const today = todayInEgypt()
+  const startDate = watch("startDate")
 
   const onSubmit = handleSubmit(async (values) => {
     setError(null)
@@ -137,24 +144,40 @@ export function ContactForm({
           </select>
         </div>
 
-        <div>
-          <Label htmlFor="travelDates">Travel dates</Label>
-          <Input
-            id="travelDates"
-            placeholder="Mid-October, 10 nights"
-            className="mt-2 h-11"
-            {...register("travelDates")}
-          />
-        </div>
+        <div className="grid gap-5 sm:col-span-2 sm:grid-cols-3">
+          <div>
+            <Label htmlFor="startDate">Start date</Label>
+            <Input
+              id="startDate"
+              type="date"
+              min={today}
+              className="mt-2 h-11"
+              {...register("startDate")}
+            />
+          </div>
 
-        <div>
-          <Label htmlFor="partySize">Party size</Label>
-          <Input
-            id="partySize"
-            placeholder="2 adults, 1 child (8)"
-            className="mt-2 h-11"
-            {...register("partySize")}
-          />
+          <div>
+            <Label htmlFor="endDate">End date</Label>
+            <Input
+              id="endDate"
+              type="date"
+              min={startDate || today}
+              className="mt-2 h-11"
+              aria-invalid={Boolean(errors.endDate)}
+              {...register("endDate")}
+            />
+            <Error message={errors.endDate?.message} />
+          </div>
+
+          <div>
+            <Label htmlFor="partySize">Party size</Label>
+            <Input
+              id="partySize"
+              placeholder="2 adults, 1 child (8)"
+              className="mt-2 h-11"
+              {...register("partySize")}
+            />
+          </div>
         </div>
 
         <div className="sm:col-span-2">

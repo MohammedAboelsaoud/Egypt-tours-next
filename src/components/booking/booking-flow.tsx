@@ -16,6 +16,7 @@ import {
   CreditCard,
   PartyPopper,
   User,
+  Banknote,
 } from "lucide-react"
 
 
@@ -91,6 +92,30 @@ export function BookingFlow({
     reference: string
   } | null>(null)
   const [confirmedRef, setConfirmedRef] = useState<string | null>(null)
+  const [method, setMethod] = useState<"CARD" | "CASH">("CARD")
+  const [paidInCash, setPaidInCash] = useState(false)
+  const [reserving, setReserving] = useState(false)
+
+  const reserveWithCash = async () => {
+    if (!booking) return
+    setError(null)
+    setReserving(true)
+    try {
+      const response = await fetch(`/api/bookings/${booking.id}/pay-later`, { method: "POST" })
+      const data = (await response.json().catch(() => null)) as { reference?: string; error?: string } | null
+      if (!response.ok || !data?.reference) {
+        setError(data?.error ?? "We couldn't confirm your booking. Please try again.")
+        return
+      }
+      setPaidInCash(true)
+      setConfirmedRef(data.reference)
+      router.refresh()
+    } catch {
+      setError("Something went wrong. Please try again.")
+    } finally {
+      setReserving(false)
+    }
+  }
 
   const defaultCheckIn = addDaysISO(todayISO(), 14)
   const [checkIn, setCheckIn] = useState(defaultCheckIn)
@@ -207,6 +232,7 @@ export function BookingFlow({
         guests={guests}
         total={price.total}
         currency={price.currency}
+        cash={paidInCash}
       />
     )
   }
@@ -471,7 +497,7 @@ export function BookingFlow({
           <section>
             <h2 className="font-heading text-2xl">Check everything over</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Nothing is charged until you complete payment on the next step.
+              Nothing is charged yet. On the next step you choose to pay by card now or in cash on the day.
             </p>
 
             <dl className="mt-8 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-papyrus">
@@ -545,20 +571,78 @@ export function BookingFlow({
             <h2 className="font-heading text-2xl">Payment</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Booking reference{" "}
-              <span className="font-medium text-basalt">{booking.reference}</span> —
-              held for 30 minutes while you pay.
+              <span className="font-medium text-basalt">{booking.reference}</span>
             </p>
 
+            <fieldset className="mt-8">
+              <legend className="text-sm font-medium">How would you like to pay?</legend>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                {(
+                  [
+                    { value: "CARD", icon: CreditCard, title: "Pay now by card", body: "Secure card payment through Stripe. Your booking is confirmed straight away." },
+                    { value: "CASH", icon: Banknote, title: "Pay in cash on the day", body: "Your booking is confirmed now and you pay the full amount in cash when your trip starts." },
+                  ] as const
+                ).map((option) => (
+                  <label
+                    key={option.value}
+                    className={cn(
+                      "flex cursor-pointer gap-3 rounded-xl border bg-papyrus p-4 transition-colors has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-lapis/30",
+                      method === option.value ? "border-lapis bg-accent" : "border-border hover:border-lapis/40"
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="payment-method"
+                      value={option.value}
+                      checked={method === option.value}
+                      onChange={() => {
+                        setError(null)
+                        setMethod(option.value)
+                      }}
+                      className="mt-1 size-4 accent-lapis"
+                    />
+                    <span>
+                      <span className="flex items-center gap-2 font-medium">
+                        <option.icon className="size-4 text-lapis" />
+                        {option.title}
+                      </span>
+                      <span className="mt-1 block text-sm text-muted-foreground">{option.body}</span>
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <div className="mt-8">
-              <StripeCheckout
-                bookingId={booking.id}
-                amount={price.total}
-                currency={price.currency}
-                onPaid={(reference) => {
-                  setConfirmedRef(reference)
-                  router.refresh()
-                }}
-              />
+              {method === "CARD" ? (
+                <StripeCheckout
+                  bookingId={booking.id}
+                  amount={price.total}
+                  currency={price.currency}
+                  onPaid={(reference) => {
+                    setConfirmedRef(reference)
+                    router.refresh()
+                  }}
+                />
+              ) : (
+                <div className="rounded-xl border border-border bg-papyrus p-5">
+                  <p className="text-sm">
+                    You&apos;ll pay{" "}
+                    <span className="font-heading text-xl text-lapis">{formatPrice(price.total, price.currency)}</span>{" "}
+                    in cash on the first day. Your coordinator confirms who to pay and when.
+                  </p>
+                  <Button
+                    type="button"
+                    size="lg"
+                    className="mt-4 h-12 px-7"
+                    disabled={reserving}
+                    onClick={reserveWithCash}
+                  >
+                    <Banknote />
+                    {reserving ? "Confirming…" : "Confirm booking, pay in cash"}
+                  </Button>
+                </div>
+              )}
             </div>
 
             <Button
@@ -659,6 +743,7 @@ function Confirmation({
   guests,
   total,
   currency,
+  cash = false,
 }: {
   reference: string
   item: BookingItem
@@ -667,6 +752,7 @@ function Confirmation({
   guests: number
   total: number
   currency: string
+  cash?: boolean
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
@@ -706,7 +792,7 @@ function Confirmation({
             <dd className="font-medium">{guests}</dd>
           </div>
           <div className="flex justify-between gap-4 border-t border-border pt-3">
-            <dt className="font-medium">Paid</dt>
+            <dt className="font-medium">{cash ? "To pay in cash on the day" : "Paid"}</dt>
             <dd className="font-heading text-xl text-lapis">
               {formatPrice(total, currency)}
             </dd>
