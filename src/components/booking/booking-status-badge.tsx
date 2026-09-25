@@ -73,3 +73,50 @@ export function PaymentStatusBadge({
     </span>
   )
 }
+
+/**
+ * One status for travellers, instead of separate booking and payment badges:
+ * "Payment not finished", "Confirmed · Paid", "Cancelled · Refunded $X"…
+ */
+export function bookingStateLabel(booking: {
+  status: BookingStatus
+  paymentStatus: PaymentStatus
+  paymentMethod: PaymentMethod
+  refundAmount?: string | null
+}): { label: string; tone: "good" | "info" | "warn" | "muted" } {
+  const refund = booking.refundAmount ? Number.parseFloat(booking.refundAmount) : 0
+  switch (booking.status) {
+    case "CANCELLED":
+      return { label: refund > 0 ? `Cancelled · Refunded` : "Cancelled", tone: "muted" }
+    case "COMPLETED":
+      return { label: "Completed", tone: "info" }
+    case "CONFIRMED":
+      if (booking.paymentStatus === "PAID") return { label: "Confirmed · Paid", tone: "good" }
+      if (booking.paymentMethod === "CASH") return { label: "Confirmed · Cash on the day", tone: "good" }
+      return { label: "Confirmed", tone: "good" }
+    default:
+      return { label: "Payment not finished", tone: "warn" }
+  }
+}
+
+const STATE_TONES = {
+  good: "bg-faience/12 text-faience",
+  info: "bg-lapis/12 text-lapis",
+  warn: "bg-sun/25 text-ochre",
+  muted: "bg-muted text-muted-foreground",
+} as const
+
+export function BookingStateBadge({
+  booking,
+  className,
+}: {
+  booking: Parameters<typeof bookingStateLabel>[0]
+  className?: string
+}) {
+  const { label, tone } = bookingStateLabel(booking)
+  return (
+    <span className={cn("inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium", STATE_TONES[tone], className)}>
+      {label}
+    </span>
+  )
+}

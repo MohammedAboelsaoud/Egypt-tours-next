@@ -4,10 +4,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { CalendarCheck, CalendarDays, Users } from "lucide-react"
 
-import {
-  BookingStatusBadge,
-  PaymentStatusBadge,
-} from "@/components/booking/booking-status-badge"
+import { BookingStateBadge } from "@/components/booking/booking-status-badge"
 import { EmptyState } from "@/components/ui/empty-state"
 import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
@@ -104,13 +101,8 @@ function BookingRow({
     booking.tour?.title ?? booking.hotel?.name ?? booking.car?.name ?? "Booking"
   const image =
     booking.tour?.imageUrl ?? booking.hotel?.imageUrl ?? booking.car?.imageUrl
-  const href = booking.tour
-    ? `/tours/${booking.tour.slug}`
-    : booking.hotel
-      ? `/hotels/${booking.hotel.slug}`
-      : booking.car
-        ? `/car-rentals/${booking.car.slug}`
-        : "#"
+  // The booking itself, not the tour page: that's where to check, pay or cancel.
+  const href = `/account/bookings/${booking.id}`
 
   const kindLabel =
     booking.bookingType === "TOUR"
@@ -146,8 +138,7 @@ function BookingRow({
             <span className="text-[0.65rem] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
               {kindLabel}
             </span>
-            <BookingStatusBadge status={booking.status} />
-            <PaymentStatusBadge status={booking.paymentStatus} method={booking.paymentMethod} />
+            <BookingStateBadge booking={{ ...booking, refundAmount: booking.refundAmount?.toString() ?? null }} />
           </div>
 
           <h3 className="mt-2 font-heading text-lg leading-snug">
@@ -175,6 +166,9 @@ function BookingRow({
           <p className="mt-1 font-heading text-2xl text-lapis">
             {formatPrice(booking.totalPrice, booking.currency)}
           </p>
+          <Link href={href} className="mt-1 inline-block text-sm font-medium text-lapis hover:underline">
+            View booking →
+          </Link>
         </div>
       </div>
 

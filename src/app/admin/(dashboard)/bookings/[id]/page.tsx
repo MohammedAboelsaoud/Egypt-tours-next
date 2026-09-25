@@ -211,6 +211,13 @@ export default async function AdminBookingDetailPage({
               <Row label="Amount" value={formatPrice(booking.totalPrice, booking.currency)} />
               <Row label="Currency" value={booking.currency} />
               <Row label="Stripe payment" value={booking.paymentId ?? "—"} />
+              {booking.cancelledAt && (
+                <Row label="Cancelled by traveller" value={formatDateTime(booking.cancelledAt)} />
+              )}
+              {booking.refundAmount !== null && (
+                <Row label="Refunded" value={formatPrice(booking.refundAmount, booking.currency)} />
+              )}
+              {booking.refundId && <Row label="Stripe refund" value={booking.refundId} />}
               <Row label="Last updated" value={formatDateTime(booking.updatedAt)} />
             </dl>
           </AdminCard>

@@ -355,3 +355,49 @@ export async function sendGuideTripCancelled(r: GuideRequestEmail) {
     ),
   })
 }
+
+export async function sendBookingCancelled(booking: {
+  reference: string
+  itemName: string
+  checkIn: Date | string
+  checkOut: Date | string
+  customerName: string
+  customerEmail: string
+  total: number
+  refund: number
+  currency: string
+  paid: boolean
+}) {
+  const refundLine = !booking.paid
+    ? "Nothing was charged, so there is nothing to refund."
+    : booking.refund > 0
+      ? `We've refunded <strong>${esc(formatPrice(booking.refund, booking.currency))}</strong> to your card. It usually appears within 5–10 business days.`
+      : "Under the booking terms, cancellations within 7 days of the start aren't refundable."
+  const rows = `<table role="presentation" width="100%" style="margin:18px 0;border-top:1px solid #e3e1da;border-bottom:1px solid #e3e1da">
+      ${row("Booking reference", esc(booking.reference))}
+      ${row("Booking", esc(booking.itemName))}
+      ${row("Dates", `${esc(formatDay(booking.checkIn))} – ${esc(formatDay(booking.checkOut))}`)}
+      ${booking.paid ? row("Refunded", esc(formatPrice(booking.refund, booking.currency))) : ""}
+    </table>`
+
+  await Promise.allSettled([
+    send({
+      to: booking.customerEmail,
+      subject: `Booking cancelled — ${booking.reference} · Egypt Journeys`,
+      html: shell(
+        "Your booking is cancelled",
+        `<p>Hi ${esc(booking.customerName)}, your booking has been cancelled as you asked.</p>${rows}<p>${refundLine}</p>
+         ${button("/account/bookings", "View my bookings")}`
+      ),
+    }),
+    send({
+      to: ADMIN_EMAIL,
+      subject: `Cancelled by traveller: ${booking.reference}`,
+      html: shell(
+        "A booking was cancelled",
+        `<p>${esc(booking.customerName)} (${esc(booking.customerEmail)}) cancelled this booking.</p>${rows}
+         <p>${booking.paid ? `Automatic refund: ${esc(formatPrice(booking.refund, booking.currency))} of ${esc(formatPrice(booking.total, booking.currency))}.` : "It was not paid."}</p>`
+      ),
+    }),
+  ])
+}
