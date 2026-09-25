@@ -57,7 +57,6 @@ const REGIONS = [
     tagline: "Pyramids, the Egyptian Museum, and a city that never sleeps",
     cities: ["Cairo", "Giza"],
     imageUrl: IMG.cairo,
-    galleryUrls: [IMG.cairo, IMG.hero],
     lat: 30.0444,
     lng: 31.2357,
     zoom: 10,
@@ -71,7 +70,6 @@ const REGIONS = [
     tagline: "The open-air museum of the Nile Valley",
     cities: ["Luxor", "Aswan"],
     imageUrl: IMG.luxor,
-    galleryUrls: [IMG.luxor, IMG.nile],
     lat: 25.6872,
     lng: 32.6396,
     zoom: 8,
@@ -85,7 +83,6 @@ const REGIONS = [
     tagline: "Marsa Matrouh, El Alamein & the turquoise Mediterranean",
     cities: ["Marsa Matrouh", "El Alamein", "Sidi Abdel Rahman"],
     imageUrl: IMG.north,
-    galleryUrls: [IMG.north, IMG.alamein],
     lat: 31.0,
     lng: 28.4,
     zoom: 8,
@@ -99,7 +96,6 @@ const REGIONS = [
     tagline: "Sharm El Sheikh, Dahab, Saint Catherine & world-class reefs",
     cities: ["Sharm El Sheikh", "Dahab", "Saint Catherine"],
     imageUrl: IMG.sinai,
-    galleryUrls: [IMG.sinai, IMG.catherine],
     lat: 28.2,
     lng: 34.0,
     zoom: 8,
@@ -186,7 +182,6 @@ const TOURS: SeedTour[] = [
     currency: "USD",
     maxGroupSize: 12,
     imageUrl: IMG.hero,
-    galleryUrls: [IMG.hero, IMG.cairo],
     lat: 30.0459,
     lng: 31.2243,
     sortOrder: 2,
@@ -289,7 +284,6 @@ const TOURS: SeedTour[] = [
     currency: "USD",
     maxGroupSize: 10,
     imageUrl: IMG.luxor,
-    galleryUrls: [IMG.luxor, IMG.nile],
     lat: 25.7188,
     lng: 32.6573,
     sortOrder: 2,
@@ -334,7 +328,6 @@ const TOURS: SeedTour[] = [
     currency: "USD",
     maxGroupSize: 14,
     imageUrl: IMG.north,
-    galleryUrls: [IMG.north, IMG.alamein],
     lat: 31.3543,
     lng: 27.2373,
     featured: true,
@@ -391,7 +384,6 @@ const TOURS: SeedTour[] = [
     currency: "USD",
     maxGroupSize: 12,
     imageUrl: IMG.alamein,
-    galleryUrls: [IMG.alamein, IMG.north],
     lat: 30.8283,
     lng: 28.9498,
     sortOrder: 2,
@@ -435,7 +427,6 @@ const TOURS: SeedTour[] = [
     currency: "USD",
     maxGroupSize: 8,
     imageUrl: IMG.sinai,
-    galleryUrls: [IMG.sinai, IMG.catherine],
     lat: 27.9158,
     lng: 34.33,
     featured: true,
@@ -509,7 +500,6 @@ const TOURS: SeedTour[] = [
     currency: "USD",
     maxGroupSize: 10,
     imageUrl: IMG.catherine,
-    galleryUrls: [IMG.catherine, IMG.sinai],
     lat: 28.5091,
     lng: 34.5136,
     sortOrder: 2,
@@ -1162,15 +1152,17 @@ async function main() {
   }
   console.log(`  ✓ ${STARTER_SITES.length} historic sites`)
 
+  // The catalog is loaded now, so the server's one-time load has nothing to do.
+  await prisma.dataLoad.upsert({
+    where: { id: "historic-sites-starter" },
+    update: {},
+    create: { id: "historic-sites-starter" },
+  })
+
   await prisma.siteSetting.upsert({
     where: { id: "site" },
     update: {},
-    create: { id: "site", catalogSeededAt: new Date() },
-  })
-  // The catalog is loaded now, so the server's one-time load has nothing to do.
-  await prisma.siteSetting.updateMany({
-    where: { id: "site", catalogSeededAt: null },
-    data: { catalogSeededAt: new Date() },
+    create: { id: "site" },
   })
   console.log("  ✓ site settings")
 

@@ -199,7 +199,6 @@ export const regionSchema = z.object({
   zoom: z.coerce.number().int().min(1).max(20).default(7),
   sortOrder: z.coerce.number().int().default(0),
   published: z.boolean().default(true),
-  galleryUrls: z.array(z.string()).default([]),
 })
 
 export const historicSiteSchema = z.object({

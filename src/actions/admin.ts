@@ -365,7 +365,6 @@ export async function saveRegion(
     zoom: str(formData, "zoom") || "7",
     sortOrder: str(formData, "sortOrder") || "0",
     published: bool(formData, "published"),
-    galleryUrls: linesToArray(str(formData, "galleryUrls")),
   })
 
   if (!parsed.success) {
@@ -391,7 +390,6 @@ export async function saveRegion(
     zoom: data.zoom,
     sortOrder: data.sortOrder,
     published: data.published,
-    galleryUrls: data.galleryUrls,
   }
 
   if (id) {

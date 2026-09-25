@@ -150,12 +150,16 @@ paragraphs. Key facts are `Label: value` lines.
 
 The starter catalog lives in `src/lib/sites/starter.ts`. It's loaded once: by
 `bun run db:seed` locally, or automatically on the first server start after
-deploying (`lib/db/ensure-schema.ts`, recorded in
-`SiteSetting.catalogSeededAt`). After that the database is the source of
-truth, so sites you delete in the admin don't come back.
+deploying (`lib/db/ensure-schema.ts`, recorded as a row in the `DataLoad`
+table). After that the database is the source of truth, so sites you delete in
+the admin don't come back.
 
-Regions also have a photo gallery (**Admin → Regions → Photos**), shown on the
-destination page.
+Destination pages show a photo gallery made from the region's image and the
+photos of its historic sites.
+
+> Schema changes: preview builds prerender pages against the shared database
+> before any schema sync runs, so a new column on a table those pages read
+> (Region, Tour, Hotel, Car…) fails the preview. Put new data in new tables.
 
 ---
 

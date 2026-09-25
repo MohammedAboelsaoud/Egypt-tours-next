@@ -115,27 +115,25 @@ model VerificationToken {
 }
 
 model Region {
-  id          String         @id @default(cuid())
-  slug        String         @unique
-  name        String
-  tagline     String         @default("")
-  summary     String         @db.Text
-  cities      String[]
-  imageUrl    String
-  /// Extra photos shown in the destination page's gallery.
-  galleryUrls String[]       @default([])
-  lat         Float?
-  lng         Float?
-  zoom        Int            @default(7)
-  sortOrder   Int            @default(0)
-  published   Boolean        @default(true)
-  tours       Tour[]
-  hotels      Hotel[]
-  cars        Car[]
-  guides      GuideProfile[]
-  sites       HistoricSite[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id        String         @id @default(cuid())
+  slug      String         @unique
+  name      String
+  tagline   String         @default("")
+  summary   String         @db.Text
+  cities    String[]
+  imageUrl  String
+  lat       Float?
+  lng       Float?
+  zoom      Int            @default(7)
+  sortOrder Int            @default(0)
+  published Boolean        @default(true)
+  tours     Tour[]
+  hotels    Hotel[]
+  cars      Car[]
+  guides    GuideProfile[]
+  sites     HistoricSite[]
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 }
 
 model Tour {
@@ -304,23 +302,28 @@ model Wishlist {
 
 /// Singleton row (id = "site") holding admin-editable site settings.
 model SiteSetting {
-  id              String    @id @default("site")
-  siteName        String    @default("Egypt Journeys")
-  tagline         String    @default("Egypt, Planned Around You")
-  contactEmail    String    @default("muhammedaboelsaoud@gmail.com")
-  contactPhone    String    @default("+20 102 935 0015")
-  whatsappNumber  String    @default("201029350015")
-  address         String    @default("Zamalek, Cairo, Egypt")
-  facebookUrl     String    @default("")
-  instagramUrl    String    @default("")
+  id             String   @id @default("site")
+  siteName       String   @default("Egypt Journeys")
+  tagline        String   @default("Egypt, Planned Around You")
+  contactEmail   String   @default("muhammedaboelsaoud@gmail.com")
+  contactPhone   String   @default("+20 102 935 0015")
+  whatsappNumber String   @default("201029350015")
+  address        String   @default("Zamalek, Cairo, Egypt")
+  facebookUrl    String   @default("")
+  instagramUrl   String   @default("")
   /// Legacy, unused since the switch to Stripe. Kept because production
   /// databases still hold a value here, and removing the field would make
   /// schema pushes drop that data (and so refuse to run).
-  paypalMode      String    @default("sandbox")
-  /// When the starter historic-sites catalog was loaded (once, so sites the
-  /// admin deletes don't come back). See lib/db/ensure-schema.ts.
-  catalogSeededAt DateTime?
-  updatedAt       DateTime  @default(now()) @updatedAt
+  paypalMode     String   @default("sandbox")
+  updatedAt      DateTime @default(now()) @updatedAt
+}
+
+/// One-time data loads that have already run (e.g. the starter historic-sites
+/// catalog), so they never run twice — see lib/db/ensure-schema.ts. A table of
+/// its own because preview builds read existing tables before any schema sync.
+model DataLoad {
+  id       String   @id
+  loadedAt DateTime @default(now())
 }
 
 /// A page in the historic sites catalog (/sites): the history of a monument,

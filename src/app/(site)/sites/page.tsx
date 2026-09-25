@@ -9,7 +9,7 @@ import { SectionHeading } from "@/components/ui/section-heading"
 import { prisma } from "@/lib/prisma"
 import { getSettings } from "@/lib/settings"
 
-export const revalidate = 600
+export const revalidate = 60
 
 export const metadata: Metadata = {
   title: "Historic Sites",

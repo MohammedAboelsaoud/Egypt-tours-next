@@ -57,7 +57,7 @@ async function getRegionSites(regionId: string) {
     return await prisma.historicSite.findMany({
       where: { regionId, published: true },
       orderBy: { sortOrder: "asc" },
-      select: { slug: true, name: true, period: true, summary: true, imageUrl: true },
+      select: { slug: true, name: true, period: true, summary: true, imageUrl: true, galleryUrls: true },
     })
   } catch {
     // The catalog table is created on the server's first start after deploying.
@@ -100,6 +100,11 @@ export default async function RegionPage({
     getTourRatings(region.tours.map((tour) => tour.id)),
     getRegionSites(region.id),
   ])
+  // The region's photos: its own image plus those of its historic sites,
+  // which are edited in Admin → Historic sites.
+  const photos = [
+    ...new Set([region.imageUrl, ...sites.flatMap((site) => [site.imageUrl, ...site.galleryUrls])]),
+  ]
 
   const markers = [
     ...region.tours
@@ -235,10 +240,10 @@ export default async function RegionPage({
         </div>
       </section>
 
-      {region.galleryUrls.length > 0 && (
+      {photos.length > 1 && (
         <section className="container-page pb-16 sm:pb-20 lg:pb-24">
           <SectionHeading eyebrow="Photos" title={`${region.name} in pictures`} className="mb-8" />
-          <Gallery images={[region.imageUrl, ...region.galleryUrls]} alt={region.name} />
+          <Gallery images={photos} alt={region.name} />
         </section>
       )}
 

@@ -6,7 +6,9 @@ import { STARTER_SITES } from "@/lib/sites/starter"
 
 /**
  * Adds the database objects introduced with tour guides, cash payments and the
- * historic sites catalog, if they are missing. Runs once per server start (see src/instrumentation.ts), so
+ * historic sites catalog, if they are missing. New features get new tables
+ * rather than new columns on existing ones where they can: preview builds
+ * prerender pages against the shared database before anything here runs. Runs once per server start (see src/instrumentation.ts), so
  * a deploy works even when `prisma db push` never ran against the database.
  *
  * The statements are Prisma's own migration SQL (`prisma migrate diff` from the
@@ -28,8 +30,6 @@ const COLUMNS = [
   `ALTER TABLE "Booking" ADD COLUMN IF NOT EXISTS "refundAmount" DECIMAL(10,2)`,
   `ALTER TABLE "Booking" ADD COLUMN IF NOT EXISTS "refundId" TEXT`,
   `ALTER TABLE "User" ALTER COLUMN "languages" SET DEFAULT ARRAY[]::TEXT[]`,
-  `ALTER TABLE "Region" ADD COLUMN IF NOT EXISTS "galleryUrls" TEXT[] DEFAULT ARRAY[]::TEXT[]`,
-  `ALTER TABLE "SiteSetting" ADD COLUMN IF NOT EXISTS "catalogSeededAt" TIMESTAMP(3)`,
 ]
 
 const TABLES = [
@@ -86,6 +86,11 @@ const TABLES = [
     "hidden" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "GuideReview_pkey" PRIMARY KEY ("id")
+  )`,
+  `CREATE TABLE IF NOT EXISTS "DataLoad" (
+    "id" TEXT NOT NULL,
+    "loadedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "DataLoad_pkey" PRIMARY KEY ("id")
   )`,
   `CREATE TABLE IF NOT EXISTS "HistoricSite" (
     "id" TEXT NOT NULL,
@@ -184,10 +189,8 @@ async function upToDate(): Promise<boolean> {
       AND EXISTS (SELECT 1 FROM pg_constraint WHERE conname = '_GuideProfileToRegion_B_fkey')
       AND EXISTS (SELECT 1 FROM pg_enum e JOIN pg_type t ON t.oid = e.enumtypid
               WHERE t.typname = 'Role' AND e.enumlabel = 'GUIDE')
-      AND EXISTS (SELECT 1 FROM information_schema.columns
-              WHERE table_schema = current_schema() AND table_name = 'Region' AND column_name = 'galleryUrls')
-      AND EXISTS (SELECT 1 FROM information_schema.columns
-              WHERE table_schema = current_schema() AND table_name = 'SiteSetting' AND column_name = 'catalogSeededAt')
+      AND EXISTS (SELECT 1 FROM information_schema.tables
+              WHERE table_schema = current_schema() AND table_name = 'DataLoad')
       AND EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'HistoricSite_regionId_fkey')
       AS ok`
   return Boolean(rows[0]?.ok)
@@ -204,7 +207,6 @@ export async function ensureSchema(): Promise<"up-to-date" | "updated"> {
   }
   // Accounts created before languages existed hold NULL; the app expects a list.
   await prisma.$executeRawUnsafe(`UPDATE "User" SET "languages" = ARRAY[]::TEXT[] WHERE "languages" IS NULL`)
-  await prisma.$executeRawUnsafe(`UPDATE "Region" SET "galleryUrls" = ARRAY[]::TEXT[] WHERE "galleryUrls" IS NULL`)
   await replacePlaceholderContacts()
   await loadStarterCatalog()
   return result
@@ -224,6 +226,9 @@ async function replacePlaceholderContacts() {
     WHERE "id" = 'site' AND "contactPhone" = '+20 100 123 4567'`
 }
 
+/** Marks the starter catalog as loaded in the DataLoad table. */
+export const STARTER_CATALOG_LOAD = "historic-sites-starter"
+
 /**
  * Loads the starter historic-sites catalog the first time only. Claiming the
  * load and inserting the sites happen in one transaction: two server instances
@@ -232,8 +237,8 @@ async function replacePlaceholderContacts() {
  */
 async function loadStarterCatalog() {
   const count = await prisma.$transaction(async (tx) => {
-    const claimed = await tx.$executeRaw`UPDATE "SiteSetting" SET "catalogSeededAt" = CURRENT_TIMESTAMP
-      WHERE "id" = 'site' AND "catalogSeededAt" IS NULL`
+    const claimed = await tx.$executeRaw`INSERT INTO "DataLoad" ("id") VALUES (${STARTER_CATALOG_LOAD})
+      ON CONFLICT ("id") DO NOTHING`
     if (claimed === 0) return null
 
     const regions = await tx.region.findMany({ select: { id: true, slug: true } })

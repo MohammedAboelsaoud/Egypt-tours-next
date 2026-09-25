@@ -41,7 +41,6 @@ export default async function EditRegionPage({
           summary: region.summary,
           cities: region.cities,
           imageUrl: region.imageUrl,
-          galleryUrls: region.galleryUrls,
           lat: region.lat,
           lng: region.lng,
           zoom: region.zoom,
